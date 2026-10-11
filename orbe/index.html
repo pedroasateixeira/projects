@@ -1256,10 +1256,13 @@ function tracePath(origin,bearing,step=25,maxKm=40100){
     first={...segs[i],water:water<60?0:water}; break;
   }
   // com a volta ao mundo completa, corta o traço pouco depois do ponto de chegada
-  if(first&&first.loop){ const keep=Math.min(pts.length,Math.ceil((first.to+400)/step)+1); pts.length=keep; }
-  else if(!first){ const keep=Math.min(pts.length,Math.ceil(20000/step)+1); pts.length=keep; }
+  // o traço para ao encontrar o primeiro país (ou ao fechar a volta); sem achado, segue até a volta completa
+  if(first){ pts.length=Math.min(pts.length,Math.ceil((first.from+60)/step)+1); }
+  else { const b=((bearing%360)+360)%360; const circ=(b===90||b===270)?2*Math.PI*R_EARTH*Math.cos(origin[1]*RAD):(b===0||b===180)?2*Math.PI*R_EARTH:Infinity;
+    if(isFinite(circ)) pts.length=Math.min(pts.length,Math.ceil(circ/step)+2); 
+    else { const k=pts.findIndex(q=>Math.abs(q[1])>=89.49); if(k>0) pts.length=k+1; } }
   const maxK=(pts.length-1)*step;
-  return {segs:segs.filter(g=>g.from<maxK),pts,first,origin:originIso,maxKm:maxK};
+  return {segs:segs.filter(g=>g.from<maxK).map(g=>({...g,to:Math.min(g.to,maxK)})),pts,first,origin:originIso,maxKm:maxK};
 }
 function computeOther(fly){
   const o=[S.origin.lng,S.origin.lat];
@@ -1300,13 +1303,13 @@ function drawOther(now,pth){
   if(hp&&hp.vis){ ctx.fillStyle='#fff'; ctx.shadowColor=rgba(ACC,1); ctx.shadowBlur=10; ctx.beginPath(); ctx.arc(hp.x,hp.y,2.4,0,7); ctx.fill(); ctx.shadowBlur=0; }
   // through-earth line origin ↔ antipode
   const o=[S.origin.lng,S.origin.lat];
-  if(!S.view2d&&S.anti){ const po=p3(o), pa=p3(S.anti.ll);
+  if(!S.view2d&&S.anti&&p3(S.anti.ll).vis){ const po=p3(o), pa=p3(S.anti.ll);
     ctx.save(); ctx.setLineDash([4,6]); ctx.lineWidth=1; const gl=ctx.createLinearGradient(po.x,po.y,pa.x,pa.y); gl.addColorStop(0,rgba(ACC,.5)); gl.addColorStop(1,'rgba(255,46,147,.5)');
     ctx.strokeStyle=gl; ctx.beginPath(); ctx.moveTo(po.x,po.y); ctx.lineTo(pa.x,pa.y); ctx.stroke(); ctx.setLineDash([]);
     ctx.fillStyle=rgba(ACC,.5); ctx.beginPath(); ctx.arc(S.cx,S.cy,2,0,7); ctx.fill(); ctx.restore(); }
   marker(o,ACC,(S.origin.name||'Origem').toUpperCase());
-  if(S.anti) marker(S.anti.ll,[255,46,147],'ANTÍPODA');
-  if(P.first&&reach>P.first.to-1&&C[P.first.iso]){ const ll=P.pts[Math.min(P.pts.length-1,Math.floor(P.first.from/(P.maxKm/(P.pts.length-1))))]; if(ll) marker(ll,[255,211,110],null,{size:3.5,hollowIfHidden:false}); }
+  if(S.anti&&p3(S.anti.ll).vis) marker(S.anti.ll,[255,46,147],'ANTÍPODA',{hollowIfHidden:false});
+  if(P.first&&reach>=P.first.from&&C[P.first.iso]){ const ll=P.pts[Math.min(P.pts.length-1,Math.floor(P.first.from/(P.maxKm/(P.pts.length-1))))]; if(ll) marker(ll,[255,211,110],null,{size:3.5,hollowIfHidden:false}); }
 }
 function computeSweep(){
   const o=[S.origin.lng,S.origin.lat]; const res=[];
