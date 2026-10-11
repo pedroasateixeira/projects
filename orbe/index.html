@@ -58,9 +58,10 @@ body.ui-in .ui{opacity:1;transform:none}
 #topbar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:14px;
   padding:calc(env(safe-area-inset-top,0px) + 14px) var(--gut) 10px;pointer-events:none}
 #topbar>*{pointer-events:auto}
-.logo{display:flex;align-items:baseline;gap:10px;user-select:none}
+.logo{display:flex;align-items:baseline;gap:10px;user-select:none;flex:none;white-space:nowrap}
 .logo b{font:800 22px/1 var(--f-display);letter-spacing:.32em;color:var(--text);text-shadow:0 0 18px rgba(var(--accent-rgb),.55)}
-.logo b span{display:inline-block}
+.logo b span{display:inline-block;white-space:nowrap}
+#btn-search{display:none}
 .logo small{font:500 9px var(--f-mono);letter-spacing:.2em;color:var(--accent);opacity:.8}
 .glitch{animation:glitch .5s steps(2) 1}
 @keyframes glitch{0%{transform:translate(0)}20%{transform:translate(-2px,1px);text-shadow:2px 0 var(--magenta),-2px 0 var(--accent)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,0);text-shadow:-2px 0 var(--magenta),2px 0 var(--accent)}100%{transform:none}}
@@ -360,11 +361,21 @@ body.ui-in #legend.ui{transform:translateX(-50%)}
   :root{--dock-h:58px;--gut:12px}
   .status,.searchbox kbd,#foot,.hide-sm{display:none}
   #topbar{gap:8px;padding-top:calc(env(safe-area-inset-top,0px) + 10px)}
-  .logo b{font-size:18px;letter-spacing:.26em}
+  .logo b{font-size:15px;line-height:.95;letter-spacing:.22em;margin-right:-.22em}
+  .logo b span{display:block}
   .logo small{display:none}
-  .searchbox{flex:1;width:auto}
-  .searchbox input{height:36px}
+  .spacer{display:block}
+  .searchbox{display:none;flex:1;width:auto}
+  .searchbox input{height:38px;font-size:16px}
+  .btnrow{gap:6px}
   .iconbtn{width:36px;height:36px}
+  #btn-search{display:grid}
+  .tip{display:none}
+  body.searching .searchbox{display:block}
+  body.searching .logo,body.searching .spacer,body.searching .btnrow{display:none}
+  body.searching #chips{display:none}
+  .results{position:fixed;left:var(--gut);right:var(--gut);top:calc(env(safe-area-inset-top,0px) + 56px);max-height:50vh}
+  .gradwrap .ends .label{display:none}
   #drawer{display:none}
   #chips{display:flex;position:fixed;z-index:15;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 58px);gap:6px;overflow-x:auto;padding:4px var(--gut) 8px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 12px),transparent)}
   #chips::-webkit-scrollbar{display:none}
@@ -391,7 +402,8 @@ body.ui-in #legend.ui{transform:translateX(-50%)}
   #legend .src{display:none}
   body.sheet-up #legend{opacity:0;pointer-events:none}
   #hint{top:calc(env(safe-area-inset-top,0px) + 104px)}
-  #caption{bottom:calc(env(safe-area-inset-bottom,0px) + var(--dock-h) + 220px)}
+  #caption{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 100px);width:calc(100vw - 2*var(--gut));padding:10px 12px;gap:10px;z-index:21}
+  #caption p{font-size:13px}
   .compass-wrap{grid-template-columns:130px 1fr}
   #compass{width:130px;height:130px}
 }
@@ -409,7 +421,7 @@ body.ui-in #legend.ui{transform:translateX(-50%)}
 <div class="grain" aria-hidden="true"></div>
 
 <header id="topbar">
-  <div class="logo ui" style="--i:0"><b id="logo" aria-label="ORBE"><span>O</span><span>R</span><span>B</span><span>E</span></b><small>ATLAS ORBITAL</small></div>
+  <div class="logo ui" style="--i:0"><b id="logo" aria-label="ORBE"><span>OR</span><span>BE</span></b><small>ATLAS ORBITAL</small></div>
   <div class="status ui" style="--i:1" aria-live="off">
     <span id="hud-coord">LAT −23.55° · LNG −46.63°</span>
     <span class="hide-md" id="hud-utc">UTC --:--:--</span>
@@ -423,9 +435,10 @@ body.ui-in #legend.ui{transform:translateX(-50%)}
     <div class="results" id="search-results" role="listbox" hidden></div>
   </div>
   <div class="btnrow ui" style="--i:3">
-    <button class="iconbtn" id="btn-random" aria-label="Camada aleatória (R)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg><span class="tip">Aleatória · R</span></button>
-    <button class="iconbtn hide-sm" id="btn-tour" aria-label="Tour automático" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg><span class="tip">Tour · T</span></button>
-    <button class="iconbtn" id="btn-shot" aria-label="Capturar imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span class="tip">Capturar</span></button>
+    <button class="iconbtn" id="btn-search" aria-label="Buscar país"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+    <button class="iconbtn hide-sm" id="btn-random" aria-label="Camada aleatória (R)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg><span class="tip">Aleatória · R</span></button>
+    <button class="iconbtn" id="btn-tour" aria-label="Tour automático" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg><span class="tip">Tour · T</span></button>
+    <button class="iconbtn hide-sm" id="btn-shot" aria-label="Capturar imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span class="tip">Capturar</span></button>
     <button class="iconbtn" id="btn-pdf" aria-label="Baixar PDF (P)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v10M8 10l4 4 4-4M5 19h14"/></svg><span class="tip">Baixar PDF · P</span></button>
     <button class="iconbtn hide-sm" id="btn-reset"aria-label="Resetar visão"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg><span class="tip">Resetar visão · 0</span></button>
     <button class="iconbtn hide-sm" id="btn-full" aria-label="Tela cheia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span class="tip">Tela cheia</span></button>
@@ -2022,6 +2035,10 @@ async function boot(){
   renderDrawer(); renderLegend();
   $('#layer-q').addEventListener('input',e=>renderDrawer(e.target.value));
   attachSearch($('#search'),$('#search-results'),countryItems,onTopSearch);
+  { const si=$('#search'), bs=$('#btn-search'); const closeS=()=>document.body.classList.remove('searching');
+    bs.onclick=()=>{ document.body.classList.add('searching'); si.focus(); };
+    si.addEventListener('blur',()=>setTimeout(closeS,250));
+    si.addEventListener('keydown',e=>{ if(e.key==='Escape') closeS(); }); }
   resize(); requestAnimationFrame(frame);
   setIntro(.25,'Carregando geometria do planeta…');
   let geo;
