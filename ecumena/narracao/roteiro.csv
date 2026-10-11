@@ -4,6 +4,7 @@ m-olimpiadas.mp3,m,"Em Olímpia, começam os Jogos em honra a Zeus.",
 m-zhou-leste.mp3,m,"Na China, a corte Zhou foge para Luoyang, e o poder real começa a se desfazer.",Luoyang → Luô-iáng; Zhou → Djôu
 m-roma-fundacao.mp3,m,"Segundo a lenda, Rômulo funda Roma no monte Palatino.",
 m-ninive-capital.mp3,m,"Nínive se torna a capital do Império Assírio, com palácios e uma grande biblioteca.",Nínive → NÍ-ni-ve
+m-olmecas-cabecas.mp3,m,"No México, os olmecas esculpem cabeças colossais de pedra.",
 m-ninive-queda.mp3,m,"Babilônios e medos destroem Nínive, e o Império Assírio desaparece.",Nínive → NÍ-ni-ve
 m-exilio-babilonia.mp3,m,"Nabucodonosor destrói Jerusalém, e parte do povo judeu é levada para a Babilônia.",
 m-confucio.mp3,m,"No Estado de Lu, nasce Confúcio, o mestre da ética e do bom governo.",
@@ -33,7 +34,7 @@ m-gracos.mp3,m,"Em Roma, o tribuno Tibério Graco é morto por senadores, e a vi
 m-zhang-qian.mp3,m,O enviado Zhang Qian volta da Ásia Central. Os Han abrem caminho para a Rota da Seda.,Zhang Qian → Djang Tchién; Han → Rán
 m-espartaco.mp3,m,O gladiador Espártaco lidera uma grande revolta de escravizados.,
 m-carras.mp3,m,Os partas derrotam os romanos em Carras.,
-m-alesia.mp3,m,"Em Alésia, César vence os gauleses de Vercingetórix.",Vercingetórix → Ver-sin-GE-tó-rix; Alésia → A-LÉ-zia
+m-alesia.mp3,m,"Em Alésia, César vence os gauleses de Vercingetórix.",Vercingetórix → Ver-sin-GE-tó-rix
 m-rubicao.mp3,m,César atravessa o rio Rubicão com seu exército e começa a guerra civil.,
 m-idos-marco.mp3,m,"Nos Idos de Março, senadores matam Júlio César.",
 m-accio.mp3,m,"Em Áccio, Otaviano vence Marco Antônio e Cleópatra. O Egito passa a Roma.",
@@ -47,7 +48,7 @@ m-trajano.mp3,m,"Com Trajano, o Império Romano chega à sua maior extensão.",
 m-kanishka.mp3,m,"No Império Kushan, Kanishka protege o budismo, e nasce a arte de Gandhara.",Kanishka → Ka-NÍSH-ka; Gandhara → Gan-DÁ-ra; Kushan → Ku-SHÁN
 m-daqin.mp3,m,Os anais chineses registram a chegada de enviados de Roma à corte Han.,Han → Rán
 m-turbantes.mp3,m,A revolta dos Turbantes Amarelos abala a dinastia Han.,Han → Rán
-m-caracala.mp3,m,Caracala dá a cidadania romana a quase todos os homens livres do império.,Caracala → Ca-ra-CA-la
+m-caracala.mp3,m,Caracala dá a cidadania romana a quase todos os homens livres do império.,
 m-han-fim.mp3,m,"O último imperador Han abdica, e a China se divide em três reinos.",Han → Rán
 m-ardashir.mp3,m,"Na Pérsia, Ardashir derruba os partas e funda a dinastia sassânida.",Ardashir → Ar-da-SHÍR
 m-valeriano.mp3,m,O rei persa Shapur captura o imperador romano Valeriano.,Shapur → Sha-PÚR
@@ -62,25 +63,158 @@ m-divisao.mp3,m,"Com a morte de Teodósio, o império se divide para sempre em O
 m-faxian.mp3,m,O monge chinês Faxian chega à Índia dos Gupta.,Faxian → Fá-shien; Gupta → GÚP-ta
 m-saque-410.mp3,m,"Os visigodos saqueiam Roma. Pela primeira vez em oito séculos, a cidade cai.",
 m-vandalos-cartago.mp3,m,Os vândalos tomam Cartago e a África romana.,
+m-teotihuacan.mp3,m,"No México, Teotihuacan é uma das maiores cidades do mundo.",Teotihuacan → Te-o-ti-ua-KÁN
 m-atila.mp3,m,"Romanos e godos detêm Átila, o rei dos hunos, na Gália.",
 m-romulo-augustulo.mp3,m,"Em Ravena, Odoacro depõe o último imperador do Ocidente. Para muitos, termina aqui a Antiguidade.",Odoacro → O-do-Á-cro
+m-clovis.mp3,m,"O rei dos francos, Clóvis, se converte ao cristianismo.",
+m-aryabhata.mp3,m,"Na Índia, Aryabhata escreve um tratado de matemática e astronomia.",Aryabhata → Ar-iá-BÁ-ta
+m-justiniano.mp3,m,Justiniano organiza o direito romano em um grande código.,
+m-santa-sofia.mp3,m,"Em Constantinopla, Justiniano inaugura a igreja de Santa Sofia.",
+m-sui.mp3,m,Os Sui reunificam a China.,Sui → Suêi
+m-tang.mp3,m,"Começa a dinastia Tang, e Chang'an se torna a maior cidade do mundo.",Chang'an → Tchang-án; Tang → Táng
+m-hegira.mp3,m,Maomé migra de Meca para Medina. É o ano um do calendário islâmico.,
+m-egito-arabe.mp3,m,Os árabes conquistam o Egito.,
+m-fim-sassanida.mp3,m,Os árabes conquistam a Pérsia sassânida.,
+m-tikal.mp3,m,As cidades maias de Tikal e Calakmul disputam o poder.,
+m-al-andalus-711.mp3,m,Tropas muçulmanas atravessam o estreito de Gibraltar e conquistam a Península Ibérica.,
+m-bagda.mp3,m,"Os abássidas fundam Bagdá, que se torna a maior cidade do mundo.",
+m-lindisfarne.mp3,m,Os vikings saqueiam o mosteiro de Lindisfarne. Começa a Era Viking.,Lindisfarne → LÍN-dis-farn
+m-carlos-magno.mp3,m,"No Natal de 800, o papa coroa Carlos Magno imperador do Ocidente.",
+m-traducoes-arabes.mp3,m,"Em Bagdá, a Casa da Sabedoria traduz e amplia o saber do mundo.",
+m-sutra-diamante.mp3,m,"Na China, é impresso o Sutra do Diamante, o livro impresso datado mais antigo.",
+m-song-fundacao.mp3,m,Começa a dinastia Song.,Song → Sóng
+m-vladimir.mp3,m,"Em Kiev, o príncipe Vladimir adota o cristianismo de Bizâncio.",
+m-vinland.mp3,m,"Vikings chegam à América do Norte, quase cinco séculos antes de Colombo.",
+m-chola-templo.mp3,m,"No sul da Índia, os Chola inauguram o grande templo de Thanjavur.",Thanjavur → Tan-dja-VÚR; Chola → TCHÔ-la
+m-polvora.mp3,m,Um manual chinês registra pela primeira vez a fórmula da pólvora.,
+m-cisma.mp3,m,O cristianismo se divide entre católicos e ortodoxos.,
+m-hastings.mp3,m,"Em Hastings, os normandos conquistam a Inglaterra.",
+m-gana-ouro.mp3,m,O geógrafo al-Bakri descreve a riqueza do reino de Gana.,al-Bakri → al-BÁ-kri
+m-cruzada.mp3,m,O papa Urbano segundo convoca a Primeira Cruzada.,
+m-jerusalem-1099.mp3,m,Os cruzados tomam Jerusalém.,
+m-papel-europa.mp3,m,"Pela Espanha muçulmana, o papel chega à Europa.",
+m-numeros-indianos.mp3,m,"Fibonacci divulga na Europa os algarismos indianos, com o zero.",
+m-quarta-cruzada.mp3,m,A Quarta Cruzada saqueia Constantinopla.,
+m-delhi-1206.mp3,m,Nasce o Sultanato de Délhi.,
+m-genghis.mp3,m,Temujin se torna Gêngis Khan e une os mongóis.,Gêngis Khan → Gên-gis Rán
+m-magna-carta.mp3,m,"Na Inglaterra, a Magna Carta limita o poder do rei.",
+m-kiev-mongois.mp3,m,Os mongóis destroem Kiev.,
+m-bagda-1258.mp3,m,"Os mongóis destroem Bagdá, e termina o califado abássida.",
+m-marco-polo.mp3,m,Marco Polo chega à corte de Kublai Khan.,Kublai → Kú-blai
+m-osman.mp3,m,"Na Anatólia, Osman funda o Estado otomano.",Osman → Os-MÁN
+m-mansa-musa.mp3,m,"Mansa Musa, imperador do Mali, leva tanto ouro a Meca que fica famoso no mundo todo.",Mansa Musa → MÁN-sa MÚ-sa
+m-tenochtitlan.mp3,m,"Os astecas fundam Tenochtitlan, onde hoje fica a Cidade do México.",Tenochtitlan → Te-notch-ti-TLÁN
+m-peste-negra.mp3,m,A Peste Negra chega à Europa e mata cerca de um terço da população.,
+m-zimbabue.mp3,m,"No sudeste da África, o Grande Zimbábue ergue muralhas de pedra.",
+m-ming-fundacao.mp3,m,Os Ming expulsam os mongóis da China.,Ming → Míng
+m-zheng-he.mp3,m,O almirante Zheng He comanda grandes frotas chinesas até a África.,Zheng He → Djâng Râ
+m-ceuta.mp3,m,"Portugal toma Ceuta, e começa a expansão portuguesa.",
+m-pachacuti.mp3,m,"Nos Andes, Pachacuti cria o Império Inca.",Pachacuti → Pa-tcha-KÚ-ti
+m-constantinopla-1453.mp3,m,Os otomanos tomam Constantinopla. Termina o Império Bizantino.,
+m-gutenberg.mp3,m,"Em Mainz, Gutenberg imprime a Bíblia com tipos móveis.",
+m-ivan-iii.mp3,m,Moscou se liberta do domínio mongol.,
+m-congo-portugal.mp3,m,Os portugueses chegam ao reino do Congo.,
+m-granada.mp3,m,"Os reis católicos tomam Granada, o último reino muçulmano da Espanha.",
+m-colombo.mp3,m,"Cristóvão Colombo chega à América, pensando estar na Ásia.",
+m-vasco-da-gama.mp3,m,Vasco da Gama contorna a África e chega à Índia.,
+m-cabral.mp3,m,A frota de Pedro Álvares Cabral chega ao Brasil.,
+m-safavidas.mp3,m,Ismail primeiro funda a dinastia safávida no Irã.,Ismail → Is-ma-ÍL
+m-renascimento.mp3,m,"Leonardo, Michelangelo e Rafael levam o Renascimento ao auge.",
+m-lutero.mp3,m,"Martinho Lutero publica suas teses, e começa a Reforma Protestante.",
+m-tenochtitlan-queda.mp3,m,Os espanhóis e seus aliados indígenas tomam Tenochtitlan.,Tenochtitlan → Te-notch-ti-TLÁN
+m-babur.mp3,m,"Em Panipat, Babur funda o Império Mogol.",Panipat → PÁ-ni-pat; Babur → BÁ-bur
+m-solimao.mp3,m,"Solimão, o Magnífico, cerca Viena.",
+m-copernico.mp3,m,Copérnico publica que a Terra gira em torno do Sol.,
+m-potosi.mp3,m,"É descoberta a prata de Potosí, que vai circular pelo mundo inteiro.",Potosí → Po-to-SÍ
+m-salvador.mp3,m,"É fundada Salvador, a primeira capital do Brasil.",
+m-calendario.mp3,m,O papa Gregório treze cria o calendário que usamos até hoje.,
+m-edo.mp3,m,"No Japão, começa o xogunato Tokugawa.",Tokugawa → To-ku-GÁ-ua
+m-vestfalia.mp3,m,A Paz de Vestfália encerra a Guerra dos Trinta Anos.,Vestfália → Vest-FÁ-lia
+m-taj-mahal.mp3,m,Shah Jahan conclui o Taj Mahal.,Shah Jahan → Shá Dja-RÁN
+m-newton.mp3,m,Newton publica as leis do movimento e da gravitação.,
+m-palmares.mp3,m,"O quilombo de Palmares é destruído, e Zumbi é morto.",
+m-ouro-minas.mp3,m,A descoberta de ouro em Minas Gerais muda o Brasil.,
+m-sao-petersburgo.mp3,m,"Pedro, o Grande, funda São Petersburgo.",
+m-trafico.mp3,m,"No século dezoito, o tráfico atlântico de escravizados chega ao auge.",
+m-plassey.mp3,m,"Em Plassey, os britânicos começam a dominar a Índia.",Plassey → PLÉ-ssi
+m-revolucao-industrial.mp3,m,"Na Grã-Bretanha, a máquina a vapor dá início à Revolução Industrial.",
+m-independencia-eua.mp3,m,As treze colônias declaram a independência dos Estados Unidos.,
+m-revolucao-francesa.mp3,m,O povo de Paris toma a Bastilha. Começa a Revolução Francesa.,
+m-haiti.mp3,m,"No Haiti, os escravizados se revoltam e fundam a primeira república negra do mundo.",
+m-napoleao.mp3,m,Napoleão se coroa imperador dos franceses.,
+m-corte-rio.mp3,m,"Fugindo de Napoleão, a corte portuguesa se muda para o Rio de Janeiro.",
+m-moscou-1812.mp3,m,"Napoleão chega a Moscou, mas perde seu exército no inverno russo.",
+m-waterloo.mp3,m,"Em Waterloo, Napoleão é derrotado de vez.",
+m-imperio-brasil.mp3,m,Dom Pedro proclama a independência do Brasil.,
+m-ayacucho.mp3,m,"Em Ayacucho, termina o domínio espanhol na América do Sul.",Ayacucho → A-ia-KÚ-tcho
+m-opio.mp3,m,"Na Guerra do Ópio, a Grã-Bretanha derrota a China.",
+m-primavera-povos.mp3,m,Revoluções se espalham pela Europa na Primavera dos Povos.,
+m-sipaios.mp3,m,Uma grande revolta abala o domínio britânico na Índia.,
+m-darwin.mp3,m,Darwin publica a teoria da evolução das espécies.,
+m-servidao.mp3,m,O czar Alexandre segundo liberta os servos russos.,
+m-guerra-civil-eua.mp3,m,"Na Guerra Civil americana, a escravidão é abolida nos Estados Unidos.",
+m-guerra-paraguai.mp3,m,"Começa a Guerra do Paraguai, a mais sangrenta da América do Sul.",
+m-meiji.mp3,m,"Com a Restauração Meiji, o Japão se moderniza em ritmo acelerado.",Meiji → MÊI-dji
+m-suez.mp3,m,É inaugurado o Canal de Suez.,
+m-berlim-1884.mp3,m,"Em Berlim, sem nenhum africano presente, as potências europeias dividem a África.",
+m-lei-aurea.mp3,m,"A Lei Áurea abole a escravidão no Brasil, o último país das Américas a fazê-lo.",
+m-republica-brasil.mp3,m,É proclamada a República no Brasil.,
+m-adwa.mp3,m,"Em Adwa, a Etiópia derrota a Itália e mantém sua independência.",Adwa → Á-dua
+m-xinhai.mp3,m,Uma revolução põe fim a dois mil anos de império na China.,
+m-primeira-guerra.mp3,m,O assassinato de um arquiduque em Sarajevo leva o mundo à Primeira Guerra Mundial.,
+m-direito-civil.mp3,m,O Brasil aprova seu primeiro Código Civil.,
+m-revolucao-russa.mp3,m,"A Revolução Russa derruba o czar, e os bolcheviques tomam o poder.",
+m-turquia.mp3,m,Do fim do Império Otomano nasce a República da Turquia.,
+m-crash-1929.mp3,m,A Quebra da Bolsa de Nova York inicia a Grande Depressão.,
+m-marcha-sal.mp3,m,Gandhi caminha até o mar na Marcha do Sal.,
+m-segunda-guerra.mp3,m,A Alemanha nazista invade a Polônia. Começa a Segunda Guerra Mundial.,
+m-stalingrado.mp3,m,"Em Stalingrado, o exército alemão é derrotado.",Stalingrado → Sta-lin-GRÁ-do
+m-dia-d.mp3,m,"No Dia D, os aliados desembarcam na Normandia.",
+m-hiroshima.mp3,m,"Bombas atômicas destroem Hiroshima e Nagasaki, e termina a Segunda Guerra Mundial.",Hiroshima → Ri-ro-SHÍ-ma
+m-onu.mp3,m,Cinquenta países criam a Organização das Nações Unidas.,
+m-independencia-india.mp3,m,A Índia se torna independente e é dividida com o Paquistão.,
+m-israel-1948.mp3,m,"É criado o Estado de Israel, e centenas de milhares de palestinos perdem suas casas.",
+m-rpc.mp3,m,Mao Tsé-tung proclama a República Popular da China.,Mao Tsé-tung → Máo Tsé-tum
+m-coreia.mp3,m,Começa a Guerra da Coreia.,
+m-tratado-roma.mp3,m,O Tratado de Roma cria a Comunidade Econômica Europeia.,
+m-sputnik.mp3,m,"A União Soviética lança o Sputnik, o primeiro satélite.",
+m-gana-independente.mp3,m,"Gana se torna independente, e a descolonização da África ganha força.",
+m-cuba.mp3,m,A Revolução Cubana leva Fidel Castro ao poder.,
+m-brasilia.mp3,m,Juscelino Kubitschek inaugura Brasília.,
+m-golpe-1964.mp3,m,Um golpe militar dá início a vinte e um anos de ditadura no Brasil.,
+m-apollo.mp3,m,Neil Armstrong e Buzz Aldrin caminham na Lua.,
+m-deng.mp3,m,Deng Xiaoping abre a economia chinesa ao mundo.,Deng Xiaoping → Dâng Shiáo-pím
+m-revolucao-iraniana.mp3,m,A Revolução Iraniana derruba o xá.,
+m-chernobyl.mp3,m,Um reator explode em Chernobyl.,Chernobyl → Tcher-NÓ-bil
+m-constituicao-1988.mp3,m,O Brasil promulga a Constituição Cidadã de mil novecentos e oitenta e oito.,
+m-muro-berlim.mp3,m,"Cai o Muro de Berlim, e a Guerra Fria chega ao fim.",
+m-web.mp3,m,"No CERN, nasce a web, que conectará bilhões de pessoas.",
+m-fim-urss.mp3,m,A União Soviética se dissolve em quinze países.,
+m-maastricht.mp3,m,Nasce a União Europeia.,
+m-mandela.mp3,m,"Nelson Mandela é eleito presidente, e termina o apartheid na África do Sul.",
+m-11-setembro.mp3,m,Atentados terroristas atingem Nova York e Washington.,
+m-primavera-arabe.mp3,m,A Primavera Árabe derruba governos no norte da África e no Oriente Médio.,
+m-covid.mp3,m,A pandemia de covid-dezenove se espalha pelo mundo.,
+m-ucrania.mp3,m,"A Rússia invade a Ucrânia, na maior guerra na Europa desde mil novecentos e quarenta e cinco.",
+m-india-populosa.mp3,m,A Índia se torna o país mais populoso do mundo.,
 p-egito-tardio.mp3,p,"Egito do Período Tardio. O Egito, já com mais de dois mil anos de história, é governado por dinastias de várias origens: líbias, núbias, saítas e até persas. Mesmo enfraquecido, continua sendo uma referência de saber e de religião para gregos e outros povos.",
 p-assirio.mp3,p,"Império Neoassírio. A partir do norte da Mesopotâmia, os assírios criam o primeiro grande império com um exército profissional, do Egito ao Irã. Eram temidos pela violência das campanhas, mas também construíram palácios e bibliotecas enormes.",
 p-vedico.mp3,p,"Período Védico Tardio. No vale do Ganges, reinos e clãs se organizam em torno de uma religião baseada nos Vedas, hinos transmitidos oralmente em sânscrito. É nesse período que surgem as primeiras Upanishads e se consolida a divisão da sociedade em varnas.",Upanishads → U-pa-NÍ-shads
+p-olmecas.mp3,p,"Olmecas. Na costa do golfo do México, os olmecas criam a primeira grande civilização da Mesoamérica: centros cerimoniais, cabeças colossais de pedra e um jogo de bola ritual que atravessaria séculos.",
 p-cartago.mp3,p,"Cartago. Fundada por colonos fenícios de Tiro, Cartago se torna a maior potência comercial do Mediterrâneo ocidental, com feitorias na Sicília, na Sardenha e na Espanha. Disputa o domínio do mar com os gregos e depois com Roma, em três guerras que terminam com sua destruição.",
 p-grecia-arcaica.mp3,p,"Grécia Arcaica. Depois de séculos de declínio, os gregos voltam a escrever, agora com um alfabeto adaptado dos fenícios. Surgem as pólis, cidades-Estado independentes, e os gregos fundam colônias da Espanha ao Mar Negro. Homero, os Jogos Olímpicos e os primeiros filósofos são deste período.",
 p-primaveras.mp3,p,"Primaveras e Outonos. A dinastia Zhou perde o controle real, e centenas de Estados passam a agir com independência, embora reconheçam o rei Zhou como figura simbólica. É a época de Confúcio, que busca restaurar a ordem pela ética e pelos rituais.",Zhou → Djôu
 p-roma-reis.mp3,p,"Roma dos Reis. Segundo a tradição, Roma foi fundada por Rômulo em 753 antes de Cristo e governada por sete reis. O que se sabe ao certo é que, nesse período, aldeias nas colinas à beira do Tibre se tornaram uma cidade, sob forte influência dos etruscos, seus vizinhos ao norte.",
 p-babilonico.mp3,p,"Império Neobabilônico. A Babilônia se liberta da Assíria e, com os medos, destrói Nínive. Sob Nabucodonosor II, torna-se a maior cidade do mundo, com a Porta de Ishtar. É nesse período que Jerusalém é destruída e os judeus são levados para o exílio.",Nínive → NÍ-ni-ve; Ishtar → ISH-tar
-p-mahajanapadas.mp3,p,"Mahajanapadas. Dezesseis grandes reinos e repúblicas disputam o norte da Índia. É uma época de cidades, moedas e novos movimentos religiosos: o budismo, de Sidarta Gautama, e o jainismo, de Mahavira. O reino de Magadha acaba por se sobressair.",Magadha → MA-ga-da; Sidarta Gautama → Si-DAR-ta GÁU-ta-ma; Mahajanapadas → Ma-rra-dja-na-PA-das; Mahavira → Ma-rra-VÍ-ra
-p-aquemenida.mp3,p,"Império Aquemênida. Ciro, o Grande, une os persas e os medos e conquista, em poucas décadas, a Anatólia, a Babilônia e depois o Egito. É o maior império até então, com estradas reais, uma moeda comum e uma tolerância religiosa famosa.",Aquemênida → A-que-MÊ-ni-da
+p-mahajanapadas.mp3,p,"Mahajanapadas. Dezesseis grandes reinos e repúblicas disputam o norte da Índia. É uma época de cidades, moedas e novos movimentos religiosos: o budismo, de Sidarta Gautama, e o jainismo, de Mahavira. O reino de Magadha acaba por se sobressair.",Sidarta Gautama → Si-DAR-ta GÁU-ta-ma; Mahajanapadas → Ma-rra-dja-na-PA-das; Mahavira → Ma-rra-VÍ-ra
+p-aquemenida.mp3,p,"Império Aquemênida. Ciro, o Grande, une os persas e os medos e conquista, em poucas décadas, a Anatólia, a Babilônia e depois o Egito. É o maior império até então, com estradas reais, uma moeda comum e uma tolerância religiosa famosa.",
 p-roma-republica.mp3,p,"República Romana. Depois de expulsar o último rei, Roma passa a ser governada por magistrados eleitos. Em quase cinco séculos, a cidade conquista a Itália, vence Cartago e domina todo o Mediterrâneo. Mas a riqueza das conquistas e o poder dos generais acabam por destruir a República por dentro.",
 p-grecia-classica.mp3,p,"Grécia Clássica. Depois de vencer os persas, Atenas vive seu auge: democracia, teatro, o Partenon, a história de Heródoto e a filosofia de Sócrates e Platão. A rivalidade com Esparta leva à Guerra do Peloponeso, que enfraquece todas as cidades e abre caminho para a Macedônia.",
 p-reinos-combatentes.mp3,p,"Reinos Combatentes. Sete grandes Estados lutam pela supremacia em guerras cada vez maiores, com exércitos de centenas de milhares de soldados de infantaria. É também a época das Cem Escolas de pensamento: confucionismo, taoismo, legalismo e moísmo.",
 p-macedonia.mp3,p,"Macedônia de Filipe e Alexandre. Filipe II transforma a Macedônia, um reino do norte considerado periférico, na maior potência da Grécia. Seu filho Alexandre conquista, em pouco mais de dez anos, o Império Persa, do Egito até o rio Indo.",
 p-helenistico.mp3,p,"Mundo Helenístico. Depois da morte de Alexandre, seus generais dividem o império em reinos: os Ptolomeus no Egito, os Selêucidas na Ásia e os Antigônidas na Macedônia. A cultura grega se mistura com a egípcia, a persa e a indiana, e cidades como Alexandria se tornam centros de ciência.",
 p-maurya.mp3,p,"Império Maurya. Chandragupta Maurya une o norte da Índia logo depois da passagem de Alexandre. Seu neto, Ashoka, depois de uma guerra sangrenta em Kalinga, adota o budismo e espalha mensagens de tolerância gravadas em pilares e rochas por todo o império.",Chandragupta → Tchan-dra-GÚP-ta; Maurya → MÁU-ria; Ashoka → A-SHÔ-ka; Kalinga → Ka-LÍN-ga
-p-seleucida.mp3,p,"Império Selêucida. Seleuco, general de Alexandre, fica com a maior parte do antigo império persa. Seus sucessores fundam cidades gregas como Antioquia, mas perdem aos poucos o Oriente para os partas e, por fim, a Síria para Roma.",Selêucida → Se-LÊU-ci-da
+p-seleucida.mp3,p,"Império Selêucida. Seleuco, general de Alexandre, fica com a maior parte do antigo império persa. Seus sucessores fundam cidades gregas como Antioquia, mas perdem aos poucos o Oriente para os partas e, por fim, a Síria para Roma.",
 p-ptolomaico.mp3,p,"Egito Ptolomaico. Um general de Alexandre, Ptolomeu, funda uma dinastia grega que governa o Egito por três séculos. Alexandria, com sua biblioteca e seu farol, torna-se a maior cidade do Mediterrâneo. A dinastia termina com Cleópatra VII.",
 p-parta.mp3,p,"Império Parta. Os partas, vindos do nordeste do Irã, expulsam os selêucidas e se tornam o grande rival de Roma no Oriente. Controlam a rota da seda entre Roma e a China e derrotam um exército romano em Carras.",
 p-qin.mp3,p,"Dinastia Qin. O rei de Qin conquista os outros seis reinos e se proclama o Primeiro Imperador. Em apenas quinze anos, unifica a escrita, as moedas, os pesos e as medidas, constrói estradas e as primeiras seções da Grande Muralha. A dinastia cai logo após sua morte.",Qin → Tchin
@@ -89,19 +223,65 @@ p-pos-maurya.mp3,p,"Indo-gregos, Shunga e Kushan. Depois dos Maurya, a Índia se
 p-africa-romana.mp3,p,"África e Egito romanos. Depois de destruir Cartago, Roma transforma o norte da África em uma das regiões mais ricas do império, grande produtora de trigo e azeite. O Egito, anexado em 30 antes de Cristo, alimenta a cidade de Roma. A região dá ao império imperadores, escritores e santos.",
 p-roma-principado.mp3,p,"Alto Império (Principado). Augusto mantém a fachada da República, mas concentra todo o poder em suas mãos. Começa a Pax Romana, dois séculos de relativa paz interna, com estradas, cidades e comércio por todo o império. Em 117, com Trajano, Roma atinge sua maior extensão.",
 p-axum.mp3,p,"Reino de Axum. No planalto da atual Etiópia e da Eritreia, Axum controla o comércio entre o Mediterrâneo, a Arábia e a Índia pelo mar Vermelho. Cunha moedas de ouro próprias e, no século IV, adota o cristianismo.",Axum → A-KSÚM
-p-tres-reinos.mp3,p,"Três Reinos. Com o fim dos Han, a China se divide em três reinos, Wei, Shu e Wu. É um período curto e violento, que mais tarde inspirou um dos romances mais famosos da literatura chinesa.",Han → Rán; Wei → Uêi; Shu → Shú; Wu → Ú
-p-sassanida.mp3,p,"Império Sassânida. Ardashir derruba os partas e funda uma nova dinastia persa, que se via herdeira dos aquemênidas. Os sassânidas enfrentam Roma por quatro séculos e chegam a capturar um imperador romano.",Ardashir → Ar-da-SHÍR; Sassânida → Sas-SÂ-ni-da
+p-mesoamerica-classica.mp3,p,"Maias e Teotihuacan. Teotihuacan, no vale do México, é uma das maiores cidades do mundo no século V. No sul, as cidades-estado maias, como Tikal e Palenque, desenvolvem a escrita mais completa das Américas, a astronomia e um calendário preciso. Por volta de 900, muitas cidades maias do sul são abandonadas.",Teotihuacan → Te-o-ti-ua-KÁN
+p-tres-reinos.mp3,p,"Três Reinos. Com o fim dos Han, a China se divide em três reinos, Wei, Shu e Wu. É um período curto e violento, que mais tarde inspirou um dos romances mais famosos da literatura chinesa.",Han → Rán
+p-sassanida.mp3,p,"Império Sassânida. Ardashir derruba os partas e funda uma nova dinastia persa, que se via herdeira dos aquemênidas. Os sassânidas enfrentam Roma por quatro séculos e chegam a capturar um imperador romano.",Ardashir → Ar-da-SHÍR
 p-roma-crise.mp3,p,"Crise do Século III. Em cinquenta anos, mais de vinte imperadores sobem ao trono, quase todos generais aclamados por suas tropas e quase todos assassinados. Ao mesmo tempo, o império enfrenta invasões, epidemias, inflação e chega a se partir em três.",
 p-jin-nanbei.mp3,p,"Jin e Dinastias do Norte e do Sul. A dinastia Jin reunifica a China por pouco tempo. No início do século IV, povos das estepes tomam o norte, e a corte foge para o sul. A China fica dividida por quase três séculos, enquanto o budismo se espalha por todo o país.",Jin → Djin
 p-roma-dominato.mp3,p,"Baixo Império (Dominato). Diocleciano salva o império reorganizando tudo: divide o poder, cria novas províncias e reforma os impostos. Constantino se converte ao cristianismo e funda Constantinopla. Ao fim do século IV, o cristianismo se torna a religião oficial do Estado.",
 p-gupta.mp3,p,"Império Gupta. Os Gupta reúnem o norte da Índia e criam um período de estabilidade que muitos chamam de “era de ouro”. A matemática, a astronomia, a literatura em sânscrito e a arte florescem.",Gupta → GÚP-ta
 p-roma-ocidente.mp3,p,"Império Romano do Ocidente. Após a morte de Teodósio, o império é dividido entre seus dois filhos. A metade ocidental, mais pobre e mais exposta, perde províncias para povos germânicos: visigodos, vândalos, francos e outros. Em 476, o último imperador do Ocidente é deposto.",
-p-roma-oriente.mp3,p,"Império Romano do Oriente. A metade oriental do império, com capital em Constantinopla, é mais rica, mais populosa e mais urbana. Ela resiste às crises que derrubam o Ocidente e durará ainda mil anos, até 1453. Mais tarde, os historiadores a chamariam de Império Bizantino.",
+p-roma-oriente.mp3,p,"Império Bizantino. A metade oriental do Império Romano, com capital em Constantinopla, dura mais mil anos depois da queda de Roma. Com Justiniano, reconquista a Itália e o norte da África. Depois perde territórios para árabes, turcos e cruzados, até cair para os otomanos em 1453. Os historiadores modernos passaram a chamá-lo de Império Bizantino; seus habitantes se chamavam de romanos.",
+p-vandalos.mp3,p,"Reino Vândalo. Os vândalos, um povo germânico, tomam Cartago e o norte da África romano, e chegam a saquear Roma em 455. O reino cai diante dos exércitos de Justiniano, em 533–534.",
+p-reinos-germanicos.mp3,p,"Reinos germânicos. Visigodos, ostrogodos, francos, anglo-saxões e outros povos dividem o antigo Ocidente romano. As cidades encolhem, mas a Igreja preserva o latim, os livros e boa parte da organização romana. Os francos de Clóvis se tornam o reino mais forte.",
+p-india-medieval.mp3,p,"Reinos regionais da Índia. Depois dos Gupta, a Índia se divide em reinos regionais: Harsha no norte, os Rajput, os Chalukya e, no sul, os Chola, que enviam frotas até o Sudeste Asiático. Templos hindus monumentais são erguidos por todo o subcontinente.",Gupta → GÚP-ta; Chola → TCHÔ-la
+p-sui-tang.mp3,p,"Sui e Tang. Os Sui reunificam a China e constroem o Grande Canal. A dinastia Tang abre a era de ouro da poesia e do cosmopolitismo: Chang'an, a capital, recebe mercadores e religiões de toda a Ásia.",Chang'an → Tchang-án; Sui → Suêi; Tang → Táng
+p-islam-califado.mp3,p,"Nascimento do islã e grandes califados. Maomé prega o islã em Meca e Medina. Em menos de um século, os califas conquistam do Atlântico à Ásia Central. Sob os abássidas, Bagdá se torna a maior cidade do mundo e um centro de ciência, onde se traduzem e ampliam os saberes grego, persa e indiano.",
+p-gana.mp3,p,"Império de Gana. No Sahel, entre o deserto e a savana, o reino de Gana (Wagadu) enriquece controlando o comércio de ouro com caravanas que atravessam o Saara. Viajantes árabes o chamavam de “terra do ouro”.",
+p-al-andalus.mp3,p,"Al-Andalus. A Península Ibérica muçulmana. Córdoba foi uma das maiores e mais cultas cidades da Europa. Os reinos cristãos do norte avançam aos poucos, na chamada Reconquista, até tomar Granada, o último reino muçulmano, em 1492.",
+p-carolingio.mp3,p,"Império Carolíngio. Carlos Magno une boa parte da Europa Ocidental e é coroado imperador pelo papa no Natal de 800. Promove escolas, uma nova letra mais legível e a cópia de textos antigos. Depois de sua morte, o império é dividido entre seus netos.",
+p-rus-kiev.mp3,p,"Rus de Kiev. Uma federação de principados eslavos governada por uma dinastia de origem escandinava, com capital em Kiev. Em 988, o príncipe Vladimir adota o cristianismo ortodoxo de Bizâncio. É a origem comum da Ucrânia, da Bielorrússia e da Rússia.",
+p-europa-feudal.mp3,p,"Europa feudal. Depois das invasões vikings, húngaras e muçulmanas, a Europa se organiza em senhorios locais. A partir do ano 1000, a população e o comércio crescem, surgem cidades, catedrais góticas, universidades e as Cruzadas.",
+p-song.mp3,p,"Dinastia Song. A China Song é talvez a sociedade mais avançada do mundo em sua época: papel-moeda, pólvora, bússola de navegação, imprensa com tipos móveis e cidades de mais de um milhão de habitantes.",Song → Sóng
+p-sultanato-delhi.mp3,p,"Sultanato de Délhi. Dinastias muçulmanas de origem turca e afegã governam o norte da Índia a partir de Délhi. Resistem às invasões mongóis, mas Délhi é saqueada por Timur em 1398.",
+p-mongois.mp3,p,"Império Mongol. Gêngis Khan une as tribos da Mongólia e inicia conquistas que criam o maior império contínuo da história, da Coreia à Hungria. Seu neto Kublai conquista a China e funda a dinastia Yuan. As rotas da Eurásia ficam abertas, e viajantes como Marco Polo as percorrem.",Kublai → Kú-blai; Gêngis Khan → Gên-gis Rán
+p-mali.mp3,p,"Mali e reinos africanos. Sundiata Keita funda o Império do Mali, que controla as minas de ouro da África ocidental. Timbuktu se torna um centro de saber islâmico. No sudeste do continente, o Grande Zimbábue constrói muralhas monumentais de pedra.",Timbuktu → Tim-buk-TÚ
+p-otomano.mp3,p,"Império Otomano. Uma dinastia turca da Anatólia cresce até tomar Constantinopla em 1453. No século XVI, sob Solimão, o Magnífico, o império vai de Argel a Bagdá e chega às portas de Viena. Dura mais de seis séculos, até ser desfeito após a Primeira Guerra Mundial.",
+p-baixa-idade-media.mp3,p,"Baixa Idade Média. Um século de crises: fome, a Peste Negra, que mata talvez um terço da população da Europa, e a Guerra dos Cem Anos entre França e Inglaterra. Mesmo assim, as cidades italianas enriquecem e preparam o Renascimento.",
+p-astecas-incas.mp3,p,"Astecas e incas. Os mexicas, ou astecas, fundam Tenochtitlan em 1325 e dominam o centro do México. Nos Andes, os incas criam um império de 4 mil quilômetros, ligado por estradas e pontes. Os dois são derrubados pelos espanhóis em poucas décadas.",Tenochtitlan → Te-notch-ti-TLÁN
+p-ming.mp3,p,"Dinastia Ming. Os Ming expulsam os mongóis, reconstroem a Grande Muralha como a conhecemos e constroem a Cidade Proibida. As frotas de Zheng He chegam à África oriental. A prata das Américas inunda a economia chinesa.",Ming → Míng; Zheng He → Djâng Râ
+p-renascimento-reforma.mp3,p,"Renascimento e Reformas. A imprensa espalha livros e ideias. Artistas e sábios redescobrem a Antiguidade, Portugal e Espanha se lançam aos oceanos, e Lutero rompe a unidade da Igreja. Guerras religiosas devastam a Europa até a Paz de Vestfália.",Vestfália → Vest-FÁ-lia
+p-songhai-congo.mp3,p,"Songhai, Congo e o tráfico atlântico. O Império Songhai sucede o Mali no Sahel, e o reino do Congo faz contato com os portugueses. A partir do século XVI, o tráfico atlântico leva à força cerca de 12 milhões de africanos para as Américas, quase metade deles para o Brasil.",
+p-russia-czarista.mp3,p,"Moscóvia e Império Russo. Livre do domínio mongol, Moscou une as terras russas. Ivã, o Terrível, se proclama czar, e Pedro, o Grande, moderniza o país e funda São Petersburgo. A Rússia se expande até o Pacífico e se torna o maior país do mundo.",
+p-americas-coloniais.mp3,p,"Américas coloniais. Espanhóis, portugueses, ingleses, franceses e holandeses colonizam as Américas. As epidemias trazidas da Europa matam a maioria dos povos indígenas. A prata do México e do Peru, o açúcar e o ouro do Brasil, produzidos com trabalho escravo, enriquecem a Europa.",
+p-safavida.mp3,p,"Pérsia safávida. Os safávidas reunificam o Irã e fazem do islã xiita a religião oficial, o que marca o país até hoje. Isfahan, a capital, se enche de palácios, mesquitas e jardins.",
+p-mogol.mp3,p,"Império Mogol. Babur, descendente de Timur e de Gêngis Khan, funda o Império Mogol. Com Akbar, o império une quase toda a Índia e pratica a tolerância religiosa. Shah Jahan constrói o Taj Mahal. A partir do século XVIII, o império declina e a Companhia Britânica das Índias Orientais toma seu lugar.",Gêngis Khan → Gên-gis Rán; Babur → BÁ-bur; Shah Jahan → Shá Dja-RÁN
+p-japao.mp3,p,"Japão: de Edo a Meiji. O xogunato Tokugawa pacifica o Japão e o fecha quase totalmente ao exterior por dois séculos. Em 1868, a Restauração Meiji moderniza o país em ritmo acelerado. O Japão se torna uma potência imperial e entra na Segunda Guerra Mundial, que termina com as bombas atômicas.",Tokugawa → To-ku-GÁ-ua; Meiji → MÊI-dji
+p-qing.mp3,p,"Dinastia Qing. Os manchus fundam a última dinastia imperial e dobram o território da China. No século XIX, as Guerras do Ópio e as revoltas internas enfraquecem o império, que cai em 1911–1912.",Qing → Tchíng
+p-absolutismo-iluminismo.mp3,p,"Absolutismo e Iluminismo. Reis como Luís XIV concentram o poder. Ao mesmo tempo, a revolução científica de Newton e os filósofos do Iluminismo defendem a razão, a tolerância e os direitos naturais. Na Inglaterra, o Parlamento limita o poder do rei.",
+p-eua.mp3,p,"Estados Unidos. Treze colônias britânicas declaram a independência e criam uma república federal. O país se expande para o oeste, à custa dos povos indígenas e do México, passa por uma guerra civil que acaba com a escravidão e, no século XX, se torna a maior potência do mundo.",
+p-revolucoes-europa.mp3,p,"Revoluções e Napoleão. A Revolução Francesa derruba a monarquia e proclama direitos para todos os cidadãos. Napoleão espalha suas reformas pela Europa até ser derrotado em 1815. Durante o século, revoluções liberais e nacionalistas e a Revolução Industrial transformam o continente.",
+p-brasil-imperio.mp3,p,"Brasil Império. O Brasil se torna independente como uma monarquia, governada por Dom Pedro I e depois por Dom Pedro II. O café se torna a base da economia, ainda movida pelo trabalho escravo, até a abolição em 1888.",
+p-raj.mp3,p,"Índia britânica. Depois da revolta de 1857, a Coroa britânica governa a Índia diretamente. Ferrovias e escolas convivem com fomes e exploração econômica. O movimento de independência, liderado por Gandhi com a não violência, ganha as massas.",
+p-imperialismo.mp3,p,"Industrialização e imperialismo. Com a Alemanha e a Itália unificadas, as potências europeias disputam o mundo. Elas dividem a África e partes da Ásia entre si. Eletricidade, telefone e vacinas mudam a vida cotidiana, enquanto as rivalidades preparam a guerra.",
+p-africa-colonial.mp3,p,"Partilha e colonização. Na Conferência de Berlim, as potências europeias estabelecem regras para dividir a África. Em 1914, só a Etiópia e a Libéria são independentes. O domínio colonial impõe fronteiras artificiais, trabalho forçado e exploração de recursos.",
+p-brasil-republica.mp3,p,"Brasil República. A República é proclamada em 1889. O país passa pela República Velha, pela Era Vargas, por uma ditadura militar entre 1964 e 1985 e pela redemocratização, com a Constituição de 1988. Hoje é uma das maiores democracias do mundo.",
+p-china-republica.mp3,p,"República da China. A queda do império abre décadas de guerra civil, divisão entre senhores da guerra, invasão japonesa e, por fim, a vitória comunista em 1949. O governo nacionalista se retira para Taiwan.",
+p-guerras-europa.mp3,p,"Guerras mundiais. A Primeira Guerra Mundial destrói impérios e mata cerca de 10 milhões de soldados. Depois vêm a crise econômica, o fascismo na Itália e o nazismo na Alemanha. A Segunda Guerra Mundial e o Holocausto, o assassinato de seis milhões de judeus e de outras minorias, são o ponto mais sombrio do século.",
+p-urss.mp3,p,"União Soviética. A Revolução de 1917 derruba o czar, e os bolcheviques criam o primeiro Estado comunista. Sob Stálin, a industrialização forçada, a fome e os expurgos matam milhões. A URSS tem papel decisivo na derrota do nazismo e se torna uma superpotência rival dos Estados Unidos.",
+p-oriente-moderno.mp3,p,"Oriente Médio moderno. Com o fim do Império Otomano, a região é dividida em países, muitos sob controle britânico e francês até a independência. O petróleo, a criação de Israel e o conflito com os palestinos, as revoluções e as guerras marcam o século.",
+p-europa-dividida.mp3,p,"Europa dividida. Depois da guerra, a Europa se divide entre o Ocidente, aliado dos Estados Unidos, e o Leste, sob influência soviética. A Alemanha e Berlim são divididas por um muro. No Ocidente, a reconstrução e a integração econômica criam décadas de prosperidade.",
+p-india-independente.mp3,p,"Índia independente. A independência vem com a partição entre Índia e Paquistão, que causa enormes deslocamentos e violência. A Índia se torna a maior democracia do mundo e, em 2023, o país mais populoso.",
+p-china-popular.mp3,p,"República Popular da China. Mao Tsé-tung proclama a República Popular. O Grande Salto Adiante e a Revolução Cultural causam milhões de mortes. Com as reformas de Deng Xiaoping, a partir de 1978, a China se torna a fábrica do mundo e a segunda maior economia do planeta.",Deng Xiaoping → Dâng Shiáo-pím; Mao Tsé-tung → Máo Tsé-tum
+p-africa-independente.mp3,p,"Independências e África atual. Em poucas décadas, quase todos os países africanos se tornam independentes. Enfrentam guerras civis, ditaduras e crises, mas também conquistas, como o fim do apartheid na África do Sul. Hoje, a África tem a população mais jovem do mundo.",
+p-uniao-europeia.mp3,p,"União Europeia. Com o fim da Guerra Fria, a integração europeia se aprofunda: mercado único, moeda comum, o euro, e a entrada dos países do Leste. O Reino Unido sai da União em 2020.",
+p-pos-sovietico.mp3,p,"Europa Oriental pós-soviética. Com o fim da URSS, surgem quinze países independentes. Vários países do Leste entram na União Europeia e na OTAN. A Rússia, depois de uma década de crise, volta a se afirmar, e em 2022 invade a Ucrânia.",
 e-cartago-fundacao.mp3,e,"Fundação de Cartago. Colonos fenícios de Tiro fundam Cartago, “cidade nova” em fenício, na costa da atual Tunísia. A data vem de autores gregos e romanos, e a arqueologia indica ocupação pouco depois.",
 e-olimpiadas.mp3,e,"Primeiros Jogos Olímpicos. Segundo a tradição, os primeiros jogos em honra a Zeus acontecem em Olímpia. Os gregos passaram a contar os anos em olimpíadas, períodos de quatro anos.",
 e-zhou-leste.mp3,e,"Os Zhou fogem para o leste. Invasores saqueiam a capital Zhou, e a corte se muda para Luoyang. Começa o período das Primaveras e Outonos, em que o rei perde o poder real para os Estados.",Luoyang → Luô-iáng; Zhou → Djôu
 e-roma-fundacao.mp3,e,"Fundação lendária de Roma. Segundo a lenda, Rômulo funda Roma depois de matar o irmão, Remo. A data foi calculada séculos depois pelos romanos. A arqueologia mostra aldeias no Palatino desde antes.",
 e-ninive-capital.mp3,e,"Nínive, capital do mundo. Senaqueribe faz de Nínive a capital assíria, com palácios e um sistema de canais. Décadas depois, Assurbanípal reúne ali sua grande biblioteca.",Assurbanípal → As-sur-ba-NÍ-pal; Nínive → NÍ-ni-ve
+e-olmecas-cabecas.mp3,e,"As cabeças colossais olmecas. Em centros como La Venta, os olmecas esculpem cabeças de basalto com mais de dois metros, provavelmente retratos de governantes.",
 e-ninive-queda.mp3,e,"Queda de Nínive. Babilônios e medos tomam e destroem Nínive. Em poucos anos, o Império Assírio desaparece.",Nínive → NÍ-ni-ve
 e-exilio-babilonia.mp3,e,Destruição de Jerusalém e exílio. Nabucodonosor II destrói Jerusalém e o Primeiro Templo e leva parte da população para a Babilônia. O exílio foi decisivo para a formação dos textos da Bíblia hebraica.,
 e-confucio.mp3,e,"Nasce Confúcio. Em Lu, nasce Kong Fuzi, Confúcio. Ele ensinou que a ordem da sociedade depende da virtude dos governantes, do respeito aos pais e dos rituais.",
@@ -110,15 +290,15 @@ e-babilonia-ciro.mp3,e,"Ciro entra na Babilônia. Ciro toma a Babilônia quase s
 e-republica.mp3,e,"Nasce a República Romana. Os romanos expulsam o rei Tarquínio, o Soberbo, e passam a eleger dois cônsules por ano. A palavra “rei” se torna odiada em Roma.",
 e-clistenes.mp3,e,Clístenes e a democracia ateniense. Clístenes reorganiza os cidadãos de Atenas em novas tribos e dá à assembleia o poder de decisão. É considerado o início da democracia ateniense.,Clístenes → CLÍS-te-nes
 e-maratona.mp3,e,Batalha de Maratona. Os atenienses derrotam o exército de Dario I. A vitória dá confiança à jovem democracia.,
-e-buda.mp3,e,"O Buda ensina no vale do Ganges. Sidarta Gautama, depois de alcançar a iluminação em Bodh Gaya, ensina o caminho do meio entre o prazer e a renúncia. As datas de sua vida são debatidas: ele pode ter vivido no século VI ou no V antes de Cristo",Sidarta Gautama → Si-DAR-ta GÁU-ta-ma; Bodh Gaya → Bôd GÁ-ia
+e-buda.mp3,e,"O Buda ensina no vale do Ganges. Sidarta Gautama, depois de alcançar a iluminação em Bodh Gaya, ensina o caminho do meio entre o prazer e a renúncia. As datas de sua vida são debatidas: ele pode ter vivido no século VI ou no V antes de Cristo",Sidarta Gautama → Si-DAR-ta GÁU-ta-ma
 e-salamina.mp3,e,"Termópilas e Salamina. Xerxes invade a Grécia. Trezentos espartanos e aliados resistem nas Termópilas, e a frota ateniense vence em Salamina. A Pérsia desiste de conquistar a Grécia.",Termópilas → Ter-MÓ-pi-las
 e-partenon.mp3,e,"Construção do Partenon. Sob Péricles, Atenas constrói o Partenon na Acrópole, com dinheiro da liga de cidades aliadas contra a Pérsia.",
 e-peloponeso.mp3,e,"Guerra do Peloponeso. Atenas e Esparta, com seus aliados, entram em uma guerra de 27 anos. Atenas perde, e o mundo grego sai enfraquecido.",
 e-socrates.mp3,e,"Morte de Sócrates. Acusado de corromper a juventude e de não respeitar os deuses, Sócrates é condenado pela democracia ateniense a beber cicuta. Seu discípulo Platão conta seus últimos dias.",
 e-issos.mp3,e,"Alexandre vence Dario em Isso. Alexandre derrota o rei persa Dario III na batalha de Isso. Dois anos depois, em Gaugamela, a vitória definitiva abre a Pérsia aos macedônios.",Gaugamela → Gau-ga-MÊ-la
 e-alexandria.mp3,e,"Fundação de Alexandria. No delta do Nilo, Alexandre funda a cidade que levaria seu nome. Sob os Ptolomeus, ela terá a maior biblioteca e o maior farol da Antiguidade.",
-e-alexandre-morte.mp3,e,"Morte de Alexandre. Alexandre morre na Babilônia, aos 32 anos, sem deixar um sucessor adulto. Seus generais, os Diádocos, disputam o império por décadas.",Diádocos → Di-Á-do-cos
-e-chandragupta.mp3,e,"Chandragupta funda o Império Maurya. Chandragupta Maurya toma o trono de Magadha e, em poucos anos, unifica o norte da Índia. Em 305 antes de Cristo, ele faz um acordo com Seleuco, general de Alexandre.",Chandragupta → Tchan-dra-GÚP-ta; Maurya → MÁU-ria; Magadha → MA-ga-da
+e-alexandre-morte.mp3,e,"Morte de Alexandre. Alexandre morre na Babilônia, aos 32 anos, sem deixar um sucessor adulto. Seus generais, os Diádocos, disputam o império por décadas.",
+e-chandragupta.mp3,e,"Chandragupta funda o Império Maurya. Chandragupta Maurya toma o trono de Magadha e, em poucos anos, unifica o norte da Índia. Em 305 antes de Cristo, ele faz um acordo com Seleuco, general de Alexandre.",Chandragupta → Tchan-dra-GÚP-ta; Maurya → MÁU-ria
 e-punica1.mp3,e,"Primeira Guerra Púnica. Roma e Cartago disputam a Sicília. Para vencer, Roma constrói sua primeira grande frota. Em 241 antes de Cristo, a Sicília se torna a primeira província romana.",
 e-kalinga.mp3,e,"Guerra de Kalinga e a conversão de Ashoka. Ashoka conquista Kalinga com enorme violência. Arrependido, ele se volta para o budismo e manda gravar em pilares e rochas mensagens de tolerância e respeito à vida.",Ashoka → A-SHÔ-ka; Kalinga → Ka-LÍN-ga
 e-qin-unifica.mp3,e,"Qin Shi Huang unifica a China. O rei de Qin vence o último dos reinos rivais e se proclama Primeiro Imperador. Ele padroniza a escrita, as moedas e as medidas.",Qin Shi Huang → Tchin Shi Ruang
@@ -131,12 +311,12 @@ e-gracos.mp3,e,Tibério Graco e a crise da República. O tribuno Tibério Graco 
 e-zhang-qian.mp3,e,Zhang Qian e a Rota da Seda. O enviado Zhang Qian volta à corte Han depois de mais de dez anos na Ásia Central. Seu relato sobre os povos do oeste e seus cavalos leva os Han a abrir as rotas comerciais que mais tarde seriam chamadas de Rota da Seda.,Zhang Qian → Djang Tchién; Han → Rán
 e-espartaco.mp3,e,Revolta de Espártaco. O gladiador Espártaco lidera dezenas de milhares de escravizados contra Roma. A revolta é esmagada em 71 antes de Cristo,
 e-carras.mp3,e,"Batalha de Carras. Os partas derrotam o exército de Crasso, um dos homens mais ricos de Roma, que morre na batalha. O Eufrates se torna a fronteira entre Roma e a Pérsia.",
-e-alesia.mp3,e,"Cerco de Alésia. César vence o chefe gaulês Vercingetórix. A Gália passa a ser romana, e César volta riquíssimo e com um exército fiel.",Vercingetórix → Ver-sin-GE-tó-rix; Alésia → A-LÉ-zia
+e-alesia.mp3,e,"Cerco de Alésia. César vence o chefe gaulês Vercingetórix. A Gália passa a ser romana, e César volta riquíssimo e com um exército fiel.",Vercingetórix → Ver-sin-GE-tó-rix
 e-rubicao.mp3,e,"César atravessa o Rubicão. Ao cruzar com seu exército o rio que separava a Gália da Itália, César desafia o Senado e começa a guerra civil. Diz a tradição que ele disse: “A sorte está lançada.”",
 e-idos-marco.mp3,e,"Assassinato de César. Nos Idos de Março, um grupo de senadores mata César, que tinha sido nomeado ditador vitalício. Eles queriam salvar a República, mas o assassinato leva a mais guerras civis.",
 e-accio.mp3,e,"Áccio e o fim do Egito ptolomaico. Otaviano vence Marco Antônio e Cleópatra na batalha naval de Áccio. Um ano depois, os dois se matam em Alexandria, e o Egito se torna romano.",
 e-augusto.mp3,e,"Augusto, primeiro imperador. O Senado dá a Otaviano o título de Augusto. Ele afirma ter restaurado a República, mas concentra todos os poderes. É o início do Império.",
-e-teutoburgo.mp3,e,"Batalha da Floresta de Teutoburgo. Tribos germânicas, lideradas por Armínio, destroem três legiões. Roma desiste de conquistar a Germânia, e o Reno vira fronteira.",Teutoburgo → Teu-to-BUR-go
+e-teutoburgo.mp3,e,"Batalha da Floresta de Teutoburgo. Tribos germânicas, lideradas por Armínio, destroem três legiões. Roma desiste de conquistar a Germânia, e o Reno vira fronteira.",
 e-jesus.mp3,e,"Crucificação de Jesus. Na Judeia, província romana, Jesus de Nazaré é crucificado sob o governador Pôncio Pilatos, por volta do ano 30. Seus seguidores espalham sua mensagem pelo império.",
 e-jerusalem-70.mp3,e,"Destruição do Templo de Jerusalém. Depois de uma revolta judaica, o futuro imperador Tito toma Jerusalém e destrói o Segundo Templo.",
 e-vesuvio.mp3,e,"Erupção do Vesúvio. O Vesúvio soterra Pompeia e Herculano sob cinzas. As cidades, redescobertas no século XVIII, mostram o cotidiano romano congelado no tempo.",
@@ -145,9 +325,9 @@ e-trajano.mp3,e,"Roma no auge territorial. Com as conquistas de Trajano na Dáci
 e-kanishka.mp3,e,"Kanishka e a arte de Gandhara. O imperador Kushan Kanishka protege o budismo. Em Gandhara, as primeiras imagens do Buda em forma humana misturam traços gregos e indianos.",Kanishka → Ka-NÍSH-ka; Gandhara → Gan-DÁ-ra; Kushan → Ku-SHÁN
 e-daqin.mp3,e,"Enviados romanos chegam à China. Os anais Han registram a chegada de enviados de “Daqin”, o império romano, em nome do rei “Andun”, provavelmente Marco Aurélio Antonino. Eram talvez mercadores, mas é o primeiro contato direto registrado.",Daqin → Dá-tchin; Han → Rán
 e-turbantes.mp3,e,"Revolta dos Turbantes Amarelos. Uma grande revolta camponesa, inspirada por um movimento taoista, abala a dinastia Han. Os generais que a reprimem acabam por dividir o império.",Han → Rán
-e-caracala.mp3,e,Edito de Caracala. O imperador Caracala concede a cidadania romana a quase todos os homens livres do império.,Caracala → Ca-ra-CA-la
+e-caracala.mp3,e,Edito de Caracala. O imperador Caracala concede a cidadania romana a quase todos os homens livres do império.,
 e-han-fim.mp3,e,"Fim da dinastia Han. O último imperador Han abdica em favor de Cao Pi, filho de Cao Cao. A China se divide em Três Reinos.",Cao Pi → Tsáo Pí; Cao Cao → Tsáo Tsáo; Han → Rán
-e-ardashir.mp3,e,"Ardashir funda o Império Sassânida. Ardashir derrota o último rei parta e funda uma nova dinastia persa, que duraria até a chegada dos árabes, no século VII.",Ardashir → Ar-da-SHÍR; Sassânida → Sas-SÂ-ni-da
+e-ardashir.mp3,e,"Ardashir funda o Império Sassânida. Ardashir derrota o último rei parta e funda uma nova dinastia persa, que duraria até a chegada dos árabes, no século VII.",Ardashir → Ar-da-SHÍR
 e-valeriano.mp3,e,"Shapur captura o imperador Valeriano. Em Edessa, o rei persa Shapur I derrota e captura o imperador Valeriano, que morre no cativeiro. Foi uma humilhação inédita para Roma.",Shapur → Sha-PÚR
 e-milvia.mp3,e,"Constantino na Ponte Mílvia. Segundo a tradição cristã, Constantino viu um sinal no céu antes da batalha e mandou pintar um símbolo cristão nos escudos. Ele vence e se torna senhor do Ocidente.",
 e-milao.mp3,e,"Edito de Milão. Constantino e Licínio garantem liberdade de culto a todos, incluindo os cristãos, perseguidos poucos anos antes.",
@@ -160,5 +340,137 @@ e-divisao.mp3,e,"O império se divide. Com a morte de Teodósio, o império é d
 e-faxian.mp3,e,O monge Faxian viaja à Índia. O monge chinês Faxian parte para a Índia em busca de textos budistas. Seu relato descreve a Índia Gupta como pacífica e próspera.,Faxian → Fá-shien; Gupta → GÚP-ta
 e-saque-410.mp3,e,"Os visigodos saqueiam Roma. Alarico e os visigodos saqueiam Roma por três dias. A cidade já não era a capital, mas o choque foi enorme em todo o império. Agostinho escreveu “A Cidade de Deus” em resposta.",
 e-vandalos-cartago.mp3,e,"Vândalos tomam Cartago. Os vândalos, que tinham atravessado da Espanha para a África, tomam Cartago. O Ocidente perde sua província mais rica.",
+e-teotihuacan.mp3,e,"Teotihuacan no auge. Com talvez cem mil habitantes, Teotihuacan é uma das maiores cidades do mundo, com a Pirâmide do Sol e a Avenida dos Mortos.",Teotihuacan → Te-o-ti-ua-KÁN
 e-atila.mp3,e,Átila nos Campos Cataláunicos. Uma coalizão de romanos e visigodos detém Átila e os hunos na Gália. Átila morre dois anos depois.,
 e-romulo-augustulo.mp3,e,"Fim do Império do Ocidente. O chefe germânico Odoacro depõe o jovem imperador Rômulo Augústulo em Ravena e envia as insígnias imperiais a Constantinopla. Para muitos historiadores, termina aqui a Antiguidade no Ocidente; outros preferem falar em uma longa transformação.",Odoacro → O-do-Á-cro; Augústulo → Au-GÚS-tu-lo
+e-clovis.mp3,e,"Batismo de Clóvis. O rei dos francos se converte ao cristianismo católico, por volta de 496, e ganha o apoio da Igreja e da população romana da Gália. A França nasce do reino franco.",
+e-aryabhata.mp3,e,"Aryabhata e a matemática indiana. O astrônomo Aryabhata escreve um tratado que usa o sistema decimal de posição e calcula o valor de pi com precisão. No século VII, Brahmagupta escreve as regras para operar com o zero.",Aryabhata → Ar-iá-BÁ-ta; Brahmagupta → Brar-ma-GÚP-ta
+e-justiniano.mp3,e,"O Código de Justiniano. O imperador Justiniano manda reunir e organizar séculos de direito romano. O Corpus Juris Civilis é a base do direito civil de boa parte do mundo, inclusive do Brasil.",
+e-santa-sofia.mp3,e,"Santa Sofia. Em apenas cinco anos, Justiniano constrói em Constantinopla a igreja de Santa Sofia, com a maior cúpula do mundo em sua época.",
+e-sui.mp3,e,"Os Sui reunificam a China. Depois de quase três séculos de divisão, a dinastia Sui reunifica a China e constrói o Grande Canal entre o norte e o sul.",Sui → Suêi
+e-tang.mp3,e,"Começa a dinastia Tang. A dinastia Tang faz de Chang'an a maior cidade do mundo, com mercadores persas, monges indianos e embaixadores do Japão.",Chang'an → Tchang-án; Tang → Táng
+e-hegira.mp3,e,"A Hégira. Perseguido em Meca, Maomé migra com seus seguidores para Medina. É o ano 1 do calendário islâmico. Em dez anos, quase toda a Arábia se une sob o islã.",Hégira → É-ji-ra
+e-egito-arabe.mp3,e,"Os árabes conquistam o Egito. O general Amr ibn al-As conquista o Egito bizantino. Em poucas décadas, o norte da África passa ao mundo islâmico e à língua árabe.",
+e-fim-sassanida.mp3,e,"Os árabes conquistam a Pérsia. Morre o último xá sassânida. A Pérsia se torna islâmica, mas preserva sua língua e cultura, que influenciam todo o mundo muçulmano.",
+e-tikal.mp3,e,"As cidades maias. Tikal, Calakmul e Palenque disputam o poder no mundo maia. Os maias registram em pedra a história de seus reis, com uma escrita que só foi decifrada no século XX.",
+e-al-andalus-711.mp3,e,"O islã chega à Península Ibérica. Tropas berberes e árabes atravessam o estreito de Gibraltar, cujo nome vem do comandante Tariq, e conquistam a maior parte da Península Ibérica em poucos anos.",Tariq → Ta-RÍK
+e-bagda.mp3,e,"Fundação de Bagdá. O califa abássida al-Mansur funda Bagdá, a cidade redonda, às margens do Tigre. Em pouco tempo, ela se torna a maior cidade do mundo.",al-Mansur → al-Man-SÚR
+e-lindisfarne.mp3,e,"Os vikings atacam Lindisfarne. Guerreiros escandinavos saqueiam o mosteiro de Lindisfarne, na Inglaterra. Começa a Era Viking: por três séculos, eles saqueiam, comerciam e se instalam da Irlanda à Rússia, e chegam à América do Norte.",Lindisfarne → LÍN-dis-farn
+e-carlos-magno.mp3,e,"Carlos Magno, imperador. No Natal de 800, o papa Leão III coroa Carlos Magno imperador em Roma. Pela primeira vez desde 476, há de novo um imperador no Ocidente.",
+e-traducoes-arabes.mp3,e,"A Casa da Sabedoria. Em Bagdá, eruditos traduzem para o árabe a filosofia, a medicina e a matemática gregas, persas e indianas, e as ampliam. Al-Khwarizmi escreve o livro que dá nome à álgebra.",Al-Khwarizmi → Al-Rua-RÍZ-mi
+e-sutra-diamante.mp3,e,"O primeiro livro impresso datado. O Sutra do Diamante, impresso com blocos de madeira, é o livro impresso com data mais antigo que se conhece. Foi encontrado em uma caverna em Dunhuang.",Dunhuang → Dun-ruáng
+e-song-fundacao.mp3,e,"Começa a dinastia Song. A dinastia Song reunifica a China e vive uma revolução comercial, com papel-moeda e grandes cidades.",Song → Sóng
+e-vladimir.mp3,e,"O batismo da Rus. O príncipe Vladimir de Kiev adota o cristianismo ortodoxo de Bizâncio. A escolha marca a cultura da Ucrânia, da Bielorrússia e da Rússia até hoje.",
+e-vinland.mp3,e,"Vikings na América do Norte. Por volta do ano 1000, vikings vindos da Groenlândia, liderados por Leif Erikson, chegam à Terra Nova. Os restos de L'Anse aux Meadows comprovam a viagem, quase cinco séculos antes de Colombo.",L'Anse aux Meadows → Láns ô MÉ-dous
+e-chola-templo.mp3,e,"O templo de Thanjavur. O rei Rajaraja Chola I inaugura o templo de Brihadisvara, um dos maiores da Índia. As frotas Chola chegam até a Indonésia.",Thanjavur → Tan-dja-VÚR; Rajaraja → Ra-dja-RÁ-dja; Chola → TCHÔ-la
+e-polvora.mp3,e,A fórmula da pólvora. O manual militar Wujing Zongyao registra pela primeira vez fórmulas da pólvora. A invenção chegaria à Europa no século XIII.,Wujing Zongyao → Ú-djim Dzóng-iáo
+e-cisma.mp3,e,O Grande Cisma. As igrejas de Roma e de Constantinopla se excomungam mutuamente. O cristianismo se divide entre católicos e ortodoxos.,
+e-hastings.mp3,e,"Batalha de Hastings. Guilherme, duque da Normandia, derrota o rei Haroldo e conquista a Inglaterra. O francês normando transforma a língua inglesa.",
+e-gana-ouro.mp3,e,"Gana, a terra do ouro. O geógrafo al-Bakri descreve a capital de Gana, com o palácio do rei, cães com coleiras de ouro e um bairro de mercadores muçulmanos.",al-Bakri → al-BÁ-kri
+e-cruzada.mp3,e,"O papa convoca a Primeira Cruzada. Em Clermont, o papa Urbano II chama os cristãos a tomar Jerusalém. As Cruzadas duram dois séculos e aproximam, de modo violento, a Europa e o mundo islâmico.",
+e-jerusalem-1099.mp3,e,"Os cruzados tomam Jerusalém. A Primeira Cruzada toma Jerusalém e massacra seus habitantes muçulmanos e judeus. Em 1187, Saladino retoma a cidade.",
+e-papel-europa.mp3,e,"O papel chega à Europa. Em Xàtiva, em al-Andalus, funciona um dos primeiros moinhos de papel da Europa. A técnica, criada na China, chegou pelo mundo islâmico. Sem o papel, a imprensa de Gutenberg não teria sido possível.",Xàtiva → SHÁ-ti-va
+e-numeros-indianos.mp3,e,"Fibonacci e os algarismos indo-arábicos. Leonardo de Pisa, o Fibonacci, publica o Liber Abaci, que divulga na Europa o sistema decimal com o zero, criado na Índia e transmitido pelos árabes.",
+e-quarta-cruzada.mp3,e,"Cruzados saqueiam Constantinopla. A Quarta Cruzada, desviada por interesses venezianos, saqueia Constantinopla, uma cidade cristã. Bizâncio nunca se recupera totalmente.",
+e-delhi-1206.mp3,e,"Nasce o Sultanato de Délhi. Qutb-ud-din Aibak, ex-escravo de origem turca, funda o Sultanato de Délhi e começa a construir o Qutb Minar.",
+e-genghis.mp3,e,"Gêngis Khan une os mongóis. Temujin é proclamado Gêngis Khan, “governante universal”. Em vinte anos, seus exércitos conquistam do norte da China ao mar Cáspio.",Gêngis Khan → Gên-gis Rán
+e-magna-carta.mp3,e,"Magna Carta. Barões ingleses obrigam o rei João a aceitar limites ao seu poder. A carta se tornou um símbolo do princípio de que ninguém, nem o rei, está acima da lei.",
+e-kiev-mongois.mp3,e,Os mongóis tomam Kiev. Os exércitos mongóis destroem Kiev. A maior parte das terras russas passa a pagar tributo à Horda Dourada por mais de dois séculos.,
+e-bagda-1258.mp3,e,"Os mongóis destroem Bagdá. Hulagu, neto de Gêngis Khan, toma Bagdá, mata o califa e destrói bibliotecas. Termina o califado abássida.",Gêngis Khan → Gên-gis Rán; Hulagu → Ru-LÁ-gu
+e-marco-polo.mp3,e,"Marco Polo na corte de Kublai. O veneziano Marco Polo chega à corte de Kublai Khan, onde vive cerca de dezessete anos. Seu livro de viagens alimenta a imaginação dos europeus sobre a Ásia.",Kublai → Kú-blai
+e-osman.mp3,e,"Osman funda o Estado otomano. Na Anatólia, o líder turco Osman funda um pequeno principado que daria origem ao Império Otomano.",Osman → Os-MÁN
+e-mansa-musa.mp3,e,"A peregrinação de Mansa Musa. O imperador do Mali vai a Meca com uma caravana carregada de ouro. Segundo os cronistas, distribuiu tanto ouro no Cairo que o valor do metal caiu na cidade. Na volta, manda construir mesquitas em Timbuktu.",Mansa Musa → MÁN-sa MÚ-sa; Timbuktu → Tim-buk-TÚ
+e-tenochtitlan.mp3,e,"Fundação de Tenochtitlan. Segundo a tradição, os mexicas fundam sua cidade numa ilha do lago Texcoco, onde viram uma águia pousada num cacto. Hoje, ali fica a Cidade do México.",Tenochtitlan → Te-notch-ti-TLÁN; Texcoco → Tes-KÔ-co
+e-peste-negra.mp3,e,"A Peste Negra chega à Europa. Navios genoveses vindos do mar Negro trazem a peste a Messina, na Sicília. Em cinco anos, a doença mata talvez um terço da população europeia. Ela também devasta o Oriente Médio e o norte da África.",
+e-zimbabue.mp3,e,"O Grande Zimbábue. No auge, a cidade de pedra do Grande Zimbábue tem talvez 18 mil habitantes e comercia ouro com a costa do Índico, onde chegam porcelanas chinesas.",
+e-ming-fundacao.mp3,e,"Os Ming expulsam os mongóis. Zhu Yuanzhang, de origem camponesa, expulsa os mongóis e funda a dinastia Ming.",Ming → Míng
+e-zheng-he.mp3,e,"As viagens de Zheng He. O almirante Zheng He comanda frotas de centenas de navios que visitam o Sudeste Asiático, a Índia, a Arábia e a costa da África oriental. As viagens acabam em 1433.",Zheng He → Djâng Râ
+e-ceuta.mp3,e,"Portugal toma Ceuta. A conquista de Ceuta, no norte da África, inicia a expansão marítima portuguesa ao longo da costa africana.",
+e-pachacuti.mp3,e,"Pachacuti e o Império Inca. Pachacuti transforma o reino de Cusco em um império que, em menos de cem anos, vai do Equador ao Chile. Machu Picchu é construída nesta época.",Pachacuti → Pa-tcha-KÚ-ti
+e-constantinopla-1453.mp3,e,"Queda de Constantinopla. O sultão otomano Mehmed II toma Constantinopla com canhões gigantes. Termina o Império Bizantino, o último Estado herdeiro direto de Roma. A cidade se torna Istambul, capital otomana.",
+e-gutenberg.mp3,e,"A Bíblia de Gutenberg. Em Mainz, Johannes Gutenberg imprime a Bíblia com tipos móveis de metal. Em cinquenta anos, milhões de livros circulam pela Europa.",
+e-ivan-iii.mp3,e,Moscou se liberta dos mongóis. Ivã III deixa de pagar tributo à Horda Dourada. Moscou se torna o centro de um Estado russo independente.,
+e-congo-portugal.mp3,e,"Portugueses chegam ao Congo. A expedição de Diogo Cão chega à foz do rio Congo. O reino do Congo se alia a Portugal e adota o cristianismo, mas o tráfico de escravizados destrói o reino aos poucos.",
+e-granada.mp3,e,"Queda de Granada. Os reis católicos tomam Granada, o último reino muçulmano da Península Ibérica. No mesmo ano, expulsam os judeus da Espanha e financiam a viagem de Colombo.",
+e-colombo.mp3,e,"Colombo chega à América. Financiado pela Espanha, Cristóvão Colombo chega às Bahamas acreditando estar na Ásia. Começa o contato permanente entre a Europa e as Américas, com consequências devastadoras para os povos indígenas.",
+e-vasco-da-gama.mp3,e,"Vasco da Gama chega à Índia. Depois de contornar a África, Vasco da Gama chega a Calicute, com a ajuda de um piloto que conhecia o Índico. Portugal passa a disputar o comércio de especiarias.",Calicute → Ca-li-CÚ-te
+e-cabral.mp3,e,"Cabral chega ao Brasil. A frota de Pedro Álvares Cabral, a caminho da Índia, chega ao litoral da Bahia. Pero Vaz de Caminha escreve ao rei a primeira descrição da terra e de seus habitantes.",
+e-safavidas.mp3,e,Os safávidas no Irã. Ismail I se proclama xá em Tabriz e faz do islã xiita a religião oficial do Irã.,Ismail → Is-ma-ÍL; Tabriz → Ta-BRÍZ
+e-renascimento.mp3,e,"O Renascimento em Florença. No início do século XVI, Leonardo pinta a Mona Lisa, Michelangelo esculpe o Davi e Rafael pinta a Escola de Atenas. Artistas e pensadores estudam e imitam os textos e as estátuas da Antiguidade.",
+e-lutero.mp3,e,"Lutero e a Reforma. Em Wittenberg, o monge Martinho Lutero publica 95 teses contra a venda de indulgências. Sua crítica, espalhada pela imprensa, divide o cristianismo ocidental.",Wittenberg → VÍ-ten-berk
+e-tenochtitlan-queda.mp3,e,"A queda de Tenochtitlan. Hernán Cortés, aliado a povos inimigos dos astecas, toma Tenochtitlan depois de um cerco devastado pela varíola. Dez anos depois, Pizarro derruba o Império Inca.",Tenochtitlan → Te-notch-ti-TLÁN
+e-babur.mp3,e,"Babur funda o Império Mogol. Na batalha de Panipat, Babur, vindo da Ásia Central, derrota o sultão de Délhi com canhões e cavalaria.",Panipat → PÁ-ni-pat; Babur → BÁ-bur
+e-solimao.mp3,e,"Solimão nas portas de Viena. No auge do poder otomano, Solimão, o Magnífico, cerca Viena, mas não consegue tomá-la. Em 1683, um segundo cerco também fracassa.",
+e-copernico.mp3,e,"Copérnico: a Terra gira em torno do Sol. No ano de sua morte, Nicolau Copérnico publica a teoria de que a Terra e os planetas giram em torno do Sol. Começa a revolução científica.",
+e-potosi.mp3,e,"A prata de Potosí. É descoberta a montanha de prata de Potosí, na Bolívia. Com o trabalho forçado indígena, ela produz boa parte da prata que circula pelo mundo, até a China.",Potosí → Po-to-SÍ
+e-salvador.mp3,e,"Salvador, capital do Brasil. Tomé de Sousa funda Salvador, a primeira capital do Brasil, que seria por mais de dois séculos o centro do açúcar e do tráfico de escravizados.",
+e-calendario.mp3,e,"O calendário gregoriano. O papa Gregório XIII corrige o calendário juliano, criado por César, que estava atrasado dez dias. É o calendário que usamos até hoje.",
+e-edo.mp3,e,"O xogunato Tokugawa. Tokugawa Ieyasu se torna xogum e governa a partir de Edo, a atual Tóquio. Começam dois séculos e meio de paz e isolamento.",Tokugawa → To-ku-GÁ-ua
+e-vestfalia.mp3,e,Paz de Vestfália. Os tratados que encerram a Guerra dos Trinta Anos reconhecem a soberania de cada Estado sobre seu território e sua religião. É considerado o início do sistema moderno de Estados.,Vestfália → Vest-FÁ-lia
+e-taj-mahal.mp3,e,"O Taj Mahal. Shah Jahan conclui o mausoléu de mármore branco em memória de sua esposa, Mumtaz Mahal. Cerca de 20 mil trabalhadores participaram da obra.",Shah Jahan → Shá Dja-RÁN; Mumtaz → Mum-TÁZ
+e-newton.mp3,e,Newton publica os Principia. Isaac Newton apresenta as leis do movimento e da gravitação universal: as mesmas leis governam a queda de uma maçã e a órbita da Lua.,
+e-palmares.mp3,e,"A queda de Palmares. Depois de quase um século de resistência, o quilombo de Palmares é destruído, e Zumbi é morto em 20 de novembro, hoje Dia da Consciência Negra.",
+e-ouro-minas.mp3,e,"O ouro de Minas Gerais. A descoberta de ouro leva centenas de milhares de pessoas para Minas Gerais. Surgem Vila Rica, hoje Ouro Preto, e o barroco mineiro de Aleijadinho.",
+e-sao-petersburgo.mp3,e,"Fundação de São Petersburgo. Pedro, o Grande, funda uma nova capital no Báltico, sua “janela para a Europa”.",
+e-trafico.mp3,e,"O auge do tráfico atlântico. No século XVIII, mais de seis milhões de africanos são embarcados à força para as Américas, em portos como Ouidah, Luanda e Benguela. Muitos morriam na travessia. O Brasil foi o país que mais recebeu africanos escravizados.",Ouidah → Uí-dá
+e-plassey.mp3,e,Batalha de Plassey. A Companhia Britânica das Índias Orientais vence o governante de Bengala e começa a dominar a Índia.,Plassey → PLÉ-ssi
+e-revolucao-industrial.mp3,e,"A Revolução Industrial. James Watt patenteia seu aperfeiçoamento da máquina a vapor. Na Grã-Bretanha, fábricas de tecidos, minas de carvão e depois ferrovias mudam a forma de produzir e de viver.",
+e-independencia-eua.mp3,e,"Independência dos Estados Unidos. Em Filadélfia, as treze colônias declaram a independência da Grã-Bretanha, afirmando que todos os homens têm direito à vida, à liberdade e à busca da felicidade. A escravidão, porém, continua.",
+e-revolucao-francesa.mp3,e,"A Revolução Francesa. O povo de Paris toma a Bastilha em 14 de julho. A Assembleia proclama a Declaração dos Direitos do Homem e do Cidadão, a monarquia cai e a França se torna uma república.",
+e-haiti.mp3,e,"A Revolução Haitiana. Os escravizados de São Domingos, a colônia francesa mais rica, se revoltam. Liderados por Toussaint Louverture, eles vencem e fundam em 1804 o Haiti, a primeira república negra e o primeiro país a abolir a escravidão nas Américas.",Toussaint Louverture → Tu-SÃ Lu-ver-TÍR
+e-napoleao.mp3,e,"Napoleão imperador. Napoleão se faz coroar imperador com uma coroa de louros dourados, à maneira dos césares. Suas guerras levam o Código Civil e as ideias da Revolução por toda a Europa.",
+e-corte-rio.mp3,e,"A corte portuguesa no Rio. Fugindo da invasão de Napoleão, a família real portuguesa se muda para o Rio de Janeiro. O Rio vira capital do império português, e os portos do Brasil são abertos.",
+e-moscou-1812.mp3,e,"Napoleão em Moscou. Napoleão invade a Rússia com mais de 600 mil soldados e chega a Moscou, que é incendiada. Na retirada, durante o inverno, seu exército é destruído.",
+e-waterloo.mp3,e,Waterloo. Napoleão é derrotado definitivamente por britânicos e prussianos. O Congresso de Viena redesenha o mapa da Europa.,
+e-imperio-brasil.mp3,e,"A Independência do Brasil. Às margens do Ipiranga, em São Paulo, Dom Pedro proclama a independência. O Brasil se torna um império, com Dom Pedro I como imperador; o título, herdado de Roma via Napoleão, sugeria um poder vindo da aclamação do povo.",
+e-ayacucho.mp3,e,"As independências hispano-americanas. A batalha de Ayacucho, no Peru, encerra as guerras de independência lideradas por Simón Bolívar e José de San Martín. Surgem as repúblicas da América Espanhola.",Ayacucho → A-ia-KÚ-tcho
+e-opio.mp3,e,A Guerra do Ópio. A China tenta proibir o ópio vendido por comerciantes britânicos. A Grã-Bretanha vence a guerra e obriga a China a abrir portos e a ceder Hong Kong.,
+e-primavera-povos.mp3,e,"A Primavera dos Povos. Revoluções liberais e nacionalistas explodem em quase toda a Europa. No mesmo ano, Marx e Engels publicam o Manifesto Comunista.",
+e-sipaios.mp3,e,"A revolta de 1857. Soldados indianos a serviço dos britânicos se revoltam, e a rebelião se espalha pelo norte da Índia. Depois de esmagá-la, a Coroa britânica assume o governo direto.",
+e-darwin.mp3,e,"A Origem das Espécies. Charles Darwin publica a teoria da evolução por seleção natural, que muda a forma como entendemos a vida e o lugar do ser humano na natureza.",
+e-servidao.mp3,e,Fim da servidão na Rússia. O czar Alexandre II liberta mais de 20 milhões de servos.,
+e-guerra-civil-eua.mp3,e,"Guerra Civil e abolição nos EUA. O norte e o sul dos Estados Unidos lutam entre 1861 e 1865. Lincoln proclama a emancipação dos escravizados, e a escravidão é abolida em 1865.",
+e-guerra-paraguai.mp3,e,"A Guerra do Paraguai. Brasil, Argentina e Uruguai enfrentam o Paraguai entre 1864 e 1870, na guerra mais sangrenta da história da América do Sul. O Paraguai perde grande parte de sua população.",
+e-meiji.mp3,e,"A Restauração Meiji. O xogunato cai, e o imperador Meiji volta ao centro do poder. Em poucas décadas, o Japão constrói ferrovias, indústrias, escolas e um exército moderno.",Meiji → MÊI-dji
+e-suez.mp3,e,O Canal de Suez. O canal liga o Mediterrâneo ao mar Vermelho e encurta a viagem entre a Europa e a Ásia.,
+e-berlim-1884.mp3,e,"Conferência de Berlim. Sem nenhum africano presente, as potências europeias estabelecem as regras para dividir a África. Em vinte anos, quase todo o continente é colonizado.",
+e-lei-aurea.mp3,e,"A Lei Áurea. Em 13 de maio, a princesa Isabel assina a lei que abole a escravidão. O Brasil foi o último país das Américas a fazê-lo, sem nenhuma reparação aos libertos.",
+e-republica-brasil.mp3,e,"Proclamação da República. Em 15 de novembro, militares liderados por Deodoro da Fonseca derrubam a monarquia. Dom Pedro II parte para o exílio.",
+e-adwa.mp3,e,"Batalha de Adwa. O exército etíope de Menelik II derrota a Itália e garante a independência da Etiópia, que se torna um símbolo para todo o continente.",Adwa → Á-dua; Menelik → MÊ-ne-lik
+e-xinhai.mp3,e,"Fim do império na China. Uma revolução que começa em Wuchang derruba a dinastia Qing. Em 1912, é proclamada a República da China.",Qing → Tchíng; Wuchang → Ú-tcháng
+e-primeira-guerra.mp3,e,"Começa a Primeira Guerra Mundial. O assassinato do herdeiro austríaco em Sarajevo leva as grandes potências à guerra. Em quatro anos de trincheiras, morrem cerca de 10 milhões de soldados.",
+e-direito-civil.mp3,e,"O Código Civil brasileiro. O Brasil aprova seu primeiro Código Civil, redigido por Clóvis Beviláqua, herdeiro da tradição do direito romano.",
+e-revolucao-russa.mp3,e,"A Revolução Russa. Em fevereiro, o czar abdica. Em outubro, os bolcheviques de Lênin tomam o poder em Petrogrado. Depois de uma guerra civil, nasce em 1922 a União Soviética.",
+e-turquia.mp3,e,"Nasce a República da Turquia. Depois da derrota otomana na Primeira Guerra, Mustafa Kemal funda a Turquia moderna, com capital em Ancara. O restante do antigo império é dividido entre a Grã-Bretanha e a França.",
+e-crash-1929.mp3,e,"A Quebra da Bolsa de Nova York. A queda da bolsa inicia a Grande Depressão, a pior crise econômica do século XX. No Brasil, o preço do café despenca, e em 1930 Getúlio Vargas chega ao poder.",
+e-marcha-sal.mp3,e,"A Marcha do Sal. Gandhi caminha 385 quilômetros até o mar para produzir sal, desafiando o monopólio britânico. A desobediência civil não violenta mobiliza milhões de pessoas.",
+e-segunda-guerra.mp3,e,"Começa a Segunda Guerra Mundial. A Alemanha nazista invade a Polônia. A guerra se espalha pela Europa, África, Ásia e Pacífico e mata cerca de 70 milhões de pessoas, incluindo os seis milhões de judeus assassinados no Holocausto.",
+e-stalingrado.mp3,e,"Batalha de Stalingrado. Uma das batalhas mais sangrentas da história, entre 1942 e 1943. A derrota alemã muda o rumo da guerra na Europa.",Stalingrado → Sta-lin-GRÁ-do
+e-dia-d.mp3,e,"Dia D. Tropas aliadas desembarcam na Normandia e abrem uma frente no oeste. Em maio de 1945, a Alemanha se rende.",
+e-hiroshima.mp3,e,"Hiroshima e Nagasaki. Os Estados Unidos lançam bombas atômicas sobre Hiroshima e Nagasaki, que matam mais de cem mil pessoas. O Japão se rende, e termina a Segunda Guerra Mundial.",Hiroshima → Ri-ro-SHÍ-ma
+e-onu.mp3,e,"Nasce a ONU. Em São Francisco, cinquenta países assinam a Carta das Nações Unidas, com o objetivo de evitar uma nova guerra mundial. Em 1948, a ONU aprova a Declaração Universal dos Direitos Humanos.",
+e-independencia-india.mp3,e,Independência e Partição. A Índia britânica se divide em dois países: a Índia e o Paquistão. A partição provoca a migração de cerca de 15 milhões de pessoas e a morte de centenas de milhares.,
+e-israel-1948.mp3,e,"Criação de Israel e a Nakba. Com o fim do mandato britânico, é proclamado o Estado de Israel. Na guerra que se segue, cerca de 700 mil palestinos fogem ou são expulsos de suas casas, o que eles chamam de Nakba, a catástrofe. O conflito continua até hoje.",Nakba → NÁK-ba
+e-rpc.mp3,e,"Mao proclama a República Popular. Depois da guerra civil, Mao Tsé-tung proclama a República Popular da China em Pequim.",Mao Tsé-tung → Máo Tsé-tum
+e-coreia.mp3,e,A Guerra da Coreia. A Coreia do Norte invade a Coreia do Sul. A guerra envolve os Estados Unidos e a China e termina em 1953 sem tratado de paz; a península continua dividida.,
+e-tratado-roma.mp3,e,"Tratado de Roma. Seis países, entre eles França e Alemanha Ocidental, criam a Comunidade Econômica Europeia. É a origem da União Europeia.",
+e-sputnik.mp3,e,"Sputnik, o primeiro satélite. A União Soviética lança o primeiro satélite artificial. Começa a corrida espacial; em 1961, Iúri Gagárin é o primeiro ser humano a ir ao espaço.",
+e-gana-independente.mp3,e,"Gana independente. Liderada por Kwame Nkrumah, Gana é a primeira colônia da África subsaariana a conquistar a independência. Em 1960, dezessete países africanos se tornam independentes.",Nkrumah → N-KRÚ-ma
+e-cuba.mp3,e,"A Revolução Cubana. Os guerrilheiros de Fidel Castro derrubam a ditadura de Batista. Cuba se alia à União Soviética, e em 1962 a crise dos mísseis quase leva a uma guerra nuclear.",
+e-brasilia.mp3,e,"A inauguração de Brasília. Juscelino Kubitschek inaugura a nova capital, planejada por Lúcio Costa e Oscar Niemeyer no Planalto Central, construída em pouco mais de três anos.",
+e-golpe-1964.mp3,e,"O golpe de 1964. Os militares depõem o presidente João Goulart. A ditadura dura 21 anos, com censura, perseguição política e tortura.",
+e-apollo.mp3,e,"O ser humano na Lua. Em 20 de julho, Neil Armstrong e Buzz Aldrin, da missão Apollo 11, caminham na Lua. Bilhões de pessoas acompanham pela televisão.",
+e-deng.mp3,e,"As reformas de Deng Xiaoping. Deng Xiaoping abre a China ao mercado e ao investimento estrangeiro. Shenzhen passa de vila de pescadores a metrópole, e a China se torna a fábrica do mundo.",Deng Xiaoping → Dâng Shiáo-pím; Shenzhen → Shên-djên
+e-revolucao-iraniana.mp3,e,"A Revolução Iraniana. Uma revolução popular derruba o xá do Irã, e o aiatolá Khomeini funda uma república islâmica.",Khomeini → Ro-mêi-NÍ
+e-chernobyl.mp3,e,"Acidente de Chernobyl. Um reator nuclear explode na Ucrânia soviética, no pior acidente nuclear da história.",Chernobyl → Tcher-NÓ-bil
+e-constituicao-1988.mp3,e,"A Constituição de 1988. Depois do fim da ditadura em 1985, o Brasil promulga a Constituição Cidadã, que garante direitos sociais, o voto dos analfabetos e o Sistema Único de Saúde.",
+e-muro-berlim.mp3,e,"Queda do Muro de Berlim. Em 9 de novembro, os berlinenses atravessam e começam a derrubar o muro que dividia a cidade desde 1961. Em menos de um ano, a Alemanha é reunificada.",
+e-web.mp3,e,"A World Wide Web. No CERN, perto de Genebra, Tim Berners-Lee cria a web e torna o sistema público em 1991. A internet passa a fazer parte da vida de bilhões de pessoas.",
+e-fim-urss.mp3,e,"Fim da União Soviética. Em dezembro, a URSS se dissolve em quinze países independentes. Termina a Guerra Fria.",
+e-maastricht.mp3,e,"Nasce a União Europeia. Entra em vigor o Tratado de Maastricht, que cria a União Europeia e prepara a moeda comum, o euro, lançada em 1999.",Maastricht → MÁS-trikt
+e-mandela.mp3,e,"Mandela presidente. Depois de 27 anos preso, Nelson Mandela vence as primeiras eleições livres da África do Sul. Termina o apartheid, o regime de segregação racial.",
+e-11-setembro.mp3,e,"Os atentados de 11 de setembro. Terroristas da Al-Qaeda sequestram aviões e atacam Nova York e Washington, matando quase três mil pessoas. Os Estados Unidos invadem o Afeganistão e, em 2003, o Iraque.",
+e-primavera-arabe.mp3,e,"A Primavera Árabe. Protestos que começam na Tunísia derrubam governos na Tunísia, no Egito, na Líbia e no Iêmen, e levam a uma guerra civil na Síria.",
+e-covid.mp3,e,"A pandemia de covid-19. Um novo coronavírus, identificado em Wuhan no fim de 2019, se espalha pelo mundo. A pandemia mata milhões de pessoas e paralisa a economia global.",Wuhan → Ú-rán
+e-ucrania.mp3,e,"A Rússia invade a Ucrânia. Em 24 de fevereiro, a Rússia lança uma invasão em grande escala da Ucrânia, a maior guerra na Europa desde 1945.",
+e-india-populosa.mp3,e,"A Índia, país mais populoso. Segundo estimativas das Nações Unidas, a Índia ultrapassa a China e se torna o país mais populoso do mundo, com mais de 1,4 bilhão de habitantes.",
