@@ -1,5 +1,5 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}</style></head><body><title>Ecúmena</title>
-<meta name="description" content="Atlas vivo da história: globo, linha do tempo e conexões entre os povos, de 820 a.C. até hoje.">
+<meta name="description" content="Atlas vivo da história: mapa, linha do tempo e conexões entre os povos, de 820 a.C. até hoje.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
 <style>
@@ -8,7 +8,7 @@
   --papiro:#ede3cc; --papiro-2:#e4d7ba; --folha:#f7f1e3; --tinta:#2c2317; --tinta-2:#6a5940; --tinta-3:#8f7d60;
   --linha:#c5b28c; --linha-2:#a8946c; --ouro:#9a7322; --ouro-2:#c49a3a; --mar:#d9d5c2; --terra:#f1e8d3; --costa:#5f4e36;
   --f-ins:"Cinzel","Trajan Pro",Georgia,serif; --f-tit:"Cormorant Garamond",Georgia,"Times New Roman",serif; --f-txt:"EB Garamond",Georgia,"Times New Roman",serif;
-  --top-h:56px; --dock-h:300px; --panel-w:410px; --gut:16px;
+  --top-h:56px; --dock-h:284px; --panel-w:460px; --gut:16px;
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -20,7 +20,8 @@ a{color:var(--ouro)}
 #app{position:fixed;inset:0;background:radial-gradient(120% 90% at 50% 38%,#f3ead6 0%,var(--papiro) 55%,#e2d4b4 100%)}
 #app::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .26 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-canvas#globe{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+canvas#globe{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab;transition:opacity .23s ease,filter .23s ease}
+canvas#globe.swap{opacity:0;filter:blur(3px)}
 canvas#globe.dragging{cursor:grabbing}
 
 /* barra superior */
@@ -48,21 +49,6 @@ canvas#globe.dragging{cursor:grabbing}
 .ctrl .sm{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--linha);color:var(--tinta);flex:none}
 .ctrl .sm svg{width:16px;height:16px}
 .ctrl .speed{height:30px;padding:0 10px;border-radius:15px;border:1px solid var(--linha);font:600 12px var(--f-ins);letter-spacing:.06em;flex:none}
-.ctrl .focus{height:30px;padding:0 12px;border-radius:15px;border:1px solid var(--tinta);display:inline-flex;align-items:center;gap:6px;flex:none;white-space:nowrap}
-.ctrl .focus span{font:600 10px var(--f-ins);letter-spacing:.12em;color:var(--tinta-3)}
-.ctrl .focus b{font:600 15px var(--f-tit)}
-#fsheet{position:absolute;z-index:40;left:var(--gut);bottom:calc(var(--dock-h) + env(safe-area-inset-bottom,0px) - 6px);width:min(300px,calc(100% - 2*var(--gut)));background:var(--folha);border:1px solid var(--linha);padding:12px 14px 10px;box-shadow:0 18px 40px -20px rgba(60,40,10,.6)}
-#fsheet h5{margin:0 0 6px;font:600 12px var(--f-ins);letter-spacing:.16em;text-transform:uppercase;color:var(--tinta-2)}
-.fopt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 4px;border-top:1px solid var(--papiro-2);font-size:17px}
-.fopt:first-child{border-top:0}
-.fopt .dots{display:flex;gap:3px;flex:none;width:40px}
-.fopt .dots i{width:9px;height:9px;border-radius:50%}
-.fopt[aria-checked="true"]{font-weight:600}
-.fopt[aria-checked="true"]::after{content:"✓";margin-left:auto;color:var(--ouro)}
-.in-focus{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 auto 18px;max-width:440px}
-.in-focus button{padding:7px 12px;border:1px solid var(--linha);border-radius:16px;font-size:16px;background:var(--folha)}
-.in-focus button[aria-pressed="true"]{background:var(--tinta);color:var(--folha);border-color:var(--tinta)}
-.in-focus-l{font:600 11px var(--f-ins);letter-spacing:.16em;color:var(--tinta-3);margin-bottom:8px}
 .ctrl .era{margin-left:auto;text-align:right;min-width:0;font:italic 500 15px/1.15 var(--f-tit);color:var(--tinta-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ctrl .era button{text-decoration:underline;text-decoration-color:var(--linha);text-underline-offset:3px}
 #tl{flex:1;position:relative;min-height:0}
@@ -175,10 +161,88 @@ canvas#globe.dragging{cursor:grabbing}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 #loading{position:absolute;inset:0;display:grid;place-items:center;font:italic 18px var(--f-tit);color:var(--tinta-3);z-index:1}
 
-/* desktop: painel à direita */
+/* painel: conexões, ramificações, trilha */
+.p-head .crumbs{gap:3px}
+.crumbs .hl{font:600 10.5px var(--f-ins);letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-3);align-self:center;padding-right:2px}
+.crumbs button{font:500 12.5px var(--f-ins)}
+.p-head .crumbs{padding:0 10px}
+.flow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 2px}
+.flow .col h5{margin:0 0 7px;font:600 11px var(--f-ins);letter-spacing:.16em;color:var(--tinta-2);display:flex;align-items:center;gap:7px}
+.flow .col h5 svg{width:15px;height:15px;color:var(--ouro)}
+.flow .none{margin:0;font:italic 14.5px var(--f-tit);color:var(--tinta-3)}
+.fl{display:block;width:100%;text-align:left;border:1px solid var(--papiro-2);border-left:3px solid var(--c,var(--ouro));background:#fffaf0;padding:8px 11px 9px;margin-bottom:7px;transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .2s,box-shadow .25s}
+.fl:hover{transform:translateY(-1px);border-color:var(--linha);box-shadow:0 8px 16px -12px rgba(60,40,10,.6)}
+.fl small{display:block;font:600 9.5px var(--f-ins);letter-spacing:.1em;text-transform:uppercase;color:var(--tinta-3)}
+.fl b{display:block;font:600 17.5px/1.15 var(--f-tit);margin-top:2px}
+.fl em{display:block;font:italic 500 14px var(--f-tit);color:var(--tinta-3)}
+.fl span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.3;color:var(--tinta-2);margin-top:3px}
+.deep .dg{margin-top:10px}
+.deep h6{margin:0 0 6px;font:600 11px var(--f-ins);letter-spacing:.12em;text-transform:uppercase;color:var(--tinta-3)}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.dc{display:block;text-align:left;border:1px solid var(--papiro-2);background:#fffaf0;padding:9px 11px 10px;transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .2s,box-shadow .25s}
+.dc:hover{transform:translateY(-1px);border-color:var(--ouro);box-shadow:0 8px 16px -12px rgba(60,40,10,.6)}
+.dc small{font:600 9.5px var(--f-ins);letter-spacing:.12em;color:var(--ouro)}
+.dc b{display:block;font:600 17px/1.15 var(--f-tit);margin-top:2px}
+.dc em{display:block;font:italic 500 13.5px var(--f-tit);color:var(--tinta-3)}
+.dc span{display:block;font-size:14px;line-height:1.3;color:var(--tinta-2);margin-top:3px}
+#pbody>*{animation:rise .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*55ms)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.chip,.link,.art,.ibtn,.ctrl .sm,.ctrl .play,.ctrl .speed{transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .2s,background .2s,box-shadow .25s}
+.chip:hover{transform:translateY(-1px)}
+.link:hover{transform:translateX(2px)}
+.ctrl .play:hover{transform:scale(1.06)} .ctrl .play:active,.ibtn:active,.ctrl .sm:active{transform:scale(.94)}
+.ibtn:hover{background:rgba(247,241,227,.95)}
+.in-btns .ghost{border-color:var(--linha);color:var(--tinta-2)}
+.in-btns button{transition:transform .25s cubic-bezier(.2,.8,.2,1),background .2s}
+.in-btns button:hover{transform:translateY(-1px)}
+
+/* trilha sobre o mapa */
+#trail{position:absolute;z-index:19;left:var(--gut);top:calc(var(--top-h) + env(safe-area-inset-top,0px) + 4px);max-width:calc(100% - 2*var(--gut));display:flex;align-items:center;gap:8px;padding:5px 6px 5px 12px;border:1px solid var(--linha);border-radius:20px;background:rgba(247,241,227,.93);box-shadow:0 10px 24px -16px rgba(60,40,10,.6);animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+#trail[hidden]{display:none}
+#trail .tr-l{font:600 9.5px var(--f-ins);letter-spacing:.18em;color:var(--tinta-3);flex:none}
+#tr-list{display:flex;align-items:center;gap:3px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;min-width:0;mask-image:linear-gradient(90deg,transparent,#000 8px,#000 calc(100% - 8px),transparent)}
+#tr-list::-webkit-scrollbar{display:none}
+#tr-list button{font:500 14px var(--f-tit);padding:3px 8px;border-radius:12px;color:var(--tinta-2)}
+#tr-list button:hover{background:var(--papiro-2)}
+#tr-list button[aria-current="true"]{background:var(--tinta);color:var(--folha)}
+#tr-list i{font-style:normal;color:var(--tinta-3);opacity:.7}
+#tr-clear{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none;color:var(--tinta-3)}
+#tr-clear:hover{background:var(--papiro-2);color:var(--tinta)}
+#tr-clear svg{width:12px;height:12px}
+
+/* busca */
+#search{position:absolute;inset:0;z-index:60;display:flex;justify-content:center;align-items:flex-start;padding:calc(var(--top-h) + env(safe-area-inset-top,0px) + 6px) var(--gut) 0;background:rgba(60,46,28,.28);backdrop-filter:blur(2px);animation:fade .25s both}
+#search[hidden]{display:none}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.s-card{width:min(640px,100%);max-height:min(560px,calc(100% - var(--top-h) - 30px));display:flex;flex-direction:column;background:var(--folha);border:1px solid var(--linha);box-shadow:0 30px 60px -28px rgba(60,40,10,.7);animation:rise .4s cubic-bezier(.2,.8,.2,1) both}
+.s-box{display:flex;align-items:center;gap:10px;padding:0 10px 0 16px;border-bottom:1px solid var(--papiro-2)}
+.s-box>svg{width:19px;height:19px;color:var(--tinta-3);flex:none}
+#q{flex:1;min-width:0;border:0;outline:0;background:none;font:500 21px/1 var(--f-tit);color:var(--tinta);padding:16px 0}
+#q::placeholder{color:var(--tinta-3);font-style:italic}
+#q-x{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--tinta-3)}
+#q-x svg{width:15px;height:15px}
+#q-res{overflow-y:auto;padding:4px 0 8px;overscroll-behavior:contain}
+#q-res .sh{padding:10px 16px 4px;font:600 10.5px var(--f-ins);letter-spacing:.16em;text-transform:uppercase;color:var(--tinta-3)}
+.sr{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:9px 16px;transition:background .15s}
+.sr:hover,.sr[aria-selected="true"]{background:var(--papiro-2)}
+.sr i{width:10px;height:10px;border-radius:50%;flex:none}
+.sr i.yr{width:auto;height:auto;font-style:normal;font-size:16px;color:var(--ouro)}
+.sr b{display:block;font:600 19px/1.15 var(--f-tit)}
+.sr small{display:block;font:italic 500 14.5px var(--f-tit);color:var(--tinta-3)}
+
+/* desktop: painel à direita, de cima a baixo; a régua fica ao lado dele */
 @media (min-width:860px){
-  #panel{top:calc(var(--top-h) + env(safe-area-inset-top,0px) + 6px);right:var(--gut);bottom:calc(var(--dock-h) + env(safe-area-inset-bottom,0px) + 6px);width:var(--panel-w);border-radius:2px}
-  #panel[hidden]{transform:translateX(calc(100% + 30px))}
+  #panel{top:calc(var(--top-h) + env(safe-area-inset-top,0px) + 6px);right:var(--gut);bottom:var(--gut);width:var(--panel-w);border-radius:2px}
+  #panel[hidden]{transform:translateX(calc(100% + 40px))}
+  #pbody{padding:22px 28px 36px}
+  #pbody h2{font-size:38px}
+  .lead{font-size:20px;line-height:1.52}
+  .sec p{font-size:18px}
+  .art{flex-basis:min(280px,72%)}
+  body.p-open #dock{right:calc(var(--panel-w) + 2*var(--gut))}
+  body.p-open #top .tools{margin-right:0}
+  #trail{max-width:calc(100% - var(--panel-w) - 3*var(--gut))}
+  body:not(.p-open) #trail{display:none}
   #caption{left:var(--gut);transform:none;width:min(440px,34%)}
   #caption.off{transform:translateY(8px)}
 }
@@ -192,6 +256,17 @@ canvas#globe.dragging{cursor:grabbing}
     transform:translateY(var(--sy,100%));transition:transform .4s cubic-bezier(.2,.8,.2,1)}
   #panel.drag{transition:none}
   #panel[hidden]{transform:translateY(105%)}
+  .flow{grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+  .flow .col .fl:nth-of-type(n+3){display:none}
+  .fl{padding:7px 9px 8px;margin-bottom:6px}
+  .fl b{font-size:16px}
+  .fl em{font-size:13px}
+  .fl span{display:none}
+  .dgrid{grid-template-columns:1fr 1fr}
+  .dc span{display:none}
+  #trail{padding:4px 5px 4px 10px}
+  #trail .tr-l{display:none}
+  #q{font-size:19px}
   .grab{display:block;position:absolute;left:0;right:0;top:0;height:22px;touch-action:none;cursor:grab}
   .grab::before{content:"";position:absolute;left:50%;top:7px;width:42px;height:4px;margin-left:-21px;border-radius:2px;background:var(--linha)}
   .p-head{padding-top:20px}
@@ -203,18 +278,21 @@ canvas#globe.dragging{cursor:grabbing}
   .ctrl .era{font-size:14px}
 }
 @media (max-width:859px){ .ctrl .era{display:none} }
+@media (max-width:520px){ #b-narr{display:none} .tools{gap:5px} }
 @media (max-width:380px){ .ctrl .speed{display:none} }
 @media (prefers-reduced-motion:reduce){ *{transition-duration:.01ms!important;animation-duration:.01ms!important} }
 </style>
 
 <div id="app">
   <div id="loading">Desenrolando o mapa…</div>
-  <canvas id="globe" aria-label="Globo com os territórios aproximados no ano escolhido" role="img"></canvas>
+  <canvas id="globe" aria-label="Mapa-múndi com os territórios aproximados no ano escolhido" role="img"></canvas>
 
   <header id="top">
     <div class="brand">ECÚMENA<small>ATLAS VIVO DA HISTÓRIA</small></div>
     <div id="year" aria-live="polite"><b id="y-num">—</b><span id="y-era">&nbsp;</span></div>
     <div class="tools">
+      <button class="ibtn" id="b-view" aria-label="Alternar entre mapa e globo"></button>
+      <button class="ibtn" id="b-search" aria-label="Buscar um tema, pessoa ou ano"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5.5 5.5"/></svg></button>
       <button class="ibtn" id="b-narr" aria-pressed="false" aria-label="Narrador"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button>
       <button class="ibtn" id="b-sound" aria-expanded="false" aria-label="Som e voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 14v-4M8 17V7M12 20V4M16 16V8M20 13v-2"/></svg></button>
     </div>
@@ -223,12 +301,18 @@ canvas#globe.dragging{cursor:grabbing}
   <aside id="panel" hidden aria-label="Detalhes">
     <div class="grab" id="grab"></div>
     <div class="p-head">
-      <button class="back" id="p-back" aria-label="Voltar" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <nav class="crumbs" id="crumbs" aria-label="Trilha de investigação"></nav>
+      <button class="back" id="p-back" aria-label="Voltar na trilha" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="back" id="p-fwd" aria-label="Avançar na trilha" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></button>
+      <nav class="crumbs" id="hier" aria-label="Onde este tema está"></nav>
       <button class="x" id="p-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div id="pbody"></div>
   </aside>
+
+  <nav id="trail" hidden aria-label="Por onde você passou">
+    <span class="tr-l">TRILHA</span><div id="tr-list"></div>
+    <button id="tr-clear" aria-label="Começar uma trilha nova" title="Começar uma trilha nova"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </nav>
 
   <div id="caption" class="off" aria-live="polite">
     <div class="k" id="c-k"></div>
@@ -243,16 +327,11 @@ canvas#globe.dragging{cursor:grabbing}
       <button class="play" id="b-play" aria-label="Assistir"><svg id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg></button>
       <button class="sm" id="b-next" aria-label="Próximo marco"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
       <button class="speed" id="b-speed" aria-label="Velocidade">1×</button>
-      <button class="focus" id="b-focus" aria-haspopup="true" aria-expanded="false"><span>FOCO</span> <b id="focus-name">Mundo</b></button>
       <div class="era" id="era-line"></div>
     </div>
     <div id="tl"><canvas id="tlc" aria-label="Régua do tempo com períodos por região. Arraste para mudar o ano; toque em um período para abri-lo."></canvas></div>
   </section>
 
-  <div id="fsheet" hidden role="menu" aria-label="Escolher foco">
-    <h5>Focar em</h5>
-    <div id="focus-list"></div>
-  </div>
   <div id="sheet" hidden>
     <h5>Som e voz</h5>
     <div class="opt"><span>Ambiente e música</span><button class="sw" id="sw-amb" role="switch" aria-checked="false" aria-label="Ambiente e música"></button></div>
@@ -268,15 +347,22 @@ canvas#globe.dragging{cursor:grabbing}
       <div class="orn">· 820 a.C. — HOJE ·</div>
       <h1>ECÚMENA</h1>
       <p class="sub">o mundo habitado, como os gregos o chamavam</p>
-      <p>Assista à história do mundo acontecer ao mesmo tempo, de Roma à China e às Américas, até os dias de hoje. Pause quando quiser para ler sobre a época, ver obras e documentos e seguir as conexões entre os acontecimentos.</p>
-      <div class="in-focus-l">ESCOLHA UM FOCO</div>
-      <div class="in-focus" id="in-focus"></div>
+      <p>Assista à história do mundo acontecer ao mesmo tempo, de Roma à China e às Américas, até os dias de hoje. Pause quando quiser, ou busque um tema, e siga o fio: de onde cada coisa vem, para onde ela leva e o que há dentro dela.</p>
       <div class="in-btns">
         <button class="main" id="go-watch">ASSISTIR</button>
         <button id="go-explore">EXPLORAR POR CONTA PRÓPRIA</button>
+        <button id="go-search" class="ghost">BUSCAR UM TEMA</button>
       </div>
       <div class="in-checks"><label class="in-check"><input type="checkbox" id="in-amb" checked> Som ambiente</label><label class="in-check"><input type="checkbox" id="in-narr" checked> Narrador com voz</label></div>
       <div class="in-foot">Fronteiras aproximadas. Textos de divulgação, sujeitos a revisão.</div>
+    </div>
+  </div>
+  <div id="search" hidden role="dialog" aria-label="Buscar">
+    <div class="s-card">
+      <div class="s-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5.5 5.5"/></svg>
+        <input id="q" type="text" inputmode="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Revolução Francesa, Roma, Júlio César, 1789…" aria-label="Buscar">
+        <button id="q-x" aria-label="Fechar a busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div id="q-res" role="listbox"></div>
     </div>
   </div>
   <div id="toast" role="status"></div>
@@ -1925,6 +2011,369 @@ LINKS.push(
 // remove links que apontam para obras (não para acontecimentos)
 for(let i=LINKS.length-1;i>=0;i--){ if(LINKS[i][1]==='primeira-missa') LINKS.splice(i,1); }
 
+/* Aprofundamento: ramificações dentro dos temas grandes.
+   Cada nó de SUBS pertence a um "parent" (período, acontecimento ou outro nó) e tem um tipo:
+   fase, evento, pessoa ou instituição. Os pilotos são Roma (dos reis ao fim da República) e a Revolução Francesa.
+   Datas marcadas "tradicional" vêm da tradição romana, não de registros do próprio tempo. */
+
+/* ---------- novos territórios ---------- */
+Object.assign(POL,{
+  hispania_rom:{name:"Hispânia romana",lane:"roma",end:409,own:true,s:[[-218,["hispania_leste"]],[-133,["hispania_133"]],[-19,["hispania_toda"]]]},
+  portugal:{name:"Portugal",lane:"roma",end:2026,own:true,s:[[1139,["c:PRT"]]]},
+  franca_rev:{name:"França revolucionária",lane:"roma",end:1799,own:true,s:[[1789,["c:FRA"]]]},
+  industrial:{name:"Revolução Industrial",lane:"roma",end:1914,own:true,s:[[1760,["c:GBR"]],[1815,["c:GBR","c:BEL"]],[1850,["c:GBR","c:BEL","c:FRA","c:DEU","c:USA"]],[1890,["c:GBR","c:BEL","c:FRA","c:DEU","c:USA","c:ITA","c:JPN","c:RUS"]]]},
+  brasil_indigena:{name:"Povos originários",lane:"americas",end:1500,own:true,s:[[-820,["c:BRA"]]]}
+});
+
+/* ---------- novos períodos ---------- */
+PERIODS.push(
+{id:"hispania-romana",lane:"roma",pol:"hispania_rom",name:"Hispânia romana",from:-218,to:409,
+ sum:"Os romanos desembarcam na Península Ibérica em 218 a.C. para combater os cartagineses e ficam por mais de seiscentos anos. Dominar os povos locais leva quase dois séculos: a resistência do lusitano Viriato e a queda de Numância, em 133 a.C., ficaram na memória. Depois, a Hispânia se romaniza, com cidades, estradas, pontes, aquedutos, o latim e até imperadores nascidos ali, como Trajano e Adriano. Dessa herança vêm o português, o espanhol e o catalão.",
+ gov:"Primeiro duas províncias, a Hispânia Citerior e a Ulterior; com Augusto, três: Tarraconense, Bética e Lusitânia, cuja capital era Emerita Augusta, a atual Mérida. Cada uma tinha um governador romano, e as cidades se organizavam com magistrados e conselhos locais, ao modelo de Roma.",
+ life:"As cidades tinham fórum, termas, teatro e circo. A economia exportava azeite, vinho, peixe salgado e metais das minas. Muitos habitantes ganharam a cidadania romana e adotaram o latim, e o cristianismo se espalhou a partir do século III.",
+ people:[["Viriato","m. 139 a.C.","Líder lusitano que enfrentou os exércitos romanos por anos."],["Sertório","c. 126–72 a.C.","General romano que se revoltou e governou a Hispânia por conta própria."],["Trajano","53–117","Imperador nascido em Itálica, na Bética."],["Sêneca","c. 4 a.C.–65","Filósofo nascido em Córdoba, conselheiro de Nero."]],
+ say:"Roma chega à Península para vencer Cartago e fica por seis séculos, deixando o latim, que viraria português e espanhol."},
+{id:"portugal",lane:"roma",pol:"portugal",name:"Portugal",from:1139,to:2026,
+ sum:"Portugal nasce no extremo oeste da Península Ibérica, depois de séculos de domínio romano, visigodo e muçulmano. Em 1139, Afonso Henriques se proclama rei; com a conquista do Algarve, em 1249, o território continental fica quase como é hoje. Nos séculos XV e XVI, navegadores portugueses contornam a África, chegam à Índia e ao Brasil e criam o primeiro império de alcance mundial. Depois vêm a perda do Brasil, a república em 1910, a ditadura do Estado Novo, a Revolução dos Cravos em 1974 e a entrada na Comunidade Europeia em 1986.",
+ gov:"Monarquia até 1910, com o poder do rei crescendo desde o século XV até o absolutismo. Depois, república. De 1933 a 1974, uma ditadura. Desde 1976, uma democracia parlamentar.",
+ life:"Um país de agricultores, pescadores e marinheiros, com o mar como estrada. Do século XV ao XVIII, o comércio de especiarias, o açúcar e o ouro do Brasil e o tráfico de pessoas escravizadas enriqueceram a corte e as cidades do litoral. Muitos portugueses emigraram, sobretudo para o Brasil.",
+ people:[["Afonso Henriques","1109–1185","Primeiro rei de Portugal."],["Infante Dom Henrique","1394–1460","Patrocinou as viagens ao longo da costa africana."],["Vasco da Gama","c. 1469–1524","Chegou à Índia por mar em 1498."],["Luís de Camões","c. 1524–1580","Poeta de Os Lusíadas."],["Marquês de Pombal","1699–1782","Ministro que reconstruiu Lisboa depois do terremoto de 1755."]],
+ say:"Portugal nasce em 1139, aprende a navegar e liga a Europa à África, à Ásia e ao Brasil."},
+{id:"indigenas-brasil",lane:"americas",pol:"brasil_indigena",name:"Povos originários do Brasil",from:-820,to:1500,
+ sum:"Muito antes de qualquer europeu, o território que hoje é o Brasil já era habitado havia mais de dez mil anos, por muitos povos de línguas tupi, jê, caribe, aruaque e dezenas de outras famílias. No litoral havia grandes aldeias tupis; na Amazônia, sociedades que transformaram a floresta, plantando e enriquecendo o solo, como mostram as terras pretas. Os sambaquis, enormes montes de conchas na costa, guardam vestígios de milênios de ocupação. A régua começa em 820 a.C., mas essa história é muito mais antiga.",
+ gov:"Não havia um Estado único. Cada povo se organizava em aldeias, com chefes cuja autoridade dependia de prestígio e da persuasão, e com conselhos de homens mais velhos. Alianças e guerras entre povos eram frequentes.",
+ life:"Plantavam mandioca, milho e feijão, caçavam, pescavam e coletavam; manejavam a floresta com fogo e cultivo. As casas coletivas abrigavam várias famílias. Cantos, rituais e pintura corporal organizavam a vida e a memória.",
+ people:[],
+ say:"Muito antes de Cabral, milhões de pessoas de dezenas de povos já viviam onde hoje é o Brasil."},
+{id:"brasil-colonia",lane:"americas",pol:"brasil",name:"Brasil Colônia",from:1500,to:1822,
+ sum:"Depois da chegada de Cabral, em 1500, Portugal demora a ocupar a terra e, no início, só explora o pau-brasil. Em 1534 divide a costa em capitanias hereditárias e, em 1549, instala um governo-geral em Salvador. O açúcar do Nordeste, produzido por africanos escravizados, sustenta a colônia por dois séculos; no século XVIII, o ouro de Minas Gerais desloca o centro econômico para o Sudeste. Em 1808 a corte portuguesa foge de Napoleão e se instala no Rio de Janeiro, e em 1822 o Brasil se torna independente.",
+ gov:"Uma colônia de Portugal, governada por capitães donatários, depois por governadores-gerais e vice-reis que respondiam à Coroa. As câmaras municipais, dominadas pelos grandes proprietários, tinham muito poder local. O comércio só podia ser feito com a metrópole.",
+ life:"Engenhos, plantações e minas funcionavam com o trabalho forçado: mais de quatro milhões de africanos foram trazidos escravizados ao longo desses séculos. Povos indígenas foram escravizados, mortos por doenças e guerras ou empurrados para o interior. Resistiam em aldeias, em quilombos como Palmares e em revoltas.",
+ people:[["Tomé de Sousa","1503–1579","Primeiro governador-geral do Brasil."],["Padre António Vieira","1608–1697","Jesuíta que defendeu os indígenas e criticou sua escravização."],["Zumbi dos Palmares","1655–1695","Líder do maior quilombo da colônia."],["Tiradentes","1746–1792","Líder da Inconfidência Mineira, executado pela Coroa."],["Dom João VI","1767–1826","Rei que transferiu a corte para o Rio de Janeiro."]],
+ say:"Por três séculos, o Brasil é uma colônia de Portugal, sustentada pelo açúcar, pelo ouro e pelo trabalho de africanos escravizados."},
+{id:"rev-industrial",lane:"roma",pol:"industrial",name:"Revolução Industrial",from:1760,to:1870,
+ sum:"Na Grã-Bretanha, a partir de cerca de 1760, a máquina a vapor, a mecanização da tecelagem e o uso do carvão e do ferro mudam a forma de produzir. Em poucas décadas, o trabalho sai das casas e oficinas para as fábricas, as cidades enchem-se de trabalhadores e nasce a classe operária. A industrialização se espalha para a Bélgica, a França, a Alemanha e os Estados Unidos. Depois de 1870, uma segunda fase traz o aço, a eletricidade e o petróleo.",
+ gov:"A industrialização cresceu em Estados que protegiam a propriedade e o comércio, como a monarquia parlamentar britânica. Nas fábricas, o dono mandava. Só depois de décadas de lutas surgiram leis contra o trabalho infantil, limites de jornada e sindicatos.",
+ life:"Famílias deixavam o campo para morar em cortiços de cidades como Manchester e trabalhavam de doze a dezesseis horas por dia, crianças inclusive. Tecidos baratos, trens e telégrafo mudaram o ritmo da vida, mas cresceram também a poluição e as doenças.",
+ people:[["Richard Arkwright","1732–1792","Montou as primeiras grandes fábricas de fiação."],["James Watt","1736–1819","Aperfeiçoou a máquina a vapor."],["George Stephenson","1781–1848","Construiu locomotivas e as primeiras ferrovias."],["Friedrich Engels","1820–1895","Descreveu a vida operária de Manchester."]],
+ say:"A máquina a vapor e as fábricas mudam o mundo, e nasce a sociedade industrial."},
+{id:"rev-francesa",lane:"roma",pol:"franca_rev",name:"A Revolução Francesa",from:1789,to:1799,
+ sum:"Em 1789, o rei Luís XVI, sem dinheiro, convoca os Estados Gerais; os representantes do povo se proclamam Assembleia Nacional e Paris toma a Bastilha. A nobreza perde seus privilégios, a Declaração dos Direitos do Homem e do Cidadão proclama a igualdade perante a lei e a monarquia cai em 1792. A República executa o rei em 1793 e entra no Terror, fase de perseguições e guilhotina. Depois da queda de Robespierre, o Diretório governa até que, em 1799, o general Napoleão Bonaparte toma o poder.",
+ gov:"Em dez anos, a França passou por vários regimes: a monarquia absoluta até 1789, uma monarquia constitucional (1789–1792), a República da Convenção e do Comitê de Salvação Pública (1792–1795) e o Diretório (1795–1799). O poder era disputado por assembleias, clubes como o dos jacobinos e o povo de Paris nas ruas.",
+ life:"A fome e o preço do pão pesavam sobre o povo; a guerra e o recrutamento em massa chegaram a todas as famílias. Mudaram os nomes e os calendários, e todos passaram a ser “cidadãos”. Padres foram obrigados a jurar fidelidade ao Estado, e muita gente resistiu, sobretudo no oeste do país.",
+ people:[["Luís XVI","1754–1793","Último rei da França antes da República."],["Maria Antonieta","1755–1793","Rainha, executada na guilhotina."],["Robespierre","1758–1794","Líder jacobino, figura central do Terror."],["Georges Danton","1759–1794","Orador da Revolução, guilhotinado por moderação."]],
+ say:"Em dez anos, a França derruba o rei, proclama direitos para todos, passa pelo Terror e acaba nas mãos de Napoleão."}
+);
+
+/* ---------- obras novas ---------- */
+Object.assign(ART,{
+ "sabinas-david":{t:"A Intervenção das Sabinas",by:"Jacques-Louis David",y:1799,wiki:"The Intervention of the Sabine Women",about:"As mulheres sabinas se colocam entre os dois exércitos para impedir a luta. David pintou a cena logo depois do Terror, como um apelo à reconciliação."},
+ "brutus-david":{t:"Os litores trazem a Bruto os corpos de seus filhos",by:"Jacques-Louis David",y:1789,wiki:"The Lictors Bring to Brutus the Bodies of His Sons",about:"O primeiro cônsul condena os próprios filhos por conspirarem pela volta dos reis. A obra foi exibida em 1789, ano da Revolução Francesa."},
+ "horacios":{t:"O Juramento dos Horácios",by:"Jacques-Louis David",y:1784,wiki:"Oath of the Horatii",about:"Três irmãos romanos juram lutar até a morte pela cidade. O quadro virou símbolo da virtude cívica às vésperas da Revolução."},
+ "cicero-catilina":{t:"Cícero denuncia Catilina",by:"Cesare Maccari",y:1888,wiki:"Cicero Denounces Catiline",about:"Cícero discursa no Senado enquanto Catilina fica isolado no banco, no afresco do Palazzo Madama, em Roma."},
+ "jura-pela":{t:"O Juramento do Jogo da Pela",by:"Jacques-Louis David",y:1791,wiki:"Tennis Court Oath",cq:"David Tennis Court Oath",about:"Os deputados do Terceiro Estado juram não se separar até dar uma Constituição à França. David deixou o quadro inacabado."},
+ "declaracao-art":{t:"Declaração dos Direitos do Homem e do Cidadão",by:"Jean-Jacques-François Le Barbier",y:1789,wiki:"Declaration of the Rights of Man and of the Citizen",about:"Os 17 artigos sob o olho da Providência e as figuras da Liberdade e da Lei."},
+ "marcha-art":{t:"A marcha das mulheres sobre Versalhes",by:"Gravura da época",y:1789,wiki:"Women's March on Versailles",about:"Milhares de parisienses, em sua maioria mulheres, marcham sob chuva para exigir pão e levam o rei para Paris."},
+ "morte-marat":{t:"A Morte de Marat",by:"Jacques-Louis David",y:1793,wiki:"The Death of Marat",about:"O jornalista revolucionário, assassinado na banheira, em que tratava uma doença de pele, é mostrado como um mártir."},
+ "execucao-luis":{t:"A execução de Luís XVI",by:"Isidore Helman, a partir de Charles Monnet",y:1794,wiki:"Execution of Louis XVI",about:"A gravura mostra a guilhotina erguida na Place de la Révolution, a atual Place de la Concorde."}
+});
+
+/* ---------- os nós de aprofundamento ---------- */
+const _d=(id,parent,k,t,y,w,ll,role,sum,say,x)=>Object.assign({id,parent,k,t,y,w,ll,role,sum,say},x||{});
+const _ROMA=[12.4875,41.8892];
+const SUBS=[
+/* ===== Roma dos Reis ===== */
+_d("romulo","roma-reis","pessoa","Rômulo",-753,"753–716 a.C. (tradicional)",_ROMA,"Primeiro rei, segundo a lenda",
+ "Segundo a lenda, Rômulo e o irmão gêmeo Remo foram abandonados bebês e amamentados por uma loba. Adultos, fundaram uma cidade no monte Palatino; depois de uma briga em que Remo morreu, Rômulo deu o próprio nome a Roma e a governou por mais de trinta anos. Os historiadores veem nele um personagem de lenda, criado séculos depois, mas o Palatino guarda de fato vestígios de cabanas do século VIII a.C.",
+ "Rômulo, o primeiro rei, é um personagem de lenda, mas o Palatino guarda vestígios de aldeias do século oitavo antes de Cristo."),
+_d("sabinas","roma-reis","evento","O rapto das sabinas",-750,"c. 750 a.C. (lenda)",_ROMA,"",
+ "A cidade nova tinha homens demais e mulheres de menos. Segundo a lenda, Rômulo convidou os vizinhos sabinos para uma festa e os romanos raptaram suas filhas. Na guerra que se seguiu, as mulheres se colocaram entre os dois exércitos e pediram paz, e os dois povos se uniram sob um governo comum. É lenda, mas reflete algo real: Roma cresceu misturando latinos, sabinos e, depois, etruscos.",
+ "Na lenda, os romanos raptam as sabinas, mas elas impedem a guerra e unem os dois povos.",{art:["sabinas-david"]}),
+_d("numa","roma-reis","pessoa","Numa Pompílio",-715,"715–673 a.C. (tradicional)",_ROMA,"Segundo rei, o rei dos ritos",
+ "A tradição o lembra como um rei pacífico e religioso, de origem sabina, que organizou os sacerdotes, as Vestais e o calendário religioso, e fechou as portas do templo de Jano, sinal de que não havia guerra. Para os romanos, ele mostrava que a religião e as leis pesavam tanto quanto as armas.",
+ "Numa Pompílio, segundo rei, organiza a religião de Roma e mantém a cidade em paz."),
+_d("tulo","roma-reis","pessoa","Tulo Hostílio",-672,"672–640 a.C. (tradicional)",[12.67,41.75],"Terceiro rei, o rei guerreiro",
+ "Ao contrário de Numa, Tulo Hostílio é lembrado como rei guerreiro. A tradição conta que ele destruiu a vizinha Alba Longa, cidade-mãe da própria Roma, depois de um duelo entre três irmãos romanos, os Horácios, e três albanos, os Curiácios, e levou a população para Roma. Daí nasceu a ideia de Roma como cidade que absorve os vencidos.",
+ "Tulo Hostílio, rei guerreiro, destrói Alba Longa e traz seu povo para Roma.",{art:["horacios"]}),
+_d("anco","roma-reis","pessoa","Anco Márcio",-640,"640–616 a.C. (tradicional)",[12.29,41.76],"Quarto rei, o do porto",
+ "A tradição atribui a Anco Márcio a fundação de Óstia, na foz do Tibre, o porto e as salinas que davam a Roma acesso ao mar e ao sal, e a primeira ponte de madeira sobre o rio, a ponte Sublício. Era neto de Numa e, como ele, combinou a guerra com a religião.",
+ "Anco Márcio leva Roma ao mar, com o porto de Óstia."),
+_d("tarquinio-prisco","roma-reis","pessoa","Tarquínio Prisco",-616,"616–579 a.C. (tradicional)",_ROMA,"Quinto rei, de origem etrusca",
+ "Filho de um grego de Corinto e de uma etrusca, Lúcio Tarquínio chegou a Roma como estrangeiro rico e acabou eleito rei. Segundo a tradição, começou a drenar o pântano do Fórum com a Cloaca Máxima, iniciou o Circo Máximo e o templo de Júpiter no Capitólio e acrescentou novas famílias ao Senado. Com ele começa o período em que reis de origem etrusca governam Roma.",
+ "Tarquínio Prisco, de família etrusca, começa a transformar Roma numa cidade de verdade, com esgotos e templos."),
+_d("servio-tulio","roma-reis","pessoa","Sérvio Túlio",-578,"578–535 a.C. (tradicional)",_ROMA,"Sexto rei, o reformador",
+ "De origem humilde, segundo a lenda filho de uma escrava, é lembrado por reformas que ligaram o poder à riqueza e não só ao nascimento. Dividiu os cidadãos em classes por patrimônio e em centúrias, para servir no exército e para votar, e organizou a cidade em tribos territoriais. A tradição lhe atribui também uma muralha em torno das colinas, mas a que leva seu nome foi feita séculos depois.",
+ "Sérvio Túlio divide os cidadãos por riqueza, e não só por nascimento, num sistema que duraria séculos."),
+_d("tarquinio-soberbo","roma-reis","pessoa","Tarquínio, o Soberbo",-535,"535–509 a.C. (tradicional)",_ROMA,"Sétimo e último rei",
+ "Chegou ao trono depois de matar o sogro, Sérvio Túlio, e governou como tirano, sem consultar o Senado, com trabalhos forçados e impostos pesados. Concluiu o grande templo de Júpiter. Seu filho Sexto Tarquínio violentou Lucrécia, o que levou à revolta e à expulsão da família real em 509 a.C.",
+ "Tarquínio, o Soberbo, governa como tirano, e a revolta contra ele derruba a monarquia."),
+_d("lucrecia","roma-reis","evento","Lucrécia e a queda do rei",-510,"510–509 a.C. (tradicional)",_ROMA,"",
+ "Segundo Tito Lívio, Lucrécia, esposa de um nobre, foi violentada por Sexto Tarquínio, filho do rei, e se matou diante do marido e dos parentes, pedindo que a vingassem. Lúcio Júnio Bruto, sobrinho do rei, jurou expulsar os Tarquínios. O povo e o exército o apoiaram, e Roma declarou que nunca mais teria rei. É uma história contada séculos depois, mas serviu de explicação moral para a fundação da República.",
+ "O crime contra Lucrécia, na lenda, faz Roma expulsar seus reis.",{art:["brutus-david"]}),
+_d("etruscos","roma-reis","fase","Os etruscos e Roma",-616,"616–509 a.C.",[11.9,42.4],"",
+ "A Etrúria, ao norte de Roma, tinha cidades ricas, que comerciavam com gregos e fenícios. Durante cerca de um século, reis de origem etrusca governaram Roma. Dos etruscos os romanos teriam herdado símbolos do poder, como os feixes de varas dos lictores e a cadeira curul, os combates de gladiadores e práticas de adivinhação. Foi com eles que Roma passou de aldeia a cidade, com monumentos, esgotos e comércio.",
+ "Por cerca de cem anos, reis de origem etrusca governam Roma e a transformam numa cidade.",{to:-509}),
+
+/* ===== República Romana ===== */
+_d("consulado","roma-republica","instituicao","Os cônsules e as magistraturas",-509,"desde 509 a.C.",_ROMA,"",
+ "Dois cônsules eleitos por um ano governavam em conjunto, e cada um podia vetar o outro. Comandavam o exército e chefiavam o governo. Abaixo deles vinham os pretores, para a justiça, os edis, para a cidade e as festas, e os questores, para as finanças; os censores, a cada cinco anos, faziam o censo e vigiavam a moral. Os jovens da elite subiam esses cargos em ordem, o cursus honorum. O sistema impedia que um só homem concentrasse o poder, até que os generais romperam o equilíbrio.",
+ "Dois cônsules, eleitos por um ano, dividem o poder, para que nunca mais haja um rei."),
+_d("senado","roma-republica","instituicao","O Senado",-509,"desde a monarquia",_ROMA,"",
+ "Reunia cerca de trezentos ex-magistrados, vitalícios, e aconselhava os cônsules, cuidava das finanças, da política externa e das províncias. Suas decisões não eram leis, mas poucos as desafiavam. Durante a maior parte da República, o Senado foi o centro real do poder. A sigla SPQR, o Senado e o Povo Romano, aparecia em estandartes e moedas.",
+ "O Senado, com cerca de trezentos ex-magistrados, é o verdadeiro centro do poder da República."),
+_d("patricios-plebeus","roma-republica","instituicao","Patrícios e plebeus",-494,"494–287 a.C.",_ROMA,"",
+ "No início, só os patrícios, famílias ligadas aos fundadores da cidade, podiam ser magistrados e sacerdotes. Os plebeus, a maioria da população, de camponeses a comerciantes ricos, serviam no exército, mas não tinham voz. A luta entre as ordens, entre 494 e 287 a.C., deu aos plebeus tribunos, leis escritas e acesso a todos os cargos, e terminou com a Lei Hortênsia, que deu força de lei às decisões da assembleia plebeia.",
+ "Durante dois séculos, os plebeus lutam por direitos contra os patrícios, e vão conquistando um a um."),
+_d("secessao-plebe","roma-republica","evento","A primeira secessão da plebe",-494,"494 a.C.",[12.54,41.95],"",
+ "Endividados e cansados de ser presos pelos patrícios, os plebeus soldados saíram de Roma para o Monte Sagrado e se recusaram a lutar. Os patrícios cederam: criaram os tribunos da plebe, magistrados de pessoa sagrada. Segundo a tradição, a fábula do estômago e dos membros, contada por Menênio Agripa, ajudou a convencê-los a voltar.",
+ "Em 494, os plebeus fazem uma espécie de greve e saem de Roma, e conquistam os seus tribunos."),
+_d("tribunato","roma-republica","instituicao","Os tribunos da plebe",-494,"desde 494 a.C.",_ROMA,"",
+ "Eleitos só entre plebeus, os tribunos podiam vetar decisões dos magistrados e do Senado e proteger qualquer cidadão pobre que pedisse ajuda; sua pessoa era inviolável. O tribunato foi um freio ao poder da elite, mas séculos depois foi usado por reformadores como os Graco e, depois, por Augusto, que se atribuiu o poder tribunício.",
+ "Os tribunos da plebe podem vetar decisões, e sua pessoa é sagrada."),
+_d("xii-tabuas","roma-republica","evento","A Lei das Doze Tábuas",-451,"451–450 a.C.",_ROMA,"",
+ "Por pressão da plebe, uma comissão de dez homens escreveu as leis em doze tábuas expostas no Fórum, para que ninguém dependesse da memória dos magistrados patrícios. Tratavam de dívidas, família, propriedade e crimes. Foram a base do direito romano, que séculos depois influenciaria o direito de boa parte do mundo, inclusive o do Brasil.",
+ "As leis de Roma são escritas em doze tábuas e expostas no Fórum, para que todos as conheçam."),
+_d("cincinato","roma-republica","pessoa","Cincinato",-458,"séc. V a.C.",_ROMA,"Ditador e agricultor",
+ "Segundo a tradição, Lúcio Quíncio Cincinato lavrava seu pequeno campo quando foi chamado, em 458 a.C., para salvar um exército romano cercado pelos équos. Nomeado ditador, venceu em poucos dias e deixou o cargo após dezesseis, voltando ao arado. Os romanos o tomaram como modelo de virtude cívica: poder aceito por dever e devolvido sem hesitar. Séculos depois, George Washington seria comparado a ele.",
+ "Cincinato recebe poderes de ditador, salva o exército e os devolve em dezesseis dias, para voltar ao arado."),
+_d("gauleses","roma-republica","evento","Os gauleses saqueiam Roma",-390,"c. 390 a.C.",_ROMA,"",
+ "Por volta de 390 a.C., gauleses liderados por Breno derrotaram o exército romano no rio Ália e entraram na cidade, que foi saqueada e incendiada. Os romanos só se livraram deles pagando um resgate em ouro. Roma reconstruiu as muralhas e reformou seu exército, e por séculos o medo dos gauleses marcou a política romana, até as campanhas de César.",
+ "Por volta de 390, gauleses saqueiam Roma, e a cidade nunca esquece o susto."),
+_d("samnitas","roma-republica","fase","As Guerras Samnitas",-343,"343–290 a.C.",[14.7,41.1],"",
+ "Em três guerras, Roma lutou contra os samnitas, povos das montanhas do centro-sul da Itália. Em 321 a.C., um exército romano caiu numa armadilha no desfiladeiro das Fúrcas Caudinas e foi humilhado. Roma aprendeu: trocou a falange por legiões divididas em manípulos, mais flexíveis, e construiu estradas, como a Via Ápia, para deslocar tropas. Em 290 a.C. dominava o centro da Itália.",
+ "Em meio século de guerras contra os samnitas, Roma reinventa o seu exército e constrói estradas.",{to:-290}),
+_d("pirro","roma-republica","evento","Pirro e as vitórias que custam caro",-280,"280–275 a.C.",[16.7,40.2],"",
+ "Tarento, cidade grega do sul da Itália, pediu ajuda ao rei Pirro, do Épiro, um dos melhores generais da época. Ele venceu os romanos em Heracleia e em Ásculo, mas com perdas tão grandes que ficou a expressão “vitória de Pirro”. Roma refez seus exércitos, derrotou-o em Benevento e, em poucos anos, controlava toda a Itália peninsular.",
+ "Pirro, rei do Épiro, vence duas batalhas contra Roma, mas perde tanta gente que a vitória sai cara demais.",{to:-275}),
+_d("punicas","roma-republica","fase","As Guerras Púnicas",-264,"264–146 a.C.",[10.32,36.85],"",
+ "Três guerras entre Roma e Cartago, potência fenícia do norte da África, decidiram quem dominaria o Mediterrâneo ocidental. Na primeira (264–241 a.C.), Roma construiu uma frota e ganhou a Sicília. Na segunda (218–201 a.C.), Aníbal atravessou os Alpes e quase destruiu Roma, até ser derrotado em Zama. Na terceira (149–146 a.C.), Roma arrasou Cartago e transformou seu território em província.",
+ "Em mais de cem anos, três guerras contra Cartago fazem de Roma a senhora do Mediterrâneo.",{to:-146}),
+_d("anibal-barca","roma-republica","pessoa","Aníbal",-218,"247–183 a.C.",[7.0,45.1],"General cartaginês",
+ "Filho de Amílcar Barca, jurou ainda menino, segundo a tradição, ódio eterno a Roma. Em 218 a.C. saiu da Hispânia com um grande exército e elefantes de guerra, atravessou os Pireneus e os Alpes e invadiu a Itália. Venceu os romanos no Trasimeno e em Canas. Passou quinze anos na Itália sem conseguir tomar Roma e, chamado de volta para defender Cartago, foi derrotado por Cipião em Zama. Viveu exilado e se matou para não ser entregue aos romanos.",
+ "Aníbal atravessa os Alpes com elefantes e derrota Roma várias vezes, mas não consegue tomá-la."),
+_d("canas","roma-republica","evento","A batalha de Canas",-216,"2 de agosto de 216 a.C.",[16.13,41.3],"",
+ "Na planície da Apúlia, Aníbal enfrentou um exército romano muito maior e o envolveu com uma manobra em pinça. Em um só dia morreram dezenas de milhares de romanos, um dos piores massacres da guerra antiga. Mesmo assim Roma não pediu paz: convocou todos os homens que pôde e passou a evitar batalhas diretas com Aníbal, que acabou isolado na Itália.",
+ "Em Canas, Aníbal cerca e aniquila um exército romano, mas Roma se recusa a pedir paz."),
+_d("cipiao","roma-republica","pessoa","Cipião Africano",-202,"236–183 a.C.",[9.9,36.0],"Vencedor de Aníbal",
+ "Públio Cornélio Cipião, ainda jovem, tomou Nova Cartago, na Hispânia (209 a.C.), e depois levou a guerra para a África, obrigando Aníbal a voltar. Em Zama (202 a.C.) venceu o cartaginês e ganhou o título de Africano. Anos depois, acusado de corrupção por adversários políticos, retirou-se para sua propriedade, onde morreu. Foi um dos primeiros generais cuja glória pessoal inquietou o Senado.",
+ "Cipião leva a guerra à África, vence Aníbal em Zama e ganha o título de Africano."),
+_d("escravidao-roma","roma-republica","instituicao","A escravidão e os latifúndios",-200,"séc. III–I a.C.",_ROMA,"",
+ "As conquistas trouxeram centenas de milhares de cativos para a Itália. Trabalhavam em latifúndios, minas, casas e cidades, e podiam ser libertados e virar cidadãos, ou seus filhos. Foi a base econômica da República tardia e causou revoltas: as guerras servis da Sicília e a revolta de Espártaco. Ao mesmo tempo, camponeses que serviam como soldados perdiam suas terras e iam para as cidades.",
+ "As conquistas enchem a Itália de escravizados, e os pequenos camponeses perdem suas terras."),
+_d("gracos-irmaos","roma-republica","pessoa","Os irmãos Graco",-133,"133 e 123–121 a.C.",_ROMA,"Tribunos reformadores",
+ "Netos de Cipião Africano, Tibério e Caio Graco foram tribunos da plebe e tentaram uma reforma agrária: redistribuir terras públicas que os ricos tinham tomado dos pequenos camponeses, os mesmos que serviam como soldados. Tibério foi morto por senadores em 133; Caio, que também queria dar direitos aos aliados italianos, morreu em 121 a.C. Foi a primeira vez que a violência entre romanos entrou na política, e o começo da crise da República.",
+ "Os Graco tentam dar terras aos camponeses e são mortos, e a violência entra de vez na política romana."),
+_d("mario","roma-republica","pessoa","Caio Mário",-107,"157–86 a.C.",[15.0,41.0],"Sete vezes cônsul",
+ "Homem novo, sem ancestrais senadores, nascido em Arpino, foi eleito cônsul sete vezes, algo sem precedentes. Venceu o rei Jugurta, na Numídia, e os povos germânicos dos cimbros e teutões. Reformou o exército: passou a aceitar voluntários sem terra e a dar-lhes terras ao fim do serviço. Com isso, os soldados ficaram mais ligados ao general que os pagava do que à República.",
+ "Mário reforma o exército: os soldados passam a seguir o general que lhes paga e lhes dá terras."),
+_d("guerra-social","roma-republica","evento","A Guerra Social",-91,"91–88 a.C.",[13.8,41.9],"",
+ "Os aliados italianos, que lutavam nos exércitos de Roma, mas não tinham cidadania, se revoltaram em 91 a.C. Roma venceu a guerra, mas concedeu a cidadania romana a quase todos os italianos para encerrar a luta. A medida transformou a cidade-Estado em um Estado italiano.",
+ "Os aliados italianos se revoltam, e Roma, mesmo vencendo, lhes dá a cidadania.",{to:-88}),
+_d("sula","roma-republica","pessoa","Sula",-88,"138–78 a.C.",_ROMA,"O primeiro a marchar sobre Roma",
+ "Rival de Mário, Sula comandava um exército quando o Senado lhe tirou a guerra contra Mitrídates. Em 88 a.C. marchou sobre Roma com suas legiões, algo até então impensável. Depois de combater no Oriente, voltou, venceu a guerra civil e se fez ditador (82–79 a.C.), publicando listas de proscritos: inimigos que podiam ser mortos e ter os bens confiscados. Reformou a Constituição para reforçar o Senado e depois se aposentou. Seu exemplo mostrou o caminho aos generais seguintes.",
+ "Sula marcha sobre Roma com o seu exército, e depois se faz ditador e manda matar seus inimigos."),
+_d("pompeu","roma-republica","pessoa","Pompeu, o Grande",-70,"106–48 a.C.",[22.38,39.28],"General e rival de César",
+ "Começou como general de Sula e fez carreira militar sem seguir o caminho normal dos cargos. Limpou o Mediterrâneo de piratas em 67 a.C., em poucos meses, venceu Mitrídates e reorganizou o Oriente, criando províncias como a Síria. Aliou-se a César e Crasso, casou-se com Júlia, filha de César, e, depois da morte dela, passou para o lado do Senado. Derrotado por César em Farsalos, fugiu para o Egito, onde foi assassinado.",
+ "Pompeu limpa os mares de piratas, conquista o Oriente, e acaba derrotado por César."),
+_d("crasso","roma-republica","pessoa","Crasso",-71,"115–53 a.C.",[39.0,36.87],"O homem mais rico de Roma",
+ "Enriqueceu comprando casas incendiadas e bens confiscados nas proscrições de Sula. Derrotou Espártaco em 71 a.C. e foi cônsul com Pompeu. Aliou-se a Pompeu e César no primeiro triunvirato. Querendo a glória militar dos dois, atacou o império parta e foi derrotado e morto em Carras, em 53 a.C.",
+ "Crasso, o homem mais rico de Roma, vence Espártaco, mas morre ao atacar os partas."),
+_d("catilina","roma-republica","evento","A conjuração de Catilina",-63,"63 a.C.",_ROMA,"",
+ "O nobre arruinado Lúcio Sérgio Catilina, derrotado nas eleições para cônsul, planejou tomar o poder com o apoio de endividados e veteranos. O cônsul Cícero descobriu o plano e o denunciou no Senado em discursos famosos, as Catilinárias. Os conspiradores presos em Roma foram executados sem julgamento; Catilina morreu em batalha no início de 62 a.C. O episódio mostra a tensão social da época e a fragilidade das instituições.",
+ "Cícero descobre e denuncia a conjuração de Catilina, e a República sobrevive, por pouco.",{art:["cicero-catilina"]}),
+_d("cicero","roma-republica","pessoa","Cícero",-63,"106–43 a.C.",_ROMA,"Orador, advogado e cônsul",
+ "Homem novo, nascido em Arpino, chegou ao consulado por seu talento de advogado e orador. Defendeu a República em discursos e cartas que sobreviveram aos séculos e fixaram o latim literário. Tentou manter o equilíbrio entre o Senado e os generais, mas apoiou o lado perdedor em cada guerra civil. Depois da morte de César, atacou Marco Antônio nos discursos chamados Filípicas, e foi assassinado por ordem dele em 43 a.C.",
+ "Cícero, o maior orador de Roma, defende a República com as palavras e paga com a vida."),
+_d("cesar","roma-republica","pessoa","Júlio César",-60,"100–44 a.C.",_ROMA,"General e ditador",
+ "De uma família patrícia sem muito dinheiro, fez carreira com ambição e generosidade. Foi cônsul em 59 a.C., conquistou a Gália entre 58 e 50, atravessou o Rubicão em 49 e venceu a guerra civil contra Pompeu. Em 44 a.C. se fez ditador perpétuo e planejou reformas: o calendário juliano, a cidadania para provinciais, menos poder para o Senado. Foi assassinado por senadores em 15 de março de 44 a.C. Era também escritor: seus Comentários sobre a guerra da Gália são fonte direta dos fatos.",
+ "Júlio César conquista a Gália, vence a guerra civil, se faz ditador e cai sob as facas de senadores.",{art:["morte-cesar"]}),
+_d("triunvirato1","roma-republica","evento","O primeiro triunvirato",-60,"60 a.C.",_ROMA,"",
+ "Um acordo privado entre três homens: César precisava do consulado, Pompeu queria terras para seus veteranos, Crasso queria influência. Juntos, dominaram a política romana por anos, passando por cima do Senado. Casamentos e dinheiro selaram a aliança. A morte de Júlia, mulher de Pompeu e filha de César, em 54, e a de Crasso, em 53, desfizeram o acordo, e a rivalidade entre os dois restantes levou à guerra civil.",
+ "César, Pompeu e Crasso fazem um acordo privado que passa por cima do Senado."),
+_d("guerra-gaulesa","roma-republica","fase","A conquista da Gália",-58,"58–50 a.C.",[4.5,47.5],"",
+ "Como governador da Gália, César fez oito anos de campanhas até o Atlântico e o Reno, e chegou a desembarcar duas vezes na Britânia. A rendição do chefe arverno Vercingetórix em Alésia, em 52 a.C., quebrou a resistência gaulesa. As fontes antigas falam em mais de um milhão de mortos, número provavelmente exagerado, mas que dá ideia da violência. O território se romanizou e, séculos depois, daria origem à França, com uma língua derivada do latim.",
+ "Em oito anos, César conquista a Gália inteira, até a rendição de Vercingetórix.",{to:-50}),
+_d("guerra-civil-cesar","roma-republica","fase","A guerra civil de César",-49,"49–45 a.C.",[22.38,39.28],"",
+ "Depois do Rubicão, César tomou a Itália em semanas, venceu Pompeu em Farsalos, em 48 a.C., foi ao Egito, onde apoiou Cleópatra, e derrotou os últimos pompeianos na África (Tapso, 46) e na Hispânia (Munda, 45). Em poucos anos era senhor do mundo romano.",
+ "Em quatro anos, César derrota Pompeu e seus aliados em três continentes.",{to:-45}),
+_d("segundo-triunvirato","roma-republica","evento","O segundo triunvirato e as proscrições",-43,"43 a.C.",[11.34,44.49],"",
+ "Depois dos Idos de Março, Otaviano, herdeiro de César, Marco Antônio e Lépido formaram um triunvirato com poderes legais e se vingaram dos assassinos. Fizeram novas listas de proscritos, com cerca de trezentos senadores e milhares de cavaleiros, entre eles Cícero. Em 42 a.C. venceram Bruto e Cássio em Filipos.",
+ "Otaviano, Antônio e Lépido tomam o poder e eliminam seus inimigos."),
+_d("filipos","roma-republica","evento","A batalha de Filipos",-42,"outubro de 42 a.C.",[24.28,41.01],"",
+ "Em duas batalhas na Macedônia, os exércitos de Otaviano e Marco Antônio derrotaram Bruto e Cássio, assassinos de César. Os dois se mataram. Terminava a última tentativa de salvar a República pelas armas. Depois, Otaviano e Antônio dividiram o mundo romano e acabaram disputando-o em Áccio.",
+ "Em Filipos, os assassinos de César são derrotados, e a República perde sua última defesa."),
+
+/* ===== A Revolução Francesa ===== */
+_d("ancien-regime","rev-francesa","instituicao","O Antigo Regime",1788,"até 1789",[2.12,48.8],"",
+ "A França se dividia em três estados: o clero, a nobreza e o Terceiro Estado, que era quase toda a população, do camponês ao burguês rico. Os dois primeiros tinham privilégios, como não pagar certos impostos; o terceiro pagava a conta. O rei tinha poder absoluto, mas estava endividado depois de guerras, inclusive o apoio à independência dos Estados Unidos. Em 1788, a colheita foi péssima e o pão ficou caro.",
+ "Antes de 1789, a França é dividida em três estados, e quem paga os impostos é o povo."),
+_d("sieyes","rev-francesa","pessoa","Sieyès",1789.0,"1748–1836",[2.35,48.85],"Padre e pensador político",
+ "Em janeiro de 1789, o abade Emmanuel Joseph Sieyès publicou o panfleto O que é o Terceiro Estado?, que começava com três perguntas: o que é o Terceiro Estado? Tudo. O que foi até agora na ordem política? Nada. O que pede? Ser alguma coisa. A ideia de que a nação é o povo, e não o rei ou a nobreza, tornou-se a base da Revolução. Sieyès sobreviveu ao Terror e, em 1799, ajudou Napoleão a dar o golpe.",
+ "Sieyès pergunta o que é o Terceiro Estado, e responde: tudo."),
+_d("lafayette","rev-francesa","pessoa","Lafayette",1789.5,"1757–1834",[2.35,48.85],"Herói de duas revoluções",
+ "Aristocrata francês, lutou ao lado de George Washington na independência dos Estados Unidos. Em 1789 foi deputado, comandante da Guarda Nacional de Paris e autor do primeiro projeto de Declaração dos Direitos do Homem, em que Thomas Jefferson deu sugestões. Defendia uma monarquia constitucional e, ao fugir da França em 1792 depois da queda do rei, foi preso pelos austríacos. Voltou depois de Napoleão e foi ainda uma figura da Revolução de 1830.",
+ "Lafayette, herói da independência americana, quer uma monarquia constitucional para a França."),
+_d("estados-gerais","rev-francesa","evento","Os Estados Gerais",1789.34,"5 de maio de 1789",[2.12,48.8],"",
+ "Sem dinheiro, Luís XVI convocou os Estados Gerais, assembleia dos três estados que não se reunia desde 1614. Na abertura em Versalhes, brigou-se logo sobre o modo de votar: por estado, em que clero e nobreza venceriam sempre, ou por cabeça, o que favorecia o Terceiro Estado, que tinha o mesmo número de deputados que os dois outros somados. A disputa paralisou tudo por semanas.",
+ "Em maio de 1789, o rei convoca os Estados Gerais e logo surge a briga sobre como votar."),
+_d("jogo-pela","rev-francesa","evento","O Juramento do Jogo da Pela",1789.47,"20 de junho de 1789",[2.12,48.8],"",
+ "Em 17 de junho, os deputados do Terceiro Estado se declararam Assembleia Nacional. Três dias depois, encontrando a sala fechada pelo rei, reuniram-se numa quadra de jogo da pela e juraram não se separar até dar uma Constituição à França. Foi o primeiro ato revolucionário: a soberania passava do rei para a nação.",
+ "Barrados pelo rei, os deputados juram numa quadra de jogo da pela só se separar quando houver uma Constituição.",{art:["jura-pela"]}),
+_d("bastilha","rev-francesa","evento","A tomada da Bastilha",1789.53,"14 de julho de 1789",[2.369,48.853],"",
+ "Com o rei concentrando tropas ao redor de Paris e depois de demitir o ministro Necker, os parisienses se armaram. Em 14 de julho, procuraram pólvora e armas na Bastilha, fortaleza-prisão que simbolizava o poder real, e a tomaram depois de um combate. Havia só sete prisioneiros. A queda da Bastilha mostrou que o rei não controlava mais a capital, e a data virou a festa nacional da França.",
+ "Em 14 de julho de 1789, o povo de Paris toma a Bastilha, e a França festeja essa data até hoje."),
+_d("grande-medo","rev-francesa","evento","O Grande Medo",1789.57,"julho e agosto de 1789",[2.0,47.0],"",
+ "No campo, boatos de que nobres e bandidos preparavam uma vingança espalharam pânico. Camponeses se armaram e, em muitas regiões, atacaram castelos e queimaram os registros de direitos feudais e de dívidas. O medo de uma revolta camponesa pressionou a Assembleia a agir rápido contra os privilégios.",
+ "No verão de 1789, o pânico percorre o campo, e camponeses queimam os registros dos senhores."),
+_d("noite-4-agosto","rev-francesa","evento","A noite de 4 de agosto",1789.59,"4 de agosto de 1789",[2.12,48.8],"",
+ "Em uma sessão noturna, nobres e clérigos da própria Assembleia renunciaram aos privilégios: direitos feudais, isenções de impostos, dízimo da Igreja. Em poucas horas, a base legal do Antigo Regime ruiu. Na prática, muitos direitos teriam de ser pagos pelos camponeses por indenizações, e só foram extintos de vez em 1793.",
+ "Em uma só noite, a Assembleia acaba com os privilégios da nobreza e do clero."),
+_d("declaracao","rev-francesa","evento","A Declaração dos Direitos do Homem e do Cidadão",1789.65,"26 de agosto de 1789",[2.35,48.85],"",
+ "A Assembleia proclamou em dezessete artigos que os homens nascem e permanecem livres e iguais em direitos, que a soberania pertence à nação e que a lei é expressão da vontade geral. Garantia a liberdade de opinião, a propriedade e a presunção de inocência. Inspirou-se nos filósofos do Iluminismo e na Declaração de Independência dos Estados Unidos, e inspirou depois constituições e declarações de direitos pelo mundo.",
+ "A Declaração dos Direitos do Homem e do Cidadão proclama que todos nascem livres e iguais em direitos.",{art:["declaracao-art"]}),
+_d("marcha-versalhes","rev-francesa","evento","A marcha sobre Versalhes",1789.76,"5 e 6 de outubro de 1789",[2.12,48.8],"",
+ "Com a falta de pão em Paris e o rei se recusando a aprovar a Declaração e os decretos de agosto, milhares de mulheres marcharam sob a chuva até Versalhes, seguidas pela Guarda Nacional. Invadiram o palácio e obrigaram a família real a se mudar para Paris. Desde então, o rei viveu quase prisioneiro das Tulherias.",
+ "Mulheres de Paris marcham até Versalhes pedindo pão e levam o rei para a capital.",{art:["marcha-art"]}),
+_d("jacobinos","rev-francesa","instituicao","Os jacobinos e os clubes políticos",1789.85,"a partir de 1789",[2.33,48.86],"",
+ "Os clubes políticos foram escolas de debate da Revolução. O mais famoso, o Clube dos Jacobinos, nasceu do grupo de deputados bretões e passou a se reunir num antigo convento dominicano da rua Saint-Honoré, daí o nome. Começou moderado; em 1793 era o centro da política radical, ligado a Robespierre, com centenas de clubes filiados pela França.",
+ "O Clube dos Jacobinos, que começa como um grupo de deputados, vira o centro da política radical."),
+_d("constituicao-clero","rev-francesa","evento","A Constituição Civil do Clero",1790.53,"12 de julho de 1790",[2.35,48.85],"",
+ "Depois de tomar os bens da Igreja para pagar as dívidas do Estado, a Assembleia reorganizou o clero francês: bispos e padres passaram a ser eleitos e pagos pelo Estado. Em 1791 foi exigido um juramento de fidelidade; cerca de metade dos padres recusou. O papa condenou a medida. A divisão entre revolucionários e católicos fiéis à Igreja alimentaria a guerra civil.",
+ "Padres passam a ser eleitos e pagos pelo Estado, e a França se divide entre os que juram e os que recusam."),
+_d("fuga-varennes","rev-francesa","evento","A fuga de Varennes",1791.47,"20 e 21 de junho de 1791",[5.18,49.23],"",
+ "Na noite de 20 de junho, o rei e a família fugiram disfarçados de Paris, em direção à fronteira, onde esperavam apoio de tropas fiéis. Foram reconhecidos e detidos em Varennes e levados de volta a Paris. A tentativa de fuga convenceu muitos franceses de que o rei não aceitava a Revolução e tornou a monarquia cada vez mais impopular.",
+ "O rei tenta fugir da França disfarçado, é reconhecido em Varennes, e perde a confiança do povo."),
+_d("constituicao-1791","rev-francesa","evento","A Constituição de 1791",1791.67,"3 de setembro de 1791",[2.35,48.85],"",
+ "Depois de dois anos de trabalho, a Assembleia terminou a primeira Constituição francesa, que fazia do país uma monarquia constitucional: o rei dividia o poder com uma Assembleia Legislativa eleita, mas só os cidadãos “ativos”, os que pagavam certo valor de impostos, podiam votar. Durou menos de um ano.",
+ "A primeira Constituição francesa cria uma monarquia constitucional, mas dura menos de um ano."),
+_d("guerra-1792","rev-francesa","evento","A guerra contra a Áustria",1792.3,"20 de abril de 1792",[3.0,50.5],"",
+ "A França declarou guerra à Áustria, com apoio de uma parte dos revolucionários, que achavam que a guerra uniria o país e espalharia a Revolução, e do rei, que esperava a derrota. As primeiras batalhas foram desastrosas. A guerra, que se estenderia por mais de vinte anos, radicalizou a Revolução e criou o clima de desconfiança que levaria ao Terror.",
+ "A França declara guerra à Áustria, uma guerra que, com pausas, duraria mais de vinte anos."),
+_d("sans-culottes","rev-francesa","instituicao","Os sans-culottes",1792.4,"1792–1795",[2.35,48.86],"",
+ "Chamavam-se assim os artesãos, lojistas e trabalhadores de Paris que usavam calças compridas em vez dos calções dos nobres. Politicamente ativos, armados com piques, exigiam preços justos para o pão, o fim do rei e punição aos traidores. Foram a força de rua das jornadas decisivas de 1792 e 1793 e pressionaram a Convenção por medidas radicais.",
+ "Os sans-culottes, trabalhadores e artesãos de Paris, são a força de rua da Revolução."),
+_d("queda-monarquia","rev-francesa","evento","A queda da monarquia",1792.61,"10 de agosto de 1792",[2.33,48.86],"",
+ "Com a guerra indo mal e um manifesto do comandante austro-prussiano ameaçando Paris, as seções parisienses e batalhões de voluntários marcharam sobre o palácio das Tulherias. Mais de mil pessoas morreram, entre elas muitos guardas suíços do rei. A Assembleia suspendeu o rei e convocou uma Convenção, eleita por todos os homens adultos, para redigir uma nova Constituição.",
+ "Em 10 de agosto de 1792, o povo de Paris invade as Tulherias, e o rei é deposto."),
+_d("valmy","rev-francesa","evento","A batalha de Valmy",1792.72,"20 de setembro de 1792",[4.76,49.08],"",
+ "Perto de Valmy, na Champagne, o exército francês, em grande parte voluntários, resistiu com artilharia ao avanço prussiano, que recuou. A vitória foi pequena em mortos, mas enorme em símbolo: um exército de cidadãos fazia frente aos exércitos monárquicos da Europa. Goethe, que estava lá, disse que começava uma nova era da história.",
+ "Em Valmy, um exército de voluntários franceses faz recuar os prussianos."),
+_d("republica-1792","rev-francesa","evento","Proclamada a República",1792.72,"21 e 22 de setembro de 1792",[2.35,48.85],"",
+ "No dia seguinte a Valmy, a nova Convenção aboliu a monarquia e, no dia seguinte, passou-se a contar o tempo a partir do Ano I da República. Os franceses deixaram de ser súditos e se tornaram cidadãos de uma república. Em 1793, a Convenção adotou um novo calendário, de doze meses de trinta dias, com nomes ligados à natureza.",
+ "A Convenção abole a monarquia, e a França se torna uma república."),
+_d("execucao-luis","rev-francesa","evento","A execução de Luís XVI",1793.05,"21 de janeiro de 1793",[2.3212,48.8656],"",
+ "Julgado pela Convenção por conspirar contra a liberdade, Luís XVI foi condenado por pequena maioria e guilhotinado na praça da Revolução, a atual Praça da Concórdia. Para os revolucionários, era o fim simbólico da monarquia; para as monarquias da Europa, uma ofensa que levou a Grã-Bretanha, a Espanha e outros países a entrar na guerra contra a França.",
+ "O rei Luís XVI é julgado, condenado e guilhotinado em janeiro de 1793.",{art:["execucao-luis"]}),
+_d("luis16","rev-francesa","pessoa","Luís XVI",1789.0,"1754–1793",[2.12,48.8],"O último rei do Antigo Regime",
+ "Chegou ao trono em 1774, aos vinte anos. Bem-intencionado, mas indeciso, não conseguiu reformar as finanças do país. Aceitou a Revolução em 1789 sem convicção, tentou fugir em 1791, foi deposto em 1792 e executado em 1793. A esposa, Maria Antonieta, austríaca, tornou-se alvo de ódio popular, e foi guilhotinada em outubro do mesmo ano.",
+ "Luís XVI, indeciso e endividado, perde o trono e a vida."),
+_d("vendeia","rev-francesa","evento","A revolta da Vendeia",1793.2,"a partir de março de 1793",[-1.2,46.8],"",
+ "Quando a Convenção decretou o recrutamento de 300 mil homens, camponeses do oeste da França, muitos católicos fiéis a padres que haviam recusado o juramento, se revoltaram. A guerra da Vendeia durou anos e foi extremamente violenta, com massacres de ambos os lados e dezenas de milhares de mortos. Os revolucionários a usaram como prova de que a República estava cercada de inimigos.",
+ "Camponeses católicos do oeste se revoltam contra o recrutamento, e a França entra em guerra civil."),
+_d("comite-salvacao","rev-francesa","instituicao","O Comitê de Salvação Pública",1793.26,"a partir de abril de 1793",[2.33,48.86],"",
+ "Criado em abril de 1793 para dirigir a defesa do país, o Comitê tornou-se, na prática, o governo da França, formado por doze membros, entre eles Robespierre, Carnot e Saint-Just. Organizou o recrutamento em massa, a economia de guerra e o Terror. Foi o aparelho mais poderoso e mais temido da Revolução.",
+ "Doze homens do Comitê de Salvação Pública passam a governar a França em guerra."),
+_d("marat","rev-francesa","pessoa","Jean-Paul Marat",1793.53,"1743–1793",[2.34,48.85],"Jornalista radical",
+ "Médico e jornalista, publicava O Amigo do Povo, em que pedia vigilância e violência contra os inimigos da Revolução. Era idolatrado pelos sans-culottes e odiado pelos moderados. Em 13 de julho de 1793, foi esfaqueado em sua banheira pela girondina Charlotte Corday, que culpava os radicais pela violência. Sua morte foi usada para endurecer o regime.",
+ "Marat, jornalista radical, é morto na banheira por Charlotte Corday.",{art:["morte-marat"]}),
+_d("terror","rev-francesa","fase","O Terror",1793.68,"setembro de 1793 – julho de 1794",[2.35,48.85],"",
+ "Com a França em guerra civil e invadida, a Convenção colocou o Terror “na ordem do dia”. A Lei dos Suspeitos permitia prender qualquer um sob suspeita de ser inimigo da Revolução, e tribunais revolucionários condenavam, muitas vezes sem defesa real. Mais de 16 mil pessoas foram guilhotinadas após julgamento, e dezenas de milhares morreram sem julgamento ou nas prisões. A defesa do Terror era a de que a República precisava de “virtude” e de “terror” para sobreviver.",
+ "Em nome da defesa da República, a Convenção instala o Terror: prisões, tribunais e guilhotina.",{to:1794.57}),
+_d("olympe","rev-francesa","pessoa","Olympe de Gouges",1791.7,"1748–1793",[2.35,48.85],"Escritora e defensora dos direitos das mulheres",
+ "Dramaturga e panfletária, escreveu em 1791 a Declaração dos Direitos da Mulher e da Cidadã, em resposta à Declaração de 1789, que falava de “homens”. Defendia também o fim da escravidão e o julgamento do rei em vez da execução. Foi guilhotinada em 3 de novembro de 1793, depois de criticar Robespierre e os jacobinos.",
+ "Olympe de Gouges pede à Revolução os mesmos direitos para as mulheres, e é guilhotinada."),
+_d("abolicao-1794","rev-francesa","evento","A abolição da escravidão nas colônias",1794.09,"4 de fevereiro de 1794",[-72.3,18.9],"",
+ "Pressionada pela revolta de escravizados em Saint-Domingue, hoje Haiti, e pelo trabalho de abolicionistas, a Convenção aboliu a escravidão em todas as colônias francesas e declarou os ex-escravizados cidadãos. Foi a primeira abolição em larga escala do mundo moderno. Napoleão a revogou em 1802, mas o Haiti seguiu em frente e se tornou independente em 1804.",
+ "A Convenção abole a escravidão nas colônias francesas, mas Napoleão a restabelece em 1802."),
+_d("danton","rev-francesa","pessoa","Georges Danton",1794.25,"1759–1794",[2.35,48.85],"Orador e ministro da Justiça",
+ "Advogado, grande orador, foi uma das vozes mais fortes da Revolução, ministro da Justiça em 1792 e membro do primeiro Comitê de Salvação Pública. Em 1794, passou a defender o fim do Terror e foi acusado de corrupção e moleza. Julgado, foi guilhotinado em 5 de abril de 1794, junto de aliados. Diz-se que mandou que mostrassem sua cabeça ao povo.",
+ "Danton, o grande orador da Revolução, pede o fim do Terror e acaba guilhotinado."),
+_d("robespierre","rev-francesa","pessoa","Robespierre",1793.9,"1758–1794",[2.35,48.85],"Líder jacobino",
+ "Advogado de Arras, destacou-se pela defesa da igualdade política e foi apelidado de “o Incorruptível”. Membro do Comitê de Salvação Pública, defendeu a república de virtude e o Terror. Em 1794 eliminou rivais, como Danton, e acabou isolado. Em 27 de julho (9 de Termidor), a Convenção o decretou fora da lei e ele foi guilhotinado no dia seguinte.",
+ "Robespierre, o Incorruptível, defende o Terror, e acaba guilhotinado."),
+_d("termidor","rev-francesa","evento","O 9 de Termidor",1794.57,"27 de julho de 1794",[2.35,48.85],"",
+ "Temendo ser os próximos, membros da Convenção se uniram contra Robespierre e o prenderam durante uma sessão. No dia seguinte, ele e dezenas de aliados foram guilhotinados. O Terror terminou, as prisões foram esvaziadas e o poder passou à burguesia moderada.",
+ "A queda de Robespierre põe fim ao Terror."),
+_d("diretorio","rev-francesa","fase","O Diretório",1795.82,"1795–1799",[2.35,48.85],"",
+ "Depois do Terror, uma nova Constituição entregou o governo a cinco diretores e a duas câmaras, com voto restrito aos proprietários. O regime era instável e corrupto, apertado entre monarquistas e jacobinos, e dependia cada vez mais do exército para se sustentar. Generais jovens, como Napoleão Bonaparte, ganharam fama com as vitórias na Itália e no Egito.",
+ "O Diretório, de cinco homens, governa uma França cansada e depende cada vez mais dos generais.",{to:1799.85}),
+_d("brumario","rev-francesa","evento","O 18 Brumário",1799.86,"9 de novembro de 1799",[2.12,48.86],"",
+ "Com o apoio de Sieyès e de outros políticos que queriam um governo forte, Napoleão Bonaparte voltou do Egito e deu um golpe de Estado, derrubando o Diretório. Passou a governar como primeiro cônsul. Declarou que a Revolução tinha terminado, mas guardou muitas de suas conquistas, como a igualdade perante a lei, e as consolidou num código civil.",
+ "Em 9 de novembro de 1799, Napoleão derruba o Diretório e assume o poder.")
+];
+
+/* ---------- ligações novas ---------- */
+LINKS.push(
+// Roma: reis e República
+["tarquinio-soberbo","lucrecia","causa","amplo","O governo tirânico do último rei criou o ambiente em que o crime do filho foi o estopim da revolta."],
+["lucrecia","republica","causa","amplo","Depois do caso de Lucrécia, a família real foi expulsa e a República foi proclamada."],
+["patricios-plebeus","secessao-plebe","causa","amplo","A dominação dos patrícios e as dívidas dos plebeus levaram os soldados a se retirar de Roma."],
+["secessao-plebe","tribunato","causa","amplo","A recusa dos plebeus a lutar obrigou os patrícios a aceitar os tribunos."],
+["secessao-plebe","xii-tabuas","causa","amplo","A pressão contínua da plebe levou a escrever as leis para que fossem conhecidas de todos."],
+["tribunato","gracos-irmaos","legado","amplo","Os Graco usaram o poder do tribuno de propor leis ao povo contra a vontade do Senado."],
+["pirro","punicas","causa","amplo","Ao deixar a Sicília, Pirro teria dito que deixava um ótimo campo de batalha para Roma e Cartago."],
+["canas","cipiao","causa","amplo","O desastre de Canas levou Roma a procurar novos comandantes, como Cipião, que atacaria Cartago na Hispânia e na África."],
+["cipiao","zama","causa","amplo","Cipião levou a guerra à África e obrigou Aníbal a voltar e a lutar em Zama."],
+["cartago-corinto","escravidao-roma","causa","amplo","Roma ficou com tesouros, terras e levas de cativos que mudaram sua economia e sua sociedade."],
+["escravidao-roma","espartaco","causa","amplo","A massa de escravizados em condições duríssimas alimentou revoltas, a maior delas a de Espártaco."],
+["escravidao-roma","gracos-irmaos","causa","amplo","Terras públicas tomadas por grandes proprietários com escravizados empurravam camponeses para a pobreza, o que os Graco queriam consertar."],
+["gracos-irmaos","mario","causa","debate","A pobreza dos camponeses sem terra tornou possível o recrutamento de voluntários pobres, que Mário usou."],
+["mario","sula","causa","amplo","A rivalidade entre os dois pelo comando da guerra no Oriente levou Sula a marchar sobre Roma em 88 a.C."],
+["sula","cesar","inspirou","debate","César, que na juventude se opôs a Sula, mais tarde também marchou sobre Roma com seu exército."],
+["crasso","triunvirato1","causa","amplo","Crasso trouxe o dinheiro e a influência ao acordo com César e Pompeu."],
+["catilina","cicero","causa","amplo","A repressão da conjuração deu a Cícero seu maior prestígio e, depois, o exílio, por ter executado cidadãos sem julgamento."],
+["triunvirato1","guerra-gaulesa","causa","amplo","O acordo deu a César o governo da Gália por vários anos."],
+["guerra-gaulesa","rubicao","causa","amplo","César tinha um exército fiel e riqueza da Gália; ordenado a dissolvê-lo, atravessou o Rubicão."],
+["rubicao","guerra-civil-cesar","causa","amplo","A travessia do Rubicão começou a guerra civil entre César e os partidários de Pompeu."],
+["guerra-civil-cesar","idos-marco","causa","amplo","O poder concentrado por César e o título de ditador perpétuo levaram parte do Senado a conspirar."],
+["idos-marco","segundo-triunvirato","causa","amplo","O assassinato de César levou seus herdeiros a se unir para vingá-lo e tomar o poder."],
+["segundo-triunvirato","filipos","causa","amplo","Os triúnviros partiram contra Bruto e Cássio, que tinham fugido para o Oriente."],
+["filipos","accio","causa","amplo","Vencidos os assassinos, Antônio e Otaviano acabaram disputando o poder em Áccio."],
+["cesar","augusto","legado","amplo","Augusto, filho adotivo de César, terminou o trabalho de concentrar o poder em uma só pessoa."],
+["cincinato","independencia-eua","inspirou","amplo","Washington, ao deixar o poder, foi comparado a Cincinato, e a Sociedade dos Cincinatos, de oficiais da Revolução Americana, tomou seu nome."],
+["roma-republica","rev-francesa","inspirou","amplo","Os revolucionários franceses liam Plutarco e Tito Lívio e se viam como romanos: falavam em cônsules, tribunos e cidadãos, e honravam Bruto."],
+// Hispânia, Portugal, Brasil
+["roma-republica","hispania-romana","causa","amplo","Para cortar o reforço de Cartago, Roma desembarcou na Península em 218 a.C.; a conquista durou quase dois séculos."],
+["hispania-romana","portugal","legado","amplo","O latim da Lusitânia está na origem do português, e as cidades romanas deram base a muitas cidades portuguesas."],
+["portugal","brasil-colonia","causa","amplo","Buscando o caminho da Índia, a frota de Cabral tocou a costa do Brasil em 1500, e a Coroa passou a explorar a terra."],
+["indigenas-brasil","brasil-colonia","contato","amplo","A chegada dos europeus mudou para sempre a vida dos povos originários: guerra, escravização, doenças e missões."],
+["brasil-colonia","brasil-imperio","causa","amplo","A vinda da corte em 1808 e a independência em 1822 transformaram a colônia em país."],
+// Revolução Industrial
+["rev-industrial","imperialismo","causa","amplo","As fábricas precisavam de matéria-prima e de mercados, o que impulsionou a corrida colonial na África e na Ásia."],
+// Revolução Francesa
+["absolutismo-iluminismo","rev-francesa","causa","amplo","As ideias de liberdade e igualdade e a crise financeira do Antigo Regime criaram o terreno da Revolução."],
+["ancien-regime","estados-gerais","causa","amplo","A crise financeira obrigou o rei a convocar os Estados Gerais, pela primeira vez desde 1614."],
+["sieyes","jogo-pela","inspirou","amplo","O argumento de Sieyès, de que o Terceiro Estado é a nação, guiou os deputados que se proclamaram Assembleia Nacional."],
+["estados-gerais","jogo-pela","causa","amplo","A disputa sobre como votar levou o Terceiro Estado a se declarar Assembleia Nacional."],
+["jogo-pela","bastilha","causa","amplo","Com medo de que o rei dissolvesse a Assembleia pela força, e depois da demissão de Necker, os parisienses pegaram em armas."],
+["bastilha","grande-medo","causa","amplo","As notícias de Paris e a desordem generalizada alimentaram o pânico no campo."],
+["grande-medo","noite-4-agosto","causa","amplo","O medo de uma revolta camponesa pressionou a Assembleia a abolir os privilégios senhoriais."],
+["noite-4-agosto","declaracao","causa","amplo","Depois de acabar com os privilégios, a Assembleia quis enunciar os princípios da nova ordem."],
+["lafayette","declaracao","inspirou","amplo","Lafayette, que lutara na independência dos Estados Unidos, apresentou o primeiro projeto de declaração, com ajuda de Thomas Jefferson."],
+["declaracao","marcha-versalhes","causa","amplo","A recusa do rei de aprovar a Declaração e os decretos de agosto, somada à falta de pão, levou as mulheres de Paris a marchar sobre Versalhes."],
+["marcha-versalhes","fuga-varennes","causa","amplo","Preso, na prática, em Paris, o rei acabou tentando fugir."],
+["constituicao-clero","vendeia","causa","amplo","O juramento exigido do clero dividiu o campo e alimentou a revolta católica e monarquista."],
+["fuga-varennes","queda-monarquia","causa","amplo","Depois da fuga, muitos franceses deixaram de confiar no rei."],
+["guerra-1792","queda-monarquia","causa","amplo","As derrotas iniciais e as ameaças dos exércitos inimigos fizeram os parisienses acusar o rei de traição."],
+["sans-culottes","queda-monarquia","causa","amplo","Os sans-culottes parisienses foram a força de rua do 10 de agosto."],
+["queda-monarquia","republica-1792","causa","amplo","Sem rei, a Convenção eleita proclamou a República."],
+["republica-1792","execucao-luis","causa","amplo","A República julgou o rei como um cidadão e o condenou à morte."],
+["guerra-1792","vendeia","causa","amplo","O recrutamento de 300 mil homens, para a guerra, foi o estopim da revolta da Vendeia."],
+["vendeia","terror","causa","amplo","A guerra civil e a ameaça de invasão estrangeira serviram de justificativa para o Terror."],
+["jacobinos","terror","causa","amplo","O clube foi a base política do Comitê de Salvação Pública e do Terror."],
+["comite-salvacao","terror","causa","amplo","O Comitê dirigiu a repressão e a economia de guerra."],
+["marat","terror","causa","debate","A morte de Marat foi usada pelos jacobinos para endurecer o regime."],
+["robespierre","terror","causa","amplo","Como figura central do Comitê, defendeu o Terror como virtude necessária à República."],
+["danton","termidor","causa","debate","A execução de Danton, que pedia moderação, isolou Robespierre e abriu caminho à sua queda."],
+["terror","termidor","causa","amplo","O medo de ser a próxima vítima uniu os deputados contra Robespierre."],
+["termidor","diretorio","causa","amplo","Depois do Terror, a burguesia moderada criou um regime de poderes divididos."],
+["diretorio","brumario","causa","amplo","O Diretório, instável e dependente do exército, caiu num golpe de Napoleão e Sieyès."],
+["brumario","napoleao","causa","amplo","O golpe levou Napoleão ao poder e, cinco anos depois, ao trono."],
+["declaracao","haiti","inspirou","amplo","Os escravizados de Saint-Domingue levaram a sério que “os homens nascem e permanecem livres e iguais em direitos”."],
+["haiti","abolicao-1794","causa","amplo","A revolta em Saint-Domingue forçou a Convenção a abolir a escravidão em todas as colônias."],
+["olympe","declaracao","reacao","amplo","Olympe de Gouges respondeu à Declaração de 1789 com uma Declaração dos Direitos da Mulher e da Cidadã."]
+);
+
 </script>
 <script>
 "use strict";
@@ -1935,10 +2384,10 @@ const $=s=>document.querySelector(s);
 const RAD=Math.PI/180;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,t)=>a+(b-a)*t;
-const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
-function yr(t){ let y=Math.round(t); if(y===0) y=t<0?-1:1; return y; }
+function yr(t){ let y=t<0?Math.round(t):Math.floor(t+1e-6); if(y===0) y=t<0?-1:1; return y; }
 function fmtY(t,long){ const y=yr(t); if(y<0) return `${-y} a.C.`; if(y>=1000) return String(y); return `${y} d.C.`; }
 function fmtRange(a,b){ if(a<0&&b<0) return `${-a}–${-b} a.C.`; if(a>=1000) return `${a}–${b}`; if(a>0&&b>0) return `${a}–${b} d.C.`; return `${fmtY(a)} – ${fmtY(b)}`; }
 function yearsBetween(a,b){ return Math.abs(b-a)-((a<0)!==(b<0)?1:0); }
@@ -1956,22 +2405,14 @@ const PER=Object.fromEntries(PERIODS.map(p=>[p.id,p]));
 const EV=Object.fromEntries(EVENTS.map(e=>[e.id,e]));
 const EVS=EVENTS.slice().sort((a,b)=>a.y-b.y);
 const MARCOS=EVS.filter(e=>e.mark);
-const FOCUS=[
-  {id:'mundo',  name:'Mundo todo', short:'Mundo', lanes:LANES.map(l=>l.id), center:[48,32], zoom:1},
-  {id:'europa', name:'Europa', short:'Europa', lanes:['roma','grecia'], center:[18,47], zoom:1.6},
-  {id:'africa', name:'África', short:'África', lanes:['africa'], center:[18,8], zoom:1.25},
-  {id:'oriente',name:'Oriente Médio e Pérsia', short:'Oriente', lanes:['persia'], center:[45,31], zoom:1.7},
-  {id:'india',  name:'Índia e Sul da Ásia', short:'Índia', lanes:['india'], center:[79,22], zoom:1.8},
-  {id:'china',  name:'China e Ásia Oriental', short:'Ásia', lanes:['china'], center:[112,35], zoom:1.5},
-  {id:'americas',name:'Américas', short:'Américas', lanes:['americas'], center:[-72,4], zoom:1.05}
-];
-const FOC=()=>FOCUS.find(f=>f.id===S.focus)||FOCUS[0];
-const inFocus=lane=>FOC().lanes.includes(lane);
 let STOPS=[];
-function computeStops(){ STOPS=S.focus==='mundo'?EVS.filter(e=>e.mark):EVS.filter(e=>inFocus(e.lane)); }
-function focusPids(t){ const set=new Set(); for(const [pid,p] of Object.entries(POL)) if(inFocus(p.lane)) set.add(pid); PERIODS.forEach(p=>{ if(inFocus(p.lane)&&t>=p.from-1&&t<=p.to+1) polsOf(p).forEach(x=>set.add(x)); }); return set; }
+function computeStops(){ STOPS=EVS.filter(e=>e.mark); }
 const ERA_AT=t=>ERAS.find(e=>t>=e.from&&t<e.to)||ERAS[ERAS.length-1];
-const NODE=id=>EV[id]?{kind:'event',id,o:EV[id]}:PER[id]?{kind:'period',id,o:PER[id]}:EXT[id]?{kind:'ext',id,o:EXT[id]}:ERAS.find(e=>e.id===id)?{kind:'era',id,o:ERAS.find(e=>e.id===id)}:null;
+// nós de profundidade (pessoas, fases, fatos e instituições dentro de um tema) e quem os contém
+const SUB=Object.fromEntries(SUBS.map(s=>[s.id,s]));
+const KIDS={}; SUBS.forEach(s=>{ (KIDS[s.parent]=KIDS[s.parent]||[]).push(s); }); Object.values(KIDS).forEach(a=>a.sort((x,y)=>x.y-y.y));
+const NODE=id=>EV[id]?{kind:'event',id,o:EV[id]}:PER[id]?{kind:'period',id,o:PER[id]}:SUB[id]?{kind:'sub',id,o:SUB[id]}:EXT[id]?{kind:'ext',id,o:EXT[id]}:ERAS.find(e=>e.id===id)?{kind:'era',id,o:ERAS.find(e=>e.id===id)}:null;
+SUBS.forEach(s=>{ let n=NODE(s.parent), k=0; while(n&&n.kind==='sub'&&k++<8) n=NODE(n.o.parent); s.lane=n&&n.o.lane||'roma'; });
 const polsOf=p=>Array.isArray(p.pol)?p.pol:(p.pol?[p.pol]:[]);
 function periodOfEvent(e){ return PERIODS.find(p=>p.lane===e.lane&&e.y>=p.from&&e.y<=p.to)||null; }
 function periodAt(lane,t){ const ps=PERIODS.filter(p=>p.lane===lane&&t>=p.from&&t<=p.to); return ps.sort((a,b)=>(a.to-a.from)-(b.to-b.from))[0]||null; }
@@ -2000,12 +2441,13 @@ function polLabel(pid,t){
    ========================================================================== */
 const S={
   t:-820, playing:false, speed:1, hold:null, nextMi:0, lane:'roma',
-  sel:null, trail:[], ti:-1, panel:false, sheet:'half',
-  rot:[-28,-36], scale:300, base:300, cx:0, cy:0, W:0, H:0, dpr:1,
+  sel:null, trail:[], ti:-1, panel:false, sheet:'half', branch:null, lh:{},
+  view:(()=>{ try{ return JSON.parse(localStorage.getItem('ec-view'))==='globo'?'globo':'mapa'; }catch(e){ return 'mapa'; } })(),
+  rot:[-14,-30], scale:300, base:300, cx:0, cy:0, W:0, H:0, dpr:1,
+  mc:[14,16], mz:1, mbase:300, mw:1000, unit:300,
   drag:null, fly:null, dirty:true, lastEra:null, lastSnap:{}, fade:{},
-  amb:false, ui:true, narr:false, focus:'mundo'
+  amb:false, ui:true, narr:false
 };
-S.focus=(()=>{ try{ const v=JSON.parse(localStorage.getItem('ec-focus')); return v||'mundo'; }catch(e){ return 'mundo'; } })();
 const SPEEDS=[0.5,1,2]; const YPS=24; // anos por segundo em 1×
 
 /* ==========================================================================
@@ -2061,35 +2503,67 @@ function prepWorld(w){
    Globo
    ========================================================================== */
 const gc=$('#globe'), g=gc.getContext('2d');
-const proj=d3.geoOrthographic().clipAngle(90).precision(.6);
-const path=d3.geoPath(proj,g);
+const projG=d3.geoOrthographic().clipAngle(90).precision(.6);
+const projM=d3.geoNaturalEarth1().precision(.5);
+const pathG=d3.geoPath(projG,g), pathM=d3.geoPath(projM,g);
+let proj=projM, path=pathM;
+function useProj(){ if(S.view==='mapa'){ proj=projM; path=pathM; } else { proj=projG; path=pathG; } }
 const grat=d3.geoGraticule10();
+// tamanho do mundo na projeção plana, com escala 1
+const MB=(()=>{ const b=d3.geoPath(d3.geoNaturalEarth1().scale(1).translate([0,0])).bounds({type:'Sphere'}); return {w:b[1][0]-b[0][0],h:b[1][1]-b[0][1]}; })();
+const wrapLon=l=>((l+540)%360)-180;
+function limitMap(){ S.mz=clamp(S.mz,1,14); const lim=26+54*(1-1/S.mz); S.mc[1]=clamp(S.mc[1],-lim,lim); S.mc[0]=wrapLon(S.mc[0]); }
+function applyMap(){
+  limitMap(); S.scale=S.mbase*S.mz; S.mw=MB.w*S.scale; S.unit=S.mw/4.2;
+  projM.rotate([-S.mc[0],0]).center([0,S.mc[1]]).scale(S.scale).translate([S.cx,S.cy]).clipExtent([[-60,-60],[S.W+60,S.H+60]]);
+}
 function layout(){
   const dpr=Math.min(2,window.devicePixelRatio||1); S.dpr=dpr;
   const W=innerWidth, H=innerHeight; S.W=W; S.H=H;
   gc.width=Math.round(W*dpr); gc.height=Math.round(H*dpr);
   const cs=getComputedStyle(document.documentElement);
   const top=parseFloat(cs.getPropertyValue('--top-h'))||56, dock=parseFloat(cs.getPropertyValue('--dock-h'))||210;
-  const desk=W>=860, pw=desk&&S.panel?(parseFloat(cs.getPropertyValue('--panel-w'))+32):0;
+  const desk=W>=860;
+  const pwv=desk?Math.round(clamp(W*.34,440,640)):0;
+  document.documentElement.style.setProperty('--panel-w',(pwv||440)+'px');
+  const pw=desk&&S.panel?pwv+32:0;
   let areaTop=top+6, areaBot=H-dock;
   if(!desk&&S.panel) areaBot=Math.min(areaBot, H*(1-sheetFrac())-4);
   if(!desk&&!S.panel&&S.playing) areaBot-=118;
   const aw=W-pw, ah=Math.max(120,areaBot-areaTop);
   S.base=Math.min(aw*.46, ah*.47);
+  S.mbase=Math.min(aw*.985/MB.w, ah*1.3/MB.h);
   S.cx=aw/2; S.cy=areaTop+ah/2+ (desk?0:ah*.02);
   S.dirty=true; tlLayout();
 }
 function sheetFrac(){ return S.sheet==='full'?.86:S.sheet==='peek'?.30:.56; }
-function screenOf(ll){ const r=d3.geoRotation(proj.rotate())(ll); const vis=Math.cos(r[1]*RAD)*Math.cos(r[0]*RAD)>0; const p=proj(ll); return p?{x:p[0],y:p[1],vis}:null; }
-function flyTo(ll,ms=1400,zoom){
-  const from=[-S.rot[0],-S.rot[1]], to=[ll[0],clamp(ll[1],-60,60)];
-  const ip=d3.geoInterpolate(from,to); const s0=S.zoom||1, s1=zoom||s0;
-  S.fly={ip,t0:performance.now(),ms:reduceMotion?1:ms,s0,s1};
+function screenOf(ll){
+  const p=proj(ll); if(!p) return null;
+  if(S.view==='mapa') return {x:p[0],y:p[1],vis:p[0]>-24&&p[0]<S.W+24&&p[1]>-24&&p[1]<S.H+24};
+  const r=d3.geoRotation(proj.rotate())(ll); const vis=Math.cos(r[1]*RAD)*Math.cos(r[0]*RAD)>0; return {x:p[0],y:p[1],vis};
+}
+/* voo da câmera: no mapa plano afasta um pouco no meio do caminho (zoom out e in), no globo gira */
+function flyTo(ll,ms=1400,z){
+  ms=reduceMotion?1:ms;
+  if(S.view==='mapa'){
+    S.fly={m:true,t0:performance.now(),ms,c0:S.mc.slice(),z0:S.mz,c1:[ll[0],ll[1]],z1:clamp(z||S.mz,1,12)};
+  } else {
+    const from=[-S.rot[0],-S.rot[1]], to=[ll[0],clamp(ll[1],-60,60)];
+    const zg=z?clamp(.9+.25*Math.log2(z),.9,2.4):(S.zoom||1);
+    S.fly={ip:d3.geoInterpolate(from,to),t0:performance.now(),ms,s0:S.zoom||1,s1:zg};
+  }
 }
 S.zoom=1;
 function stepFly(now){
-  if(!S.fly) return; const k=clamp((now-S.fly.t0)/S.fly.ms,0,1), e=ease(k); const c=S.fly.ip(e);
-  S.rot=[-c[0],-c[1]]; S.zoom=lerp(S.fly.s0,S.fly.s1,e); S.dirty=true; if(k>=1) S.fly=null;
+  const f=S.fly; if(!f) return; const k=clamp((now-f.t0)/f.ms,0,1), e=ease(k);
+  if(f.m){
+    const dl=wrapLon(f.c1[0]-f.c0[0]); const lon=f.c0[0]+dl*e, lat=lerp(f.c0[1],f.c1[1],e);
+    const dist=Math.hypot(dl,f.c1[1]-f.c0[1]); const bump=Math.min(.8,dist/110)*Math.sin(Math.PI*e);
+    S.mc=[lon,lat]; S.mz=Math.max(1,Math.exp(lerp(Math.log(f.z0),Math.log(f.z1),e)-bump)); limitMap();
+  } else {
+    const c=f.ip(e); S.rot=[-c[0],-c[1]]; S.zoom=lerp(f.s0,f.s1,e);
+  }
+  S.dirty=true; if(k>=1) S.fly=null;
 }
 const fadeMs=700;
 function activePolities(t){
@@ -2107,40 +2581,67 @@ let hoverPid=null;
 function selectedPids(){ if(!S.sel||S.sel.kind!=='period') return null; return new Set(polsOf(PER[S.sel.id])); }
 function drawGlobe(now){
   const dpr=S.dpr; g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,S.W,S.H);
-  S.scale=S.base*S.zoom;
-  proj.rotate(S.rot).scale(S.scale).translate([S.cx,S.cy]);
+  const flat=S.view==='mapa';
+  if(flat){ applyMap(); }
+  else { S.scale=S.base*S.zoom; S.unit=S.scale; projG.rotate(S.rot).scale(S.scale).translate([S.cx,S.cy]); }
   const R=S.scale;
-  // halo e sombra
-  const sh=g.createRadialGradient(S.cx,S.cy+R*.04,R*.9,S.cx,S.cy+R*.04,R*1.12); sh.addColorStop(0,'rgba(90,64,24,.22)'); sh.addColorStop(1,'rgba(90,64,24,0)');
-  g.fillStyle=sh; g.beginPath(); g.arc(S.cx,S.cy+R*.04,R*1.12,0,7); g.fill();
-  // mar
-  const sea=g.createRadialGradient(S.cx-R*.35,S.cy-R*.4,R*.1,S.cx,S.cy,R); sea.addColorStop(0,'#e6e2d0'); sea.addColorStop(1,'#cfc9b2');
-  g.beginPath(); path({type:'Sphere'}); g.fillStyle=sea; g.fill();
-  // linhas de mar (hachura sutil)
-  g.save(); g.beginPath(); path({type:'Sphere'}); g.clip();
-  g.strokeStyle='rgba(95,78,54,.10)'; g.lineWidth=.7; g.beginPath(); path(grat); g.stroke();
-  g.restore();
-  if(!LAND){ ring(R); return; }
+  if(flat){
+    const sea=g.createLinearGradient(0,0,0,S.H); sea.addColorStop(0,'#e4e0cd'); sea.addColorStop(1,'#d2ccb4');
+    g.beginPath(); path({type:'Sphere'}); g.fillStyle=sea; g.fill();
+    g.save(); g.beginPath(); path({type:'Sphere'}); g.clip();
+    g.strokeStyle='rgba(95,78,54,.10)'; g.lineWidth=.7; g.beginPath(); path(grat); g.stroke();
+    g.restore();
+  } else {
+    // halo e sombra
+    const sh=g.createRadialGradient(S.cx,S.cy+R*.04,R*.9,S.cx,S.cy+R*.04,R*1.12); sh.addColorStop(0,'rgba(90,64,24,.22)'); sh.addColorStop(1,'rgba(90,64,24,0)');
+    g.fillStyle=sh; g.beginPath(); g.arc(S.cx,S.cy+R*.04,R*1.12,0,7); g.fill();
+    // mar
+    const sea=g.createRadialGradient(S.cx-R*.35,S.cy-R*.4,R*.1,S.cx,S.cy,R); sea.addColorStop(0,'#e6e2d0'); sea.addColorStop(1,'#cfc9b2');
+    g.beginPath(); path({type:'Sphere'}); g.fillStyle=sea; g.fill();
+    // linhas de mar (hachura sutil)
+    g.save(); g.beginPath(); path({type:'Sphere'}); g.clip();
+    g.strokeStyle='rgba(95,78,54,.10)'; g.lineWidth=.7; g.beginPath(); path(grat); g.stroke();
+    g.restore();
+  }
+  if(!LAND){ if(!flat) ring(R); return; }
   // terra
   g.beginPath(); path(LAND); g.fillStyle='#f2e9d4'; g.fill();
   // territórios (recortados pela terra)
-  const t=S.t, act=activePolities(t), spids=selectedPids(), spid=spids?1:null; const fp=S.focus==='mundo'?null:focusPids(t); act.forEach(a=>{ a.dim=fp&&!fp.has(a.pid); });
+  const t=S.t, act=activePolities(t), spids=selectedPids(), spid=spids?1:null;
   g.save(); g.beginPath(); path(LAND); g.clip();
   for(const a of act){
     const lane=LANE[a.p.lane], sel=!!(spids&&spids.has(a.pid)), hov=a.pid===hoverPid;
-    const base=a.dim&&!sel?.07:sel?.66:(spid?.26:.46)+(hov?.12:0);
-    g.beginPath(); for(const r of a.regs){ const R=RG(r); if(R) path(R.f); }
+    const base=sel?.66:(spid?.26:.46)+(hov?.12:0);
+    g.beginPath(); for(const r of a.regs){ const RR=RG(r); if(RR) path(RR.f); }
     g.fillStyle=hexA(lane.color,base*a.a); g.fill('nonzero');
-    if(sel&&a.regs.length<=4){ g.save(); g.clip('nonzero'); g.strokeStyle=hexA(lane.color,.8*a.a); g.lineWidth=2.4; g.beginPath(); for(const r of a.regs){ const R=RG(r); if(R) path(R.f); } g.stroke(); g.restore(); }
+    if(sel&&a.regs.length<=4){ g.save(); g.clip('nonzero'); g.strokeStyle=hexA(lane.color,.8*a.a); g.lineWidth=2.4; g.beginPath(); for(const r of a.regs){ const RR=RG(r); if(RR) path(RR.f); } g.stroke(); g.restore(); }
   }
   g.restore();
   // costa em tinta
-  g.beginPath(); path(COAST||LAND); g.strokeStyle='rgba(80,64,42,.78)'; g.lineWidth=.8; g.stroke();
+  g.beginPath(); path(COAST||LAND); g.strokeStyle='rgba(80,64,42,.78)'; g.lineWidth=flat?.7:.8; g.stroke();
   // rótulos dos estados
-  const boxes=[]; drawEvents(now,boxes);
+  const boxes=[]; drawEvents(now,boxes); drawSubs(now,boxes);
   drawPolLabels(act,spids,boxes);
   drawEventLabels(boxes);
-  ring(R);
+  if(!flat) ring(R);
+}
+/* marcadores da ramificação aberta (pessoas, fases, instituições, acontecimentos de dentro do tema) */
+let SUB_SCREEN=[];
+function drawSubs(now,boxes){
+  SUB_SCREEN=[]; const br=S.branch; if(!br) return;
+  const selId=S.sel?S.sel.id:null, col=LANE[br.lane]?LANE[br.lane].color:'#9a7322';
+  for(const s of br.list){
+    if(!s.ll) continue; const p=screenOf(s.ll); if(!p||!p.vis) continue;
+    const on=s.id===selId, near=Math.abs(S.t-s.y)<(s.to?Math.max(8,s.to-s.y):8);
+    g.globalAlpha=on?1:near?.95:.62;
+    const r=on?5.5:4;
+    if(on){ const k=(now%1800)/1800; g.strokeStyle=hexA(col,(1-k)*.8); g.lineWidth=1.5; g.beginPath(); g.arc(p.x,p.y,r+3+k*14,0,7); g.stroke(); }
+    g.beginPath(); g.arc(p.x,p.y,r+1.6,0,7); g.fillStyle='#f7f1e3'; g.fill();
+    g.beginPath(); g.arc(p.x,p.y,r,0,7); g.fillStyle=s.k==='pessoa'?'#2c2317':s.k==='instituicao'?'#8f7d60':col; g.fill();
+    g.globalAlpha=1; boxes.push({x0:p.x-r-2,x1:p.x+r+2,y0:p.y-r-2,y1:p.y+r+2});
+    SUB_SCREEN.push({s,x:p.x,y:p.y});
+    if(S.W>=500||on) EV_LBL.push({e:{t:s.t},x:p.x+r+7,y:p.y,on,a:on?1:near?.9:.6,sub:true});
+  }
 }
 function ring(R){
   g.beginPath(); g.arc(S.cx,S.cy,R,0,7); g.strokeStyle='rgba(60,46,28,.85)'; g.lineWidth=1.3; g.stroke();
@@ -2158,7 +2659,7 @@ function drawPolLabels(act,spids,boxes){ const spid=spids?1:null; const isSel=pi
     const p=screenOf(best.c); if(!p||!p.vis) continue;
     const name=polLabel(a.pid,S.t).toUpperCase(); const sel=isSel(a.pid);
     g.font=`600 ${sel?(small?11:12.5):(small?9.5:10.5)}px Cinzel, Georgia, serif`;
-    const w=g.measureText(name).width; if(w>S.scale*1.1&&!sel) continue;
+    const w=g.measureText(name).width; if(w>S.unit*1.1&&!sel) continue;
     const bx={x0:p.x-w/2-3,x1:p.x+w/2+3,y0:p.y-8,y1:p.y+8}; if(boxes.some(b=>b.x0<bx.x1&&bx.x0<b.x1&&b.y0<bx.y1&&bx.y0<b.y1)) continue; boxes.push(bx);
     g.globalAlpha=a.a*(spid&&!sel?.55:1);
     g.lineWidth=3.5; g.strokeStyle='rgba(242,233,212,.92)'; g.strokeText(name,p.x,p.y);
@@ -2174,7 +2675,6 @@ function drawEvents(now,boxes){
   for(const e of EVS){
     const d=t-e.y; const on=e.id===selId||e.id===cur;
     if(!on&&(d<-6||d>W)) continue;
-    if(!on&&!inFocus(e.lane)) continue;
     const p=screenOf(e.ll); if(!p||!p.vis) continue;
     const fresh=on?1:clamp(1-d/W,0,1)*(d<0?clamp(1+d/6,0,1):1);
     const col=LANE[e.lane].color;
@@ -2202,29 +2702,62 @@ function drawEventLabels(boxes){
    Régua do tempo
    ========================================================================== */
 const tc=$('#tlc'), tx=tc.getContext('2d');
-const TL={W:0,H:0,ypp:1,rows:[],bars:[],ticks:[],eraH:20,axisH:18,laneTop:0,rowH:14,labelW:0};
+const TL={W:0,H:0,bars:[],evs:[],eras:[],subs:[],eraH:20,axisH:18,k:1,NX:0,P0:0,cc:.5,M:46,rowH:18,ppy:1};
 // distribui os períodos de cada faixa em linhas, sem sobreposição
 const LANE_ROWS={};
 for(const l of LANES){ const ps=PERIODS.filter(p=>p.lane===l.id).sort((a,b)=>a.from-b.from); const rows=[]; ps.forEach(p=>{ let r=rows.findIndex(end=>end<=p.from); if(r<0){ r=rows.length; rows.push(p.to); } else rows[r]=p.to; p._row=r; }); LANE_ROWS[l.id]=Math.max(1,rows.length); }
+// lupa do tempo: quanto mais perto de hoje, mais anos cabem em menos espaço
+const YPP_K=[[-820,1],[476,1],[1000,.85],[1450,.6],[1750,.36],[1900,.2],[2026,.15]];
+function yppAt(t){ for(let i=1;i<YPP_K.length;i++){ if(t<=YPP_K[i][0]){ const [a,va]=YPP_K[i-1],[b,vb]=YPP_K[i]; return (va+(vb-va)*(t-a)/(b-a))*TL.k; } } return YPP_K[YPP_K.length-1][1]*TL.k; }
+// posição acumulada (px) de cada ano na régua; a agulha anda do começo ao fim da tela, então nunca sobra vazio nas pontas
+const PT={a:null,a0:null,n:0,tot:1};
+// lente: ao abrir um tema, o trecho dele na régua se alarga (f vezes), para dar para ler o que acontece dentro
+const LENS={a:0,b:0,f:1,ta:0,tb:0,tf:1};
+function buildP(){ const n=RANGE[1]-RANGE[0]; const a0=new Float64Array(n+2), a=new Float64Array(n+2); let s=0; for(let i=0;i<=n;i++){ a0[i]=s; s+=1/yppAt(RANGE[0]+i); } a0[n+1]=s;
+  const ia=clamp(Math.round(LENS.a-RANGE[0]),0,n), ib=clamp(Math.round(LENS.b-RANGE[0]),0,n), w=a0[ib]-a0[ia], k=LENS.f-1;
+  for(let i=0;i<=n+1;i++){ const inner=clamp(a0[Math.min(i,n)]-a0[ia],0,w); a[i]=a0[i]+k*inner; }
+  PT.a0=a0; PT.a=a; PT.n=n; PT.tot=a[n]; TL.cc=Math.min(.9,(TL.W-2*TL.M)/PT.tot); }
+function lensRange(){
+  if(!S.sel) return null; let cur=NODE(S.sel.id), g=0; while(cur&&cur.kind==='sub'&&g++<8) cur=NODE(cur.o.parent);
+  if(cur&&cur.kind==='period') return [cur.o.from,cur.o.to];
+  if(cur&&cur.kind==='event'){ const p=periodOfEvent(cur.o); if(p&&p.to-p.from<=120) return [p.from,p.to]; }
+  return null;
+}
+function updateLens(){
+  const r=lensRange(); if(!r||S.playing){ LENS.tf=1; return; }
+  const i0=clamp(Math.round(r[0]-RANGE[0]),0,PT.n), i1=clamp(Math.round(r[1]-RANGE[0]),0,PT.n), nat=Math.max(30,PT.a0[i1]-PT.a0[i0]);
+  LENS.ta=r[0]; LENS.tb=r[1]; LENS.tf=clamp(TL.W*.62/nat,1,26);
+}
+function stepLens(){
+  const same=LENS.a===LENS.ta&&LENS.b===LENS.tb, goal=same?LENS.tf:1; let ch=false;
+  const d=goal-LENS.f;
+  if(Math.abs(d)>.01){ LENS.f+=d*(reduceMotion?1:.17); ch=true; }
+  else { if(LENS.f!==goal){ LENS.f=goal; ch=true; } if(!same&&goal===1){ LENS.a=LENS.ta; LENS.b=LENS.tb; ch=true; } }
+  if(ch){ buildP(); S.dirtyTL=true; }
+}
+function Pof(y){ const a=PT.a, n=PT.n; if(y<=RANGE[0]) return (y-RANGE[0])/yppAt(RANGE[0]); if(y>=RANGE[1]) return a[n]+(y-RANGE[1])/yppAt(RANGE[1]); const i=y-RANGE[0], i0=Math.floor(i); return a[i0]+(a[i0+1]-a[i0])*(i-i0); }
+function Pinv(p){ const a=PT.a, n=PT.n; if(p<=0) return RANGE[0]; if(p>=a[n]) return RANGE[1]; let lo=0, hi=n; while(hi-lo>1){ const m=(lo+hi)>>1; if(a[m]<=p) lo=m; else hi=m; } return RANGE[0]+lo+(p-a[lo])/(a[lo+1]-a[lo]); }
+const X=y=>Pof(y)-TL.L;
 function tlLayout(){
   const box=$('#tl').getBoundingClientRect(); const dpr=S.dpr||1;
   TL.W=box.width; TL.H=box.height; tc.width=Math.round(TL.W*dpr); tc.height=Math.round(TL.H*dpr);
   TL.k=clamp(700/Math.max(300,TL.W),.45,1.8);
-  const vis=LANES.filter(l=>inFocus(l.id));
-  const totalRows=vis.reduce((s,l)=>s+LANE_ROWS[l.id],0);
-  const avail=TL.H-TL.eraH-TL.axisH-6-vis.length*3;
-  TL.rowH=clamp(Math.floor(avail/totalRows),9,vis.length<=2?30:18);
+  buildP();
   S.dirtyTL=true;
 }
-// lupa do tempo: quanto mais perto de hoje, mais anos cabem em menos espaço
-const YPP_K=[[-820,1],[476,1],[1000,.85],[1450,.6],[1750,.36],[1900,.2],[2026,.15]];
-function yppAt(t){ for(let i=1;i<YPP_K.length;i++){ if(t<=YPP_K[i][0]){ const [a,va]=YPP_K[i-1],[b,vb]=YPP_K[i]; return (va+(vb-va)*(t-a)/(b-a))*TL.k; } } return YPP_K[YPP_K.length-1][1]*TL.k; }
-const X=y=>TL.W/2+(y-S.t)/TL.ypp;
+// quanto o conteúdo anda para cada pixel que a agulha anda
+const dragGain=()=>1/((1-TL.cc)*(1-(TL.lk||0))+.35*(TL.lk||0));
 function rr(c,x,y,w,h,r){ r=Math.min(r,h/2,w/2); c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+function fitText(c,txt,max){ if(c.measureText(txt).width<=max) return txt; let s=txt; while(s.length>3&&c.measureText(s+'…').width>max) s=s.slice(0,-1); return s+'…'; }
 function drawTL(){
-  TL.ypp=yppAt(S.t);
   const c=tx, dpr=S.dpr; c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,TL.W,TL.H);
-  TL.bars=[]; TL.evs=[]; TL.eras=[];
+  TL.bars=[]; TL.evs=[]; TL.eras=[]; TL.subs=[];
+  TL.P0=Pof(S.t); TL.ppy=1/yppAt(S.t);
+  // janela: avança junto com a agulha; com a lente aberta, centraliza o tema aberto
+  { const lensK=clamp((LENS.f-1)/2,0,1), Pc=(Pof(LENS.a)+Pof(LENS.b))/2;
+    const Lnat=(1-TL.cc)*TL.P0-TL.M, Llens=(Pc-TL.W/2)+.35*(TL.P0-Pc);
+    let L=lerp(Lnat,Llens,lensK); TL.lk=lensK;
+    L=clamp(L,-TL.M,PT.tot-TL.W+TL.M); L=clamp(L,TL.P0-(TL.W-TL.M),TL.P0-TL.M); TL.L=L; TL.NX=TL.P0-L; }
   const x0=X(RANGE[0]), x1=X(RANGE[1]);
   // fundo do intervalo
   c.fillStyle='rgba(247,241,227,.55)'; c.fillRect(Math.max(0,x0),0,Math.min(TL.W,x1)-Math.max(0,x0),TL.H);
@@ -2238,55 +2771,106 @@ function drawTL(){
     if(vis1-vis0>20){ c.save(); c.beginPath(); c.rect(vis0,0,vis1-vis0,TL.eraH); c.clip(); c.fillText(name,vis0,TL.eraH/2+.5); c.restore(); }
     TL.eras.push({e,a,b});
   }
-  // faixas
-  let y=TL.eraH+4; const rowH=TL.rowH;
+  // alturas das faixas: sem foco, todas resumidas; com foco, a faixa do tema se abre e as outras ficam discretas
+  const focusLane=(S.sel||S.playing)?S.lane:null, br=S.branch;
+  const hasSubs=!!(focusLane&&br&&br.lane===focusLane);
+  const n=LANES.length, avail=TL.H-TL.eraH-TL.axisH-8-(n-1)*3;
+  const target={}; let cH;
+  if(focusLane){ cH=clamp(Math.floor((avail*.55)/(n-1)),11,17); const rows=LANE_ROWS[focusLane]+(hasSubs?1:0); const rem=avail-(n-1)*cH; TL.rowH=clamp(Math.floor(rem/rows),12,26); LANES.forEach(l=>target[l.id]=l.id===focusLane?TL.rowH*rows:cH); }
+  else { cH=clamp(Math.floor(avail/n),16,34); LANES.forEach(l=>target[l.id]=cH); }
+  S.lh=S.lh||{}; let moving=false;
+  for(const l of LANES){ const cur=S.lh[l.id]==null?target[l.id]:S.lh[l.id]; const d=target[l.id]-cur; if(Math.abs(d)>.4){ S.lh[l.id]=cur+d*(reduceMotion?1:.2); moving=true; } else S.lh[l.id]=target[l.id]; }
+  if(moving) S.dirtyTL=true;
   const spid=S.sel&&S.sel.kind==='period'?S.sel.id:null;
-  TL.laneY={};
-  const VIS=LANES.filter(l=>inFocus(l.id));
-  if(VIS.length<=2){ const extra=Math.max(0,(TL.H-TL.eraH-TL.axisH-6)-VIS.reduce((s2,l)=>s2+LANE_ROWS[l.id]*rowH+3,0)); y+=Math.min(extra/2,30); }
-  for(const l of VIS){ const n=LANE_ROWS[l.id], h=n*rowH; TL.laneY[l.id]=[y,h];
-    const focus=l.id===S.lane;
-    c.fillStyle=focus?'rgba(44,35,23,.05)':'rgba(0,0,0,0)'; c.fillRect(0,y-1,TL.W,h+2);
-    for(const p of PERIODS.filter(p=>p.lane===l.id)){
-      const a=X(Math.max(p.from,RANGE[0])), b=X(Math.min(p.to,RANGE[1])); if(b<-2||a>TL.W+2) continue;
-      const by=y+p._row*rowH+1, bh=rowH-2; const sel=p.id===spid, act=S.t>=p.from&&S.t<=p.to;
-      rr(c,a,by,Math.max(2,b-a-1),bh,Math.min(4,bh/2)); c.fillStyle=hexA(l.color,sel?.95:act?.62:.32); c.fill();
-      if(sel){ c.strokeStyle='#2c2317'; c.lineWidth=1.5; c.stroke(); }
-      const fs=Math.min(VIS.length<=2?15:12,bh-2.5); if(fs>=8){ c.font=`500 ${fs}px "EB Garamond", Georgia, serif`; c.textBaseline='middle'; c.textAlign='left';
-        const L0=Math.max(a,0)+5, L1=Math.min(b,TL.W)-4; if(L1-L0>18){ c.save(); c.beginPath(); c.rect(L0,by,L1-L0,bh); c.clip(); c.fillStyle=sel||act?'#fbf6ea':'#3e3220'; c.fillText(p.name,L0,by+bh/2+.5); c.restore(); } }
-      TL.bars.push({p,x0:a,x1:b,y0:by,y1:by+bh});
-    }
-    // acontecimentos da faixa
-    for(const e of EVS.filter(e=>e.lane===l.id)){ const ex=X(e.y); if(ex<-4||ex>TL.W+4) continue;
-      const ey=y-1.5; const sel=S.sel&&S.sel.kind==='event'&&S.sel.id===e.id; const s=sel?4.5:e.mark?3.2:2.3;
-      c.save(); c.translate(ex,ey); c.rotate(Math.PI/4); c.fillStyle=sel?'#2c2317':e.mark?'#5f4e36':'rgba(95,78,54,.55)'; c.fillRect(-s/2,-s/2,s,s); c.restore();
-      TL.evs.push({e,x:ex,y:ey});
+  let y=TL.eraH+4; const pills=[]; TL.laneY={};
+  for(const l of LANES){ const h=S.lh[l.id]; const ex=l.id===focusLane&&h>cH+3; TL.laneY[l.id]=[y,h];
+    if(ex){
+      const rows=LANE_ROWS[l.id]+(hasSubs?1:0), rh=h/rows;
+      c.fillStyle='rgba(44,35,23,.05)'; c.fillRect(0,y-1,TL.W,h+2);
+      for(const p of PERIODS.filter(p=>p.lane===l.id)){
+        const a=X(Math.max(p.from,RANGE[0])), b=X(Math.min(p.to,RANGE[1])); if(b<-2||a>TL.W+2) continue;
+        const by=y+p._row*rh+1, bh=rh-2; const sel=p.id===spid, act=S.t>=p.from&&S.t<=p.to;
+        rr(c,a,by,Math.max(2,b-a-1),bh,Math.min(4,bh/2)); c.fillStyle=hexA(l.color,sel?.95:act?.62:.32); c.fill();
+        if(sel){ c.strokeStyle='#2c2317'; c.lineWidth=1.5; c.stroke(); }
+        const fs=Math.min(14,bh-3); if(fs>=8){ c.font=`500 ${fs}px "EB Garamond", Georgia, serif`; c.textBaseline='middle'; c.textAlign='left';
+          const L0=Math.max(a,0)+5, L1=Math.min(b,TL.W)-4; if(L1-L0>18){ c.save(); c.beginPath(); c.rect(L0,by,L1-L0,bh); c.clip(); c.fillStyle=sel||act?'#fbf6ea':'#3e3220'; c.fillText(p.name,L0,by+bh/2+.5); c.restore(); } }
+        TL.bars.push({p,x0:a,x1:b,y0:by,y1:by+bh,dur:p.to-p.from});
+      }
+      for(const e of EVS.filter(e=>e.lane===l.id)){ const exx=X(e.y); if(exx<-4||exx>TL.W+4) continue;
+        const ey=y-1.5; const sel=S.sel&&S.sel.kind==='event'&&S.sel.id===e.id; const s=sel?4.5:e.mark?3.2:2.3;
+        c.save(); c.translate(exx,ey); c.rotate(Math.PI/4); c.fillStyle=sel?'#2c2317':e.mark?'#5f4e36':'rgba(95,78,54,.55)'; c.fillRect(-s/2,-s/2,s,s); c.restore();
+        TL.evs.push({e,x:exx,y:ey});
+      }
+      if(hasSubs){ // fileira de ramificações do tema aberto
+        const sy=y+LANE_ROWS[l.id]*rh, mid=sy+rh/2; let lastEnd=-1e9;
+        c.strokeStyle='rgba(95,78,54,.28)'; c.setLineDash([2,3]); c.beginPath(); c.moveTo(0,sy+.5); c.lineTo(TL.W,sy+.5); c.stroke(); c.setLineDash([]);
+        c.font='500 11.5px "EB Garamond", Georgia, serif'; c.textBaseline='middle'; c.textAlign='left';
+        for(const s of br.list){ const a=X(s.y), b=s.to?X(s.to):a; if(Math.max(a,b)<-4||Math.min(a,b)>TL.W+4) continue;
+          const sel=S.sel&&S.sel.id===s.id, cx=a; const col=s.k==='pessoa'?'#2c2317':s.k==='instituicao'?'#8f7d60':l.color;
+          if(s.to&&b-a>5){ rr(c,a,mid-4,b-a,8,3); c.fillStyle=hexA(l.color,sel?.9:.45); c.fill(); if(sel){ c.strokeStyle='#2c2317'; c.lineWidth=1.3; c.stroke(); } }
+          else { c.beginPath(); if(s.k==='pessoa'){ c.arc(cx,mid,sel?5:3.6,0,7); } else if(s.k==='instituicao'){ c.rect(cx-3,mid-3,6,6); } else { c.save(); c.translate(cx,mid); c.rotate(Math.PI/4); c.rect(-3.2,-3.2,6.4,6.4); c.restore(); } c.fillStyle=sel?'#2c2317':col; c.fill(); if(sel){ c.strokeStyle='#f7f1e3'; c.lineWidth=1.5; c.stroke(); } }
+          const lx=(s.to&&b-a>5?a:cx)+(s.to&&b-a>5?4:8);
+          const label=s.t; const w=c.measureText(label).width;
+          if(lx>lastEnd+6&&lx+w<TL.W-4&&(!(s.to&&b-a>5)||b-a>w+8)){ c.fillStyle=s.to&&b-a>5?'#fbf6ea':'#3e3220'; c.fillText(label,lx,mid+.5); lastEnd=lx+w; }
+          TL.subs.push({s,x0:Math.min(a,b)-5,x1:Math.max(a,b)+5,y0:mid-8,y1:mid+8});
+        }
+      }
+    } else {
+      // faixa resumida: uma tira fina; o nome do período sob a agulha aparece numa etiqueta
+      const sh=clamp(h*.5,5,14), cy=y+h/2, by=cy-sh/2;
+      for(const p of PERIODS.filter(p=>p.lane===l.id)){
+        const a=X(Math.max(p.from,RANGE[0])), b=X(Math.min(p.to,RANGE[1])); if(b<-2||a>TL.W+2) continue;
+        const act=S.t>=p.from&&S.t<=p.to, sel=p.id===spid;
+        rr(c,a,by,Math.max(2,b-a-1),sh,Math.min(3,sh/2)); c.fillStyle=hexA(l.color,sel?.95:act?.72:.26); c.fill();
+        if(sel){ c.strokeStyle='#2c2317'; c.lineWidth=1.3; c.stroke(); }
+        TL.bars.push({p,x0:a,x1:b,y0:cy-Math.max(sh,h*.7)/2,y1:cy+Math.max(sh,h*.7)/2,dur:p.to-p.from});
+      }
+      if(h<30||!focusLane){ for(const e of EVS.filter(e=>e.lane===l.id&&e.mark)){ const exx=X(e.y); if(exx<-4||exx>TL.W+4) continue;
+        c.save(); c.translate(exx,by-1); c.rotate(Math.PI/4); c.fillStyle='rgba(95,78,54,.7)'; c.fillRect(-1.6,-1.6,3.2,3.2); c.restore();
+        TL.evs.push({e,x:exx,y:by-1}); } }
+      const ap=periodAt(l.id,S.t); if(ap) pills.push({l,ap,cy,h});
     }
     y+=h+3;
   }
   // eixo
   const ay=TL.H-TL.axisH;
   c.strokeStyle='rgba(95,78,54,.45)'; c.lineWidth=1; c.beginPath(); c.moveTo(Math.max(0,x0),ay+.5); c.lineTo(Math.min(TL.W,x1),ay+.5); c.stroke();
-  const step=[10,25,50,100,200].find(v=>v/TL.ypp>=62)||200;
+  // marcas do eixo: o espaçamento se adapta à lupa e à lente (mais anos por marca onde o tempo está comprimido)
   c.font='500 10px Cinzel, Georgia, serif'; c.fillStyle='#6a5940'; c.textAlign='center'; c.textBaseline='top';
-  for(let v=Math.ceil(RANGE[0]/step)*step; v<=RANGE[1]; v+=step){ const vx=X(v); if(vx<-30||vx>TL.W+30) continue;
-    c.beginPath(); c.moveTo(vx+.5,ay); c.lineTo(vx+.5,ay+6); c.stroke();
-    c.fillText(v===0?'1 d.C.':v<0?`${-v} a.C.`:`${v}`,vx,ay+6);
-  }
+  { const yl=Math.max(RANGE[0],Math.floor(Pinv(TL.L-30))), yr2=Math.min(RANGE[1],Math.ceil(Pinv(TL.L+TL.W+30))); let lastX=-1e9;
+    for(let v=yl; v<=yr2; v++){ const dens=Pof(v+1)-Pof(v); const st=[1,2,5,10,25,50,100,200].find(q=>q*dens>=64)||200; if(v%st!==0) continue;
+      const vx=X(v); if(vx<-30||vx>TL.W+30||vx-lastX<44) continue; lastX=vx;
+      c.beginPath(); c.moveTo(vx+.5,ay); c.lineTo(vx+.5,ay+6); c.stroke();
+      c.fillText(v===0?'1 d.C.':v<0?`${-v} a.C.`:`${v}`,vx,ay+6); } }
   // agulha (presente)
-  const px=TL.W/2;
+  const px=TL.NX;
   c.strokeStyle='#9a7322'; c.lineWidth=1.6; c.beginPath(); c.moveTo(px,0); c.lineTo(px,ay); c.stroke();
   c.fillStyle='#9a7322'; c.beginPath(); c.moveTo(px-6,0); c.lineTo(px+6,0); c.lineTo(px,7); c.closePath(); c.fill();
   // nomes das faixas
-  for(const l of VIS){ const [ly,lh]=TL.laneY[l.id];
-    c.font=`600 ${VIS.length<=2?11:9}px Cinzel, Georgia, serif`; const nm=(VIS.length<=2?l.name:l.short).toUpperCase(); const w=c.measureText(nm).width+10;
-    c.fillStyle='rgba(237,227,204,.9)'; c.fillRect(0,ly-1,w+4,Math.min(lh+1,14));
-    c.fillStyle=l.id===S.lane?'#2c2317':'#8f7d60'; c.textAlign='left'; c.textBaseline='top'; c.fillText(nm,6,ly+1.5);
+  let labelR=0;
+  for(const l of LANES){ const [ly,lh]=TL.laneY[l.id]; const ex=l.id===focusLane&&lh>17;
+    const big=ex; c.font=`600 ${big?11:9}px Cinzel, Georgia, serif`; const nm=(big?l.name:l.short).toUpperCase(); const w=c.measureText(nm).width+10;
+    const ty=big?ly+1.5:ly+lh/2-4.5;
+    c.fillStyle='rgba(237,227,204,.9)'; c.fillRect(0,big?ly-1:ly+lh/2-7,w+4,big?Math.min(lh+1,14):14);
+    c.fillStyle=l.id===focusLane?'#2c2317':'#8f7d60'; c.textAlign='left'; c.textBaseline='top'; c.fillText(nm,6,ty);
+    labelR=Math.max(labelR,w+4);
+  }
+  // etiquetas do que acontece sob a agulha, uma por faixa resumida
+  const right=px<TL.W*.5; c.textBaseline='middle';
+  for(const pl of pills){ const fs=pl.h>=22?12.5:11; c.font=`500 ${fs}px "EB Garamond", Georgia, serif`;
+    const maxW=Math.min(TL.W*.42,260); const txt=fitText(c,pl.ap.name,maxW); const w=c.measureText(txt).width+12, hh=Math.min(15,pl.h+1);
+    let bx=right?Math.max(px+8,labelR+6):px-8-w; if(right&&bx+w>TL.W-4) bx=TL.W-4-w;
+    c.fillStyle='rgba(247,241,227,.94)'; rr(c,bx,pl.cy-hh/2,w,hh,hh/2); c.fill();
+    c.strokeStyle=hexA(pl.l.color,.8); c.lineWidth=1; c.stroke();
+    c.fillStyle='#2c2317'; c.textAlign='left'; c.fillText(txt,bx+6,pl.cy+.5);
   }
 }
 function tlHit(x,y){
+  for(const s of TL.subs){ if(x>=s.x0&&x<=s.x1&&y>=s.y0&&y<=s.y1) return {kind:'sub',id:s.s.id}; }
   for(const ev of TL.evs){ if(Math.abs(ev.x-x)<8&&Math.abs(ev.y-y)<7) return {kind:'event',id:ev.e.id}; }
-  for(const b of TL.bars){ if(x>=b.x0-2&&x<=b.x1+2&&y>=b.y0-2&&y<=b.y1+2) return {kind:'period',id:b.p.id}; }
+  let best=null;
+  for(const b of TL.bars){ if(x>=b.x0-2&&x<=b.x1+2&&y>=b.y0-2&&y<=b.y1+2){ if(!best||b.dur<best.dur) best=b; } }
+  if(best) return {kind:'period',id:best.p.id};
   if(y<TL.eraH) for(const e of TL.eras){ if(x>=e.a&&x<=e.b) return {kind:'era',id:e.e.id}; }
   return null;
 }
@@ -2294,11 +2878,11 @@ function tlHit(x,y){
   let st=null;
   tc.addEventListener('pointerdown',e=>{ tc.setPointerCapture(e.pointerId); st={x:e.clientX,lx:e.clientX,y:e.clientY,t0:S.t,moved:false}; });
   tc.addEventListener('pointermove',e=>{ if(!st) return; const dx=e.clientX-st.x; if(!st.moved&&Math.abs(dx)>5){ st.moved=true; st.lx=e.clientX; if(S.playing) pause(false); }
-    if(st.moved){ S.t=clamp(S.t-(e.clientX-st.lx)*yppAt(S.t),RANGE[0],RANGE[1]); st.lx=e.clientX; onTimeChange(); } });
+    if(st.moved){ S.t=clamp(Pinv(Pof(S.t)-(e.clientX-st.lx)*dragGain()),RANGE[0],RANGE[1]); st.lx=e.clientX; onTimeChange(); } });
   const up=e=>{ if(!st) return; const r=tc.getBoundingClientRect(); if(!st.moved){ const h=tlHit(e.clientX-r.left,e.clientY-r.top); if(h){ uiSound('tick'); go(h,{fromTL:true}); } }
     else { uiSound('tick'); if(S.panel) openContext(false); } st=null; };
   tc.addEventListener('pointerup',up); tc.addEventListener('pointercancel',()=>{ st=null; });
-  tc.addEventListener('wheel',e=>{ e.preventDefault(); if(S.playing) pause(false); S.t=clamp(S.t+(e.deltaX||e.deltaY)*yppAt(S.t)*.6,RANGE[0],RANGE[1]); onTimeChange(); },{passive:false});
+  tc.addEventListener('wheel',e=>{ e.preventDefault(); if(S.playing) pause(false); S.t=clamp(Pinv(Pof(S.t)+(e.deltaX||e.deltaY)*.6*dragGain()),RANGE[0],RANGE[1]); onTimeChange(); },{passive:false});
 })();
 
 /* ==========================================================================
@@ -2306,29 +2890,41 @@ function tlHit(x,y){
    ========================================================================== */
 (function globeInput(){
   const pts=new Map(); let st=null, pinch=null;
+  const flat=()=>S.view==='mapa';
+  const grab=(x,y)=>{ const ll=proj.invert([x,y]); return ll&&isFinite(ll[0])&&isFinite(ll[1])?ll:null; };
+  // mantém o ponto geográfico sob o dedo/cursor enquanto a câmera se move
+  function anchor(ll,x,y){ if(!ll) return; for(let i=0;i<2;i++){ applyMap(); const cur=proj.invert([x,y]); if(!cur||!isFinite(cur[0])) break; S.mc[0]+=wrapLon(ll[0]-cur[0]); S.mc[1]+=ll[1]-cur[1]; limitMap(); } applyMap(); S.dirty=true; }
   gc.addEventListener('pointerdown',e=>{ gc.setPointerCapture(e.pointerId); pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
-    if(pts.size===2){ const [a,b]=[...pts.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:S.zoom}; st=null; }
-    else { st={x:e.clientX,y:e.clientY,rot:S.rot.slice(),moved:false,t:performance.now()}; S.fly=null; } });
+    if(pts.size===2){ const [a,b]=[...pts.values()]; const mx=(a.x+b.x)/2, my=(a.y+b.y)/2; pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:flat()?S.mz:S.zoom,ll:flat()?grab(mx,my):null}; st=null; }
+    else { st={x:e.clientX,y:e.clientY,rot:S.rot.slice(),moved:false,t:performance.now(),ll:flat()?grab(e.clientX,e.clientY):null}; S.fly=null; } });
   gc.addEventListener('pointermove',e=>{ if(!pts.has(e.pointerId)){ hover(e); return; } pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
-    if(pinch&&pts.size===2){ const [a,b]=[...pts.values()]; S.zoom=clamp(pinch.z*Math.hypot(a.x-b.x,a.y-b.y)/pinch.d,.7,4); S.dirty=true; return; }
+    if(pinch&&pts.size===2){ const [a,b]=[...pts.values()]; const r=Math.hypot(a.x-b.x,a.y-b.y)/pinch.d;
+      if(flat()){ S.mz=clamp(pinch.z*r,1,14); anchor(pinch.ll,(a.x+b.x)/2,(a.y+b.y)/2); } else { S.zoom=clamp(pinch.z*r,.7,4); } S.dirty=true; return; }
     if(!st) return; const dx=e.clientX-st.x, dy=e.clientY-st.y; if(!st.moved&&Math.hypot(dx,dy)>5){ st.moved=true; gc.classList.add('dragging'); }
-    if(st.moved){ const k=70/S.scale/ (1); S.rot=[st.rot[0]+dx*k*1.15, clamp(st.rot[1]-dy*k*1.15,-75,75)]; S.dirty=true; } });
+    if(st.moved){
+      if(flat()) anchor(st.ll,e.clientX,e.clientY);
+      else { const k=70/S.scale; S.rot=[st.rot[0]+dx*k*1.15, clamp(st.rot[1]-dy*k*1.15,-75,75)]; S.dirty=true; } } });
   const up=e=>{ pts.delete(e.pointerId); gc.classList.remove('dragging'); if(pts.size<2) pinch=null;
     if(st&&!st.moved&&e.type==='pointerup') tapGlobe(e.clientX,e.clientY); st=null; };
   gc.addEventListener('pointerup',up); gc.addEventListener('pointercancel',up);
-  gc.addEventListener('wheel',e=>{ e.preventDefault(); S.zoom=clamp(S.zoom*Math.exp(-e.deltaY*.0015),.7,4); S.dirty=true; },{passive:false});
+  gc.addEventListener('wheel',e=>{ e.preventDefault(); const f=Math.exp(-e.deltaY*.0015);
+    if(flat()){ const ll=grab(e.clientX,e.clientY); S.fly=null; S.mz=clamp(S.mz*f,1,14); anchor(ll,e.clientX,e.clientY); }
+    else { S.zoom=clamp(S.zoom*f,.7,4); S.dirty=true; } },{passive:false});
+  gc.addEventListener('dblclick',e=>{ if(!flat()) return; const ll=grab(e.clientX,e.clientY); if(ll) flyTo(ll,700,Math.min(14,S.mz*2)); });
   function hover(e){ if(e.pointerType!=='mouse') return; const ll=proj.invert([e.clientX,e.clientY]); const h=ll&&polAt(ll); const pid=h?h.pid:null; if(pid!==hoverPid){ hoverPid=pid; S.dirty=true; gc.style.cursor=pid?'pointer':''; } }
 })();
 function polAt(ll){
-  if(!ll) return null; const r=d3.geoRotation(S.rot)(ll); if(Math.cos(r[1]*RAD)*Math.cos(r[0]*RAD)<=0) return null;
+  if(!ll||!isFinite(ll[0])) return null;
+  if(S.view!=='mapa'){ const r=d3.geoRotation(S.rot)(ll); if(Math.cos(r[1]*RAD)*Math.cos(r[0]*RAD)<=0) return null; }
   let best=null;
   for(const [pid,p] of Object.entries(POL)){ const regs=polRegions(p,S.t); if(!regs) continue;
     for(const rg of regs){ const R=RG(rg); if(R&&d3.geoContains(R.f,ll)){ if(!best||R.a<best.a) best={pid,a:R.a}; break; } } }
   return best;
 }
 function tapGlobe(x,y){
-  let near=null, nd=22; for(const s of EV_SCREEN){ const d=Math.hypot(s.x-x,s.y-y); if(d<nd){ nd=d; near=s; } }
-  if(near){ uiSound('tick'); go({kind:'event',id:near.e.id}); return; }
+  let near=null, nd=22; for(const s of SUB_SCREEN){ const d=Math.hypot(s.x-x,s.y-y); if(d<nd){ nd=d; near={sub:s.s}; } }
+  for(const s of EV_SCREEN){ const d=Math.hypot(s.x-x,s.y-y); if(d<nd){ nd=d; near={e:s.e}; } }
+  if(near){ uiSound('tick'); go(near.sub?{kind:'sub',id:near.sub.id}:{kind:'event',id:near.e.id}); return; }
   const ll=proj.invert([x,y]); const h=ll&&polAt(ll);
   if(h){ const per=PERIODS.filter(p=>polsOf(p).includes(h.pid)&&S.t>=p.from&&S.t<=p.to); const p=per[0]||PERIODS.find(p=>polsOf(p).includes(h.pid));
     if(p){ uiSound('tick'); go({kind:'period',id:p.id},{noTime:true}); return; } }
@@ -2338,35 +2934,60 @@ function tapGlobe(x,y){
 /* ==========================================================================
    Navegação e painel
    ========================================================================== */
+/* enquadramento automático: para onde a câmera vai quando se abre um tema */
+function periodBox(p,t){
+  let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,n=0;
+  polsOf(p).forEach(pid=>{ const regs=polRegions(POL[pid],t)||[]; regs.forEach(r=>{ const R=RG(r); if(!R) return; const b=d3.geoBounds(R.f);
+    if(b[0][0]>b[1][0]){ const c=R.c; x0=Math.min(x0,c[0]); x1=Math.max(x1,c[0]); y0=Math.min(y0,c[1]); y1=Math.max(y1,c[1]); }
+    else { x0=Math.min(x0,b[0][0]); x1=Math.max(x1,b[1][0]); y0=Math.min(y0,b[0][1]); y1=Math.max(y1,b[1][1]); } n++; }); });
+  if(!n) return null;
+  const sx=Math.max(8,x1-x0), sy=Math.max(6,y1-y0);
+  return {ll:[(x0+x1)/2,(y0+y1)/2],z:clamp(Math.min(330/(sx*1.35),150/(sy*1.35)),1.3,7)};
+}
+function hintFor(n,t){
+  const o=n.o;
+  if((n.kind==='event'||n.kind==='sub')&&o.ll) return {ll:o.ll,z:n.kind==='sub'?4:3.2};
+  if(n.kind==='period'){ const b=periodBox(o,t); if(b) return b; const ev=EVS.find(e=>e.lane===o.lane&&e.y>=o.from&&e.y<=o.to); if(ev) return {ll:ev.ll,z:2.4}; }
+  if(n.kind==='sub'){ const par=NODE(o.parent); return par?hintFor(par,t):null; }
+  return null;
+}
+function branchOf(){
+  if(!S.sel) return null; const id=S.sel.id; const n=NODE(id);
+  if(KIDS[id]) return {parent:id,list:KIDS[id],lane:(n.o.lane)};
+  if(n&&n.kind==='sub'&&KIDS[n.o.parent]) return {parent:n.o.parent,list:KIDS[n.o.parent],lane:n.o.lane};
+  return null;
+}
 function go(ref,opt={}){
   const n=NODE(ref.id); if(!n) return;
   if(S.playing) pause(false);
   // move o tempo e o mapa
-  if(n.kind==='event'){ S.lane=n.o.lane; if(!opt.noTime){ S.t=n.o.y; } flyTo(n.o.ll,1200); }
-  else if(n.kind==='period'){ S.lane=n.o.lane; if(!opt.noTime&&!(S.t>=n.o.from&&S.t<=n.o.to)) S.t=clamp(n.o.from+Math.min(25,(n.o.to-n.o.from)*.15),RANGE[0],RANGE[1]);
-    if(!opt.noFly){ let best=null; polsOf(n.o).forEach(pid=>{ const regs=polRegions(POL[pid],S.t)||[]; regs.forEach(r=>{ const R=RG(r); if(R&&(!best||R.a>best.a)) best=R; }); });
-      if(best) flyTo(best.c,1200); else { const ev=EVS.find(e=>e.lane===n.o.lane&&e.y>=n.o.from&&e.y<=n.o.to); if(ev) flyTo(ev.ll,1200); } } }
+  if(n.kind==='event'){ S.lane=n.o.lane; if(!opt.noTime){ S.t=n.o.y; } }
+  else if(n.kind==='sub'){ S.lane=n.o.lane; if(!opt.noTime){ S.t=clamp(n.o.y,RANGE[0],RANGE[1]); } }
+  else if(n.kind==='period'){ S.lane=n.o.lane; if(!opt.noTime&&!(S.t>=n.o.from&&S.t<=n.o.to)) S.t=clamp(n.o.from+Math.min(25,(n.o.to-n.o.from)*.15),RANGE[0],RANGE[1]); }
   else if(n.kind==='era'){ if(!opt.noTime&&!(S.t>=n.o.from&&S.t<n.o.to)) S.t=n.o.from+1; }
+  if(!opt.noFly&&n.kind!=='era'){ const h=hintFor(n,S.t); if(h) flyTo(h.ll,opt.fast?800:1500,h.z); }
   onTimeChange(true);
   // trilha
-  if(!opt.back){ S.trail=S.trail.slice(0,S.ti+1); const last=S.trail[S.ti]; if(!last||last.id!==n.id){ S.trail.push({kind:n.kind,id:n.id}); S.ti=S.trail.length-1; } }
+  if(!opt.back){ S.trail=S.trail.slice(0,S.ti+1); const last=S.trail[S.ti]; if(!last||last.id!==n.id){ S.trail.push({kind:n.kind,id:n.id}); if(S.trail.length>40) S.trail.shift(); S.ti=S.trail.length-1; } }
   S.sel={kind:n.kind,id:n.id};
+  S.branch=branchOf();
   renderPanel(); openPanel();
   setMode(LANE[S.lane]?LANE[S.lane].mode:'dorico');
   if(S.narr&&!opt.silent) narrate(textFor(n),null,false,keyFor(n));
-  S.dirty=true; S.dirtyTL=true;
+  updateLens(); S.dirty=true; S.dirtyTL=true;
 }
-function textFor(n){ if(n.kind==='period') return n.o.name+'. '+n.o.sum; if(n.kind==='event') return n.o.t+'. '+n.o.sum; return n.o.t?n.o.t+'. '+n.o.sum:n.o.name+'. '+n.o.sum; }
+function textFor(n){ if(n.kind==='period') return n.o.name+'. '+n.o.sum; if(n.kind==='event'||n.kind==='sub') return n.o.t+'. '+n.o.sum; return n.o.t?n.o.t+'. '+n.o.sum:n.o.name+'. '+n.o.sum; }
 function openContext(narr=true){
-  if(!inFocus(S.lane)) S.lane=FOC().lanes[0];
   const p=periodAt(S.lane,S.t)||PERIODS.filter(p=>S.t>=p.from&&S.t<=p.to)[0];
   if(p) go({kind:'period',id:p.id},{noTime:true,noFly:true,silent:!narr});
 }
 function openPanel(){ if(S.panel) return; S.panel=true; const p=$('#panel'); p.hidden=false; document.body.classList.add('p-open'); if(innerWidth<860) setSheet('half'); layout(); }
-function closePanel(){ S.panel=false; $('#panel').hidden=true; document.body.classList.remove('p-open'); S.sel=null; layout(); S.dirty=true; S.dirtyTL=true; stopVoice(); }
+function closePanel(){ S.panel=false; $('#panel').hidden=true; document.body.classList.remove('p-open'); S.sel=null; S.branch=null; $('#trail').hidden=true; layout(); updateLens(); S.dirty=true; S.dirtyTL=true; stopVoice(); }
 function setSheet(s){ S.sheet=s; const f=sheetFrac(); const H=innerHeight; const ph=$('#panel').getBoundingClientRect().height||H*.86; $('#panel').style.setProperty('--sy',Math.max(0,ph-H*f)+'px'); layout(); }
 $('#p-close').onclick=()=>{ uiSound('tick'); closePanel(); };
 $('#p-back').onclick=()=>{ if(S.ti>0){ S.ti--; uiSound('tick'); go(S.trail[S.ti],{back:true}); } };
+$('#p-fwd').onclick=()=>{ if(S.ti<S.trail.length-1){ S.ti++; uiSound('tick'); go(S.trail[S.ti],{back:true}); } };
+$('#tr-clear').onclick=()=>{ const cur=S.trail[S.ti]; S.trail=cur?[cur]:[]; S.ti=cur?0:-1; renderCrumbs(); uiSound('tick'); };
 // arrastar a folha no celular
 (function sheetDrag(){ const gb=$('#grab'); let st=null;
   gb.addEventListener('pointerdown',e=>{ gb.setPointerCapture(e.pointerId); const p=$('#panel'); st={y:e.clientY,sy:parseFloat(getComputedStyle(p).getPropertyValue('--sy'))||0}; p.classList.add('drag'); });
@@ -2375,18 +2996,61 @@ $('#p-back').onclick=()=>{ if(S.ti>0){ S.ti--; uiSound('tick'); go(S.trail[S.ti]
     if(Math.abs(dy)<6){ setSheet(S.sheet==='full'?'half':'full'); } else { const frac=1-(st.sy+dy+(H-p.getBoundingClientRect().height))/H; if(frac<.18) closePanel(); else setSheet(frac>.7?'full':frac>.42?'half':'peek'); } st=null; });
 })();
 
-const TYPE_LBL={causa:['Ajudou a causar','Teve entre as causas'],inspirou:['Inspirou','Inspirado por'],reacao:['Foi uma resposta a','Recebeu uma resposta em'],eco:['Ecoa em','Ecoa'],contato:['Ligado a','Ligado a'],legado:['Deixou como legado','Herança de']};
-const TYPE_COL={causa:'#9a3b28',inspirou:'#33607f',reacao:'#2e6f66',eco:'#8f7d60',contato:'#4d6d3b',legado:'#9a7322'};
+const TYPE_LBL={causa:['Ajudou a causar','Teve entre as causas'],inspirou:['Inspirou','Inspirado por'],reacao:['Foi uma resposta a','Recebeu uma resposta em'],eco:['Ecoa em','Ecoa'],contato:['Ligado a','Ligado a'],legado:['Deixou como legado','Herança de'],sequencia:['Em seguida','Antes disso']};
+const TYPE_COL={causa:'#9a3b28',inspirou:'#33607f',reacao:'#2e6f66',eco:'#8f7d60',contato:'#4d6d3b',legado:'#9a7322',sequencia:'#a8946c'};
 function linksFor(ids){
   const set=new Set(ids); const out=[];
   for(const l of LINKS){ if(set.has(l[0])&&!set.has(l[1])) out.push({dir:0,other:l[1],l}); else if(set.has(l[1])&&!set.has(l[0])) out.push({dir:1,other:l[0],l}); }
   return out;
 }
+const yearOf=n=>n.kind==='period'||n.kind==='era'?n.o.from:n.o.y;
+function whenOf(n){ if(n.kind==='event'||n.kind==='ext') return fmtY(n.o.y); if(n.kind==='sub') return n.o.w||fmtY(n.o.y); if(n.kind==='period') return fmtRange(n.o.from,n.o.to); return ''; }
 function linkHTML(x){
   const n=NODE(x.other); if(!n) return ''; const [, ,type,conf,txt]=x.l;
-  const title=n.o.t||n.o.name; const yy=n.kind==='event'?fmtY(n.o.y):n.kind==='period'?fmtRange(n.o.from,n.o.to):n.kind==='ext'?fmtY(n.o.y):'';
+  const title=n.o.t||n.o.name; const yy=whenOf(n);
   const out=n.kind==='ext'?' · fora deste recorte':'';
   return `<button class="link" data-go="${esc(x.other)}" style="--c:${TYPE_COL[type]}"><span class="t">${TYPE_LBL[type][x.dir]}<span class="conf">${conf==='amplo'?'consenso amplo':'interpretação debatida'}${out}</span></span><b>${esc(title)}<small>${esc(yy)}</small></b><p>${esc(txt)}</p></button>`;
+}
+/* "vem de" e "leva a": as conexões de causa e efeito, logo abaixo do título */
+function neighbours(n){
+  // vizinhos na sequência cronológica da mesma história, quando faltam ligações explícitas
+  const o=n.o; let prev=null,next=null;
+  if(n.kind==='period'){ const same=PERIODS.filter(p=>p.lane===o.lane&&p.id!==o.id);
+    prev=same.filter(p=>p.to<=o.from+1&&p.to>=o.from-60).sort((a,b)=>b.to-a.to)[0]; next=same.filter(p=>p.from>=o.to-1&&p.from<=o.to+60).sort((a,b)=>a.from-b.from)[0]; }
+  else if(n.kind==='event'){ const same=EVS.filter(e=>e.lane===o.lane&&e.id!==o.id); prev=same.filter(e=>e.y<=o.y).slice(-1)[0]; next=same.find(e=>e.y>o.y); }
+  else if(n.kind==='sub'){ const same=(KIDS[o.parent]||[]).filter(s=>s.id!==o.id&&s.k===o.k); prev=same.filter(s=>s.y<=o.y).slice(-1)[0]; next=same.find(s=>s.y>o.y); }
+  return {prev,next};
+}
+function flowOf(n,ids){
+  const raw=linksFor(ids); const rank=x=>(x.l[3]==='amplo'?0:1)*1000+Math.abs(yearOf(NODE(x.other)||n)-yearOf(n));
+  const from=raw.filter(x=>x.dir===1&&NODE(x.other)).sort((a,b)=>rank(a)-rank(b)), to=raw.filter(x=>x.dir===0&&NODE(x.other)).sort((a,b)=>rank(a)-rank(b));
+  const nb=neighbours(n);
+  const imp=(o,dir,txt)=>({dir,other:o.id,imp:true,l:[dir?o.id:n.id,dir?n.id:o.id,'sequencia','amplo',txt]});
+  const dedupe=a=>a.filter((x,i)=>a.findIndex(y=>y.other===x.other)===i);
+  from.splice(0,from.length,...dedupe(from)); to.splice(0,to.length,...dedupe(to));
+  if(from.length<2&&nb.prev&&!from.some(x=>x.other===nb.prev.id)) from.push(imp(nb.prev,1,n.kind==='sub'?'Na ordem desta ramificação.':'O que veio antes, na mesma região do mundo.'));
+  if(to.length<2&&nb.next&&!to.some(x=>x.other===nb.next.id)) to.push(imp(nb.next,0,n.kind==='sub'?'Na ordem desta ramificação.':'O que veio em seguida, na mesma região do mundo.'));
+  return {from,to,all:raw};
+}
+function flowCard(x){
+  const n=NODE(x.other); if(!n) return ''; const type=x.l[2];
+  const title=n.o.t||n.o.name; const lane=LANE[n.o.lane];
+  return `<button class="fl" data-go="${esc(x.other)}" style="--c:${TYPE_COL[type]}"><small>${TYPE_LBL[type][x.dir]}${x.imp?'':(x.l[3]==='debate'?' · interpretação debatida':'')}</small><b>${esc(title)}</b><em>${esc(whenOf(n))}${lane?' · '+esc(lane.short):''}</em><span>${esc(x.l[4])}</span></button>`;
+}
+function flowHTML(f){
+  if(!f.from.length&&!f.to.length) return '';
+  const ar=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="${d}"/></svg>`;
+  const col=(t,icon,list)=>`<div class="col"><h5>${icon}${t}</h5>${list.length?list.slice(0,3).map(flowCard).join(''):'<p class="none">Nenhuma ligação registrada.</p>'}</div>`;
+  return `<div class="flow">${col('VEM DE',ar('M19 12H5M11 6l-6 6 6 6'),f.from)}${col('LEVA A',ar('M5 12h14M13 6l6 6-6 6'),f.to)}</div>`;
+}
+/* "aprofundar": ramificações de dentro de um tema */
+const K_LBL={fase:['Fases','FASE'],pessoa:['Pessoas','PESSOA'],evento:['Acontecimentos','FATO'],instituicao:['Instituições e ideias','IDEIA']};
+function firstSentence(t,max=130){ const m=t.match(/^.+?[.!?](\s|$)/); let s=m?m[0].trim():t; if(s.length>max) s=s.slice(0,max-1).replace(/\s+\S*$/,'')+'…'; return s; }
+function deepHTML(id){
+  const kids=KIDS[id]; if(!kids||!kids.length) return '';
+  const groups=['fase','evento','pessoa','instituicao'].map(k=>[k,kids.filter(s=>s.k===k)]).filter(x=>x[1].length);
+  const card=s=>`<button class="dc" data-go="${s.id}"><small>${K_LBL[s.k][1]}</small><b>${esc(s.t)}</b><em>${esc(s.w||fmtY(s.y))}${s.role?' · '+esc(s.role):''}</em><span>${esc(firstSentence(s.sum))}</span></button>`;
+  return `<div class="sec deep"><h4>Aprofundar · ${kids.length}</h4>${groups.map(([k,list])=>`<div class="dg"><h6>${K_LBL[k][0]}</h6><div class="dgrid">${list.map(card).join('')}</div></div>`).join('')}</div>`;
 }
 function artHTML(ids,refY){
   const list=[...new Set(ids)].filter(a=>ART[a]); if(!list.length) return '';
@@ -2399,33 +3063,64 @@ function sameTimeHTML(t,lane){
   if(!ps.length) return '';
   return `<div class="sec"><h4>Ao mesmo tempo · ${esc(fmtY(t))}</h4><div class="chips">${ps.map(p=>`<button class="chip" data-go="${p.id}"><i style="background:${LANE[p.lane].color}"></i>${esc(p.name)} <small>${esc(LANE[p.lane].short.toUpperCase())}</small></button>`).join('')}</div></div>`;
 }
+function restLinks(f,shown){
+  const used=new Set(); f.from.slice(0,3).forEach(x=>used.add(x.other+'<')); f.to.slice(0,3).forEach(x=>used.add(x.other+'>'));
+  const rest=f.all.filter(x=>!used.has(x.other+(x.dir?'<':'>'))); if(!rest.length) return '';
+  return `<div class="sec"><h4>Outras conexões</h4><div class="links">${rest.slice(0,8).map(linkHTML).join('')}</div></div>`;
+}
+function hierPath(n){
+  const out=[]; let cur=n, guard=0;
+  while(cur&&guard++<8){ out.unshift({id:cur.id,label:cur.o.t||cur.o.name,here:cur===n});
+    if(cur.kind==='sub') cur=NODE(cur.o.parent);
+    else if(cur.kind==='event'){ const p=periodOfEvent(cur.o); cur=p?NODE(p.id):null; }
+    else break; }
+  return out;
+}
 function renderPanel(){
   const n=NODE(S.sel.id); if(!n) return; const b=$('#pbody'); let h='';
   if(n.kind==='period'){ const p=n.o, l=LANE[p.lane]; const era=ERA_AT(clamp(S.t,p.from,p.to));
     const evs=EVS.filter(e=>e.lane===p.lane&&e.y>=p.from&&e.y<=p.to);
     const arts=[...evs.flatMap(e=>e.art||[])];
+    const f=flowOf(n,[p.id,...evs.map(e=>e.id)].filter(x=>true));
     h+=`<div class="kick"><span class="lane-dot" style="background:${l.color}"></span>${esc(l.name)}</div><h2>${esc(p.name)}</h2><div class="dates">${esc(fmtRange(p.from,p.to))}</div>`;
+    h+=flowHTML(f);
     h+=listenBtn();
     h+=`<p class="lead">${esc(p.sum)}</p>`;
+    h+=deepHTML(p.id);
     h+=`<div class="sec"><h4>Como se governava</h4><p>${esc(p.gov)}</p></div>`;
     if(p.life) h+=`<div class="sec"><h4>A vida na época</h4><p>${esc(p.life)}</p></div>`;
     if(p.people&&p.people.length) h+=`<div class="sec"><h4>Pessoas</h4><ul class="people">${p.people.map(x=>`<li><b>${esc(x[0])}<small>${esc(x[1])}</small></b><span>${esc(x[2])}</span></li>`).join('')}</ul></div>`;
     if(evs.length) h+=`<div class="sec"><h4>Acontecimentos</h4><div class="chips">${evs.map(e=>`<button class="chip" data-go="${e.id}"><small>${esc(fmtY(e.y))}</small> ${esc(e.t)}</button>`).join('')}</div></div>`;
     h+=artHTML(arts,clamp(S.t,p.from,p.to));
     h+=sameTimeHTML(clamp(S.t,p.from,p.to),p.lane);
-    const ls=linksFor([p.id,...evs.map(e=>e.id)]).filter(x=>!evs.some(e=>e.id===x.other));
-    if(ls.length) h+=`<div class="sec"><h4>Conexões</h4><div class="links">${ls.slice(0,8).map(linkHTML).join('')}</div></div>`;
+    h+=restLinks(f);
     h+=`<div class="note"><b>ERA · ${esc(era.name.toUpperCase())}</b><br>${esc(era.sum)}${era.note?`<br><i>${esc(era.note)}</i>`:''}</div>`;
   } else if(n.kind==='event'){ const e=n.o, l=LANE[e.lane]; const p=periodOfEvent(e);
+    const f=flowOf(n,[e.id]);
     h+=`<div class="kick"><span class="lane-dot" style="background:${l.color}"></span>${esc(l.name)}</div><h2>${esc(e.t)}</h2><div class="dates">${esc(fmtY(e.y,true))}</div>`;
+    h+=flowHTML(f);
     h+=listenBtn();
     h+=`<p class="lead">${esc(e.sum)}</p>`;
+    h+=deepHTML(e.id);
     if(p) h+=`<div class="sec"><h4>Parte de</h4><div class="chips"><button class="chip" data-go="${p.id}"><i style="background:${l.color}"></i>${esc(p.name)} <small>${esc(fmtRange(p.from,p.to))}</small></button></div></div>`;
     h+=artHTML(e.art||[],e.y);
-    const ls=linksFor([e.id]); if(ls.length) h+=`<div class="sec"><h4>Conexões</h4><div class="links">${ls.map(linkHTML).join('')}</div></div>`;
+    h+=restLinks(f);
     const near=EVS.filter(x=>x.lane!==e.lane&&Math.abs(x.y-e.y)<=30);
     if(near.length) h+=`<div class="sec"><h4>Perto dessa data, em outros lugares</h4><div class="chips">${near.map(x=>`<button class="chip" data-go="${x.id}"><i style="background:${LANE[x.lane].color}"></i><small>${esc(fmtY(x.y))}</small> ${esc(x.t)}</button>`).join('')}</div></div>`;
     h+=sameTimeHTML(e.y,e.lane);
+  } else if(n.kind==='sub'){ const s=n.o, l=LANE[s.lane]; const par=NODE(s.parent);
+    const f=flowOf(n,[s.id]);
+    h+=`<div class="kick"><span class="lane-dot" style="background:${l.color}"></span>Aprofundamento · ${esc(K_LBL[s.k][1].toLowerCase().replace(/^./,c=>c.toUpperCase()))}</div><h2>${esc(s.t)}</h2><div class="dates">${esc(s.w||fmtY(s.y,true))}${s.role?` · <span>${esc(s.role)}</span>`:''}</div>`;
+    h+=flowHTML(f);
+    h+=listenBtn();
+    h+=`<p class="lead">${esc(s.sum)}</p>`;
+    h+=deepHTML(s.id);
+    if(par){ const sib=(KIDS[s.parent]||[]).filter(x=>x.id!==s.id);
+      h+=`<div class="sec"><h4>Dentro de</h4><div class="chips"><button class="chip" data-go="${par.id}"><i style="background:${l.color}"></i>${esc(par.o.t||par.o.name)} <small>${esc(whenOf(par))}</small></button></div></div>`;
+      if(sib.length) h+=`<div class="sec"><h4>Também em ${esc(par.o.t||par.o.name)}</h4><div class="chips">${sib.map(x=>`<button class="chip" data-go="${x.id}"><small>${esc(x.w?x.w.replace(/ \(.*/,''):fmtY(x.y))}</small> ${esc(x.t)}</button>`).join('')}</div></div>`; }
+    h+=artHTML(s.art||[],s.y);
+    h+=sameTimeHTML(s.y,s.lane);
+    h+=restLinks(f);
   } else if(n.kind==='ext'){ const x=n.o;
     h+=`<div class="kick">Fora deste recorte · ${esc(fmtY(x.y,true))}</div><h2>${esc(x.t)}</h2>`;
     h+=listenBtn();
@@ -2433,7 +3128,7 @@ function renderPanel(){
     h+=artHTML(x.art||[],x.y);
     const ls=linksFor([n.id]); if(ls.length) h+=`<div class="sec"><h4>De volta à Antiguidade</h4><div class="links">${ls.map(linkHTML).join('')}</div></div>`;
   } else if(n.kind==='era'){ const e=n.o;
-    h+=`<div class="kick">Era</div><h2>${esc(e.name)}</h2><div class="dates">${esc(fmtRange(e.from,Math.min(e.to,476)))}</div>`;
+    h+=`<div class="kick">Era</div><h2>${esc(e.name)}</h2><div class="dates">${esc(fmtRange(e.from,Math.min(e.to,2026)))}</div>`;
     h+=listenBtn();
     h+=`<p class="lead">${esc(e.sum)}</p>`;
     if(e.note) h+=`<div class="note">${esc(e.note)}</div>`;
@@ -2441,18 +3136,25 @@ function renderPanel(){
     h+=`<div class="sec"><h4>Períodos nesta era</h4><div class="chips">${ps.map(p=>`<button class="chip" data-go="${p.id}"><i style="background:${LANE[p.lane].color}"></i>${esc(p.name)}</button>`).join('')}</div></div>`;
   }
   b.innerHTML=h; b.scrollTop=0;
+  [...b.children].forEach((el,i)=>el.style.setProperty('--i',Math.min(i,9)));
   b.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>{ uiSound('tick'); go({id:el.dataset.go}); }));
   const lb=b.querySelector('.listen'); if(lb) lb.onclick=()=>{ if(speaking){ stopVoice(); } else narrate(textFor(n),null,true,keyFor(n)); };
   b.querySelectorAll('[data-img]').forEach(el=>loadArt(el));
-  renderCrumbs();
+  renderCrumbs(n);
 }
 function listenBtn(){ return `<button class="listen" aria-label="Ouvir o texto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg><span>OUVIR</span></button>`; }
-function renderCrumbs(){
-  const c=$('#crumbs'); c.innerHTML=S.trail.map((r,i)=>{ const n=NODE(r.id); const nm=(n.o.t||n.o.name); const short=nm.length>22?nm.slice(0,21)+'…':nm;
+/* duas trilhas: onde estou na hierarquia (no painel) e por onde passei (sobre o mapa) */
+function renderCrumbs(n){
+  n=n||(S.sel&&NODE(S.sel.id));
+  const hp=$('#hier'); if(n){ const lane=LANE[n.o.lane];
+    const path=hierPath(n); hp.innerHTML=(lane?`<span class="hl">${esc(lane.short)}</span>`:'')+path.map(x=>`<i>›</i><button data-go="${esc(x.id)}" aria-current="${x.here}">${esc(x.label.length>26?x.label.slice(0,25)+'…':x.label)}</button>`).join('');
+    hp.querySelectorAll('[data-go]').forEach(bt=>bt.onclick=()=>{ if(bt.getAttribute('aria-current')!=='true'){ uiSound('tick'); go({id:bt.dataset.go}); } }); }
+  const tr=$('#trail'); tr.hidden=!(S.panel&&S.trail.length>1);
+  const c=$('#tr-list'); c.innerHTML=S.trail.map((r,i)=>{ const nn=NODE(r.id); const nm=(nn.o.t||nn.o.name); const short=nm.length>28?nm.slice(0,27)+'…':nm;
     return (i?'<i>›</i>':'')+`<button data-i="${i}" aria-current="${i===S.ti}">${esc(short)}</button>`; }).join('');
-  c.querySelectorAll('button').forEach(bt=>bt.onclick=()=>{ const i=+bt.dataset.i; if(i!==S.ti){ S.ti=i; go(S.trail[i],{back:true}); } });
-  const cur=c.querySelector('[aria-current="true"]'); if(cur) cur.scrollIntoView({inline:'end',block:'nearest'});
-  $('#p-back').disabled=S.ti<=0;
+  c.querySelectorAll('button').forEach(bt=>bt.onclick=()=>{ const i=+bt.dataset.i; if(i!==S.ti){ S.ti=i; uiSound('tick'); go(S.trail[i],{back:true}); } });
+  const cur=c.querySelector('[aria-current="true"]'); if(cur) cur.scrollIntoView({inline:'center',block:'nearest'});
+  $('#p-back').disabled=S.ti<=0; $('#p-fwd').disabled=S.ti>=S.trail.length-1;
 }
 
 /* ==========================================================================
@@ -2504,7 +3206,7 @@ function syncNextMarco(){ S.nextMi=STOPS.findIndex(m=>m.y>S.t+.01); if(S.nextMi<
 function play(){
   if(S.t>=RANGE[1]-1){ S.t=RANGE[0]; S.lastSnap={}; }
   S.playing=true; S.hold=null; syncNextMarco(); setPlayIcon(); layout();
-  if(S.panel) closePanel();
+  if(S.panel) closePanel(); updateLens();
   aimNext(); if(S.amb) Sound.start();
 }
 function pause(open=true){
@@ -2512,7 +3214,7 @@ function pause(open=true){
   if(open) openContext(true);
 }
 function setPlayIcon(){ $('#i-play').innerHTML=S.playing?'<path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/>':'<path d="M7 4.5v15l12.5-7.5z"/>'; $('#b-play').setAttribute('aria-label',S.playing?'Pausar':'Assistir'); }
-function aimNext(){ const m=STOPS[S.nextMi]; if(!m){ S.legRate=YPS*4*S.speed; return; } const gap=Math.max(.01,m.y-S.t); const secs=clamp(gap/YPS,.9,3.2)/S.speed; S.legRate=gap/secs; flyTo(m.ll,clamp(secs*1000,900,3200),S.focus==='mundo'?undefined:FOC().zoom); }
+function aimNext(){ const m=STOPS[S.nextMi]; if(!m){ S.legRate=YPS*4*S.speed; return; } const gap=Math.max(.01,m.y-S.t); const secs=clamp(gap/YPS,.9,3.2)/S.speed; S.legRate=gap/secs; flyTo(m.ll,clamp(secs*1000,1100,3600),2.6); }
 function arrive(m){
   S.t=m.y; S.lane=m.lane; onTimeChange(); setMode(LANE[m.lane].mode);
   const cap=$('#caption'); $('#c-k').textContent=`${fmtY(m.y,true)} · ${LANE[m.lane].name}`; $('#c-t').textContent=m.t; $('#c-p').textContent=m.sum; cap.classList.remove('off');
@@ -2664,36 +3366,89 @@ $('#sw-ui').onclick=()=>{ S.ui=!S.ui; setSwitch('#sw-ui',S.ui); store.set('ec-ui
 $('#sw-narr').onclick=()=>setNarr(!S.narr);
 $('#voice').onchange=()=>{ store.set('ec-voice',$('#voice').value); narrate('Esta é a voz do narrador.',null,true); };
 $('#rate').onchange=()=>narrate('Velocidade da narração.',null,true);
-function renderFocusUI(){
-  const f=FOC(); $('#focus-name').textContent=f.short;
-  $('#focus-list').innerHTML=FOCUS.map(x=>`<button class="fopt" role="menuitemradio" aria-checked="${x.id===S.focus}" data-f="${x.id}"><span class="dots">${x.lanes.slice(0,6).map(l=>`<i style="background:${LANE[l].color}"></i>`).join('')}</span>${esc(x.name)}</button>`).join('');
-  $('#focus-list').querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{ setFocus(b.dataset.f); $('#fsheet').hidden=true; $('#b-focus').setAttribute('aria-expanded','false'); });
-  $('#in-focus').innerHTML=FOCUS.map(x=>`<button data-f="${x.id}" aria-pressed="${x.id===S.focus}">${esc(x.short)}</button>`).join('');
-  $('#in-focus').querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{ setFocus(b.dataset.f,true); });
+/* ---------- mapa / globo ---------- */
+const ICON_MAPA='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M9 5v14M15 5v14M3 12h18"/></svg>';
+const ICON_GLOBO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17"/></svg>';
+function renderViewBtn(){ const flat=S.view==='mapa'; $('#b-view').innerHTML=flat?ICON_GLOBO:ICON_MAPA; $('#b-view').setAttribute('aria-label',flat?'Ver como globo':'Ver como mapa plano'); $('#b-view').title=flat?'Ver como globo (M)':'Ver como mapa plano (M)'; gc.setAttribute('aria-label',flat?'Mapa-múndi com os territórios aproximados no ano escolhido':'Globo com os territórios aproximados no ano escolhido'); }
+function setView(v){
+  if(v===S.view) return;
+  if(v==='globo'){ S.rot=[-S.mc[0],clamp(-S.mc[1],-60,60)]; S.zoom=clamp(.9+.25*Math.log2(S.mz),.9,2.2); }
+  else { S.mc=[-S.rot[0],clamp(-S.rot[1],-70,70)]; S.mz=clamp(1+(S.zoom-.9)*2.4,1,6); }
+  S.fly=null; gc.classList.add('swap');
+  setTimeout(()=>{ S.view=v; useProj(); layout(); store.set('ec-view',v); renderViewBtn(); S.dirty=true; requestAnimationFrame(()=>gc.classList.remove('swap')); },reduceMotion?0:230);
 }
-function setFocus(id,quiet){
-  S.focus=id; store.set('ec-focus',id); computeStops(); renderFocusUI();
-  const f=FOC(); if(!inFocus(S.lane)) S.lane=f.lanes[0];
-  flyTo(f.center,1300,f.zoom); setMode(LANE[S.lane].mode);
-  if(S.playing){ S.hold=null; $('#caption').classList.add('off'); syncNextMarco(); }
-  if(S.panel&&S.sel&&S.sel.kind==='period'&&!inFocus(PER[S.sel.id].lane)) openContext(false);
-  tlLayout(); S.dirty=true; S.dirtyTL=true;
-  if(!quiet){ uiSound('tick'); toast(f.id==='mundo'?'Foco: mundo todo':`Foco: ${f.name}`,1800); }
+$('#b-view').onclick=()=>{ uiSound('tick'); setView(S.view==='mapa'?'globo':'mapa'); };
+
+/* ---------- busca ---------- */
+const norm=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const KIND_LBL={period:'Tema',event:'Acontecimento',sub:'Aprofundamento',person:'Pessoa',era:'Era'};
+const SEARCH=[];
+(function buildSearch(){
+  PERIODS.forEach(p=>{ SEARCH.push({id:p.id,kind:'period',title:p.name,n:norm(p.name),tx:norm(p.sum),when:fmtRange(p.from,p.to),lane:p.lane,y:p.from,w:3});
+    (p.people||[]).forEach(x=>SEARCH.push({id:p.id,kind:'person',title:x[0],n:norm(x[0]),tx:norm(x[2]),when:x[1]+' · em '+p.name,lane:p.lane,y:p.from,w:1.4})); });
+  EVENTS.forEach(e=>SEARCH.push({id:e.id,kind:'event',title:e.t,n:norm(e.t),tx:norm(e.sum),when:fmtY(e.y),lane:e.lane,y:e.y,w:e.mark?2.4:2}));
+  SUBS.forEach(s=>SEARCH.push({id:s.id,kind:s.k==='pessoa'?'person':'sub',title:s.t,n:norm(s.t+' '+(s.alias||'')),tx:norm(s.sum),when:(s.w||fmtY(s.y))+' · em '+(NODE(s.parent).o.t||NODE(s.parent).o.name),lane:s.lane,y:s.y,w:1.8}));
+  ERAS.forEach(e=>SEARCH.push({id:e.id,kind:'era',title:e.name,n:norm(e.name),tx:norm(e.sum),when:fmtRange(e.from,Math.min(e.to,2026)),lane:null,y:e.from,w:1.5}));
+})();
+const SUGGEST=['roma-reis','roma-republica','rev-francesa','rev-industrial','portugal','brasil-colonia','brasil-imperio','hispania-romana','absolutismo-iluminismo','han'].filter(id=>NODE(id));
+function runSearch(q){
+  const out=[]; const nq=norm(q).trim(); if(!nq) return out;
+  const ym=nq.match(/^(\d{1,4})\s*(a\.?\s*c\.?|ac|d\.?\s*c\.?|dc)?$/);
+  if(ym){ let yv=+ym[1]; if(ym[2]&&/^a/.test(ym[2])) yv=-yv; if(yv>=RANGE[0]&&yv<=RANGE[1]){ out.push({year:yv,kind:'year',title:'Ir para o ano '+fmtY(yv,true),when:ERA_AT(yv).name,score:100}); } }
+  const toks=nq.split(/\s+/).filter(Boolean);
+  for(const it of SEARCH){ let sc=0, ok=true;
+    for(const t of toks){ let s=0;
+      if(it.n.startsWith(t)) s=6; else if(it.n.includes(' '+t)) s=5; else if(it.n.includes(t)) s=4; else if(t.length>2&&it.tx.includes(t)) s=1; else { ok=false; break; }
+      sc+=s; }
+    if(!ok) continue; if(ym&&Math.abs(it.y-(+ym[1]))<=3) sc+=3;
+    sc=sc*it.w; if(toks.join(' ')===it.n) sc+=20; out.push({...it,score:sc}); }
+  const seen=new Set(); return out.sort((a,b)=>b.score-a.score).filter(x=>{ const k=x.kind+x.id+x.title; if(seen.has(k)) return false; seen.add(k); return true; }).slice(0,14);
 }
-$('#b-focus').onclick=e=>{ const sh=$('#fsheet'); sh.hidden=!sh.hidden; $('#b-focus').setAttribute('aria-expanded',String(!sh.hidden)); uiSound('tick'); e.stopPropagation(); };
-document.addEventListener('pointerdown',e=>{ const sh=$('#fsheet'); if(!sh.hidden&&!sh.contains(e.target)&&!$('#b-focus').contains(e.target)){ sh.hidden=true; $('#b-focus').setAttribute('aria-expanded','false'); } });
+let sIdx=0, sList=[];
+function resultHTML(r,i){
+  if(r.kind==='year') return `<button class="sr" role="option" data-i="${i}"><i class="yr">⌛</i><span><b>${esc(r.title)}</b><small>${esc(r.when)}</small></span></button>`;
+  const col=r.lane&&LANE[r.lane]?LANE[r.lane].color:'#9a7322';
+  return `<button class="sr" role="option" data-i="${i}"><i style="background:${col}"></i><span><b>${esc(r.title)}</b><small>${esc(KIND_LBL[r.kind])} · ${esc(r.when)}</small></span></button>`;
+}
+function renderSearch(){
+  const q=$('#q').value; const box=$('#q-res');
+  if(!q.trim()){
+    sList=SUGGEST.map(id=>{ const n=NODE(id); return {id,kind:n.kind,title:n.o.name||n.o.t,when:whenOf(n),lane:n.o.lane}; });
+    box.innerHTML=`<div class="sh">Para começar</div>`+sList.map(resultHTML).join(''); }
+  else { sList=runSearch(q); box.innerHTML=sList.length?sList.map(resultHTML).join(''):`<div class="sh">Nada encontrado para “${esc(q)}”. Tente um nome, um lugar ou um ano.</div>`; }
+  sIdx=0; markSearch();
+  box.querySelectorAll('.sr').forEach(b=>b.onclick=()=>pickResult(+b.dataset.i));
+}
+function markSearch(){ $('#q-res').querySelectorAll('.sr').forEach((b,i)=>{ b.setAttribute('aria-selected',String(i===sIdx)); if(i===sIdx) b.scrollIntoView({block:'nearest'}); }); }
+function pickResult(i){ const r=sList[i]; if(!r) return; closeSearch(); uiSound('tick');
+  if(r.kind==='year'){ if(S.playing) pause(false); S.t=r.year; onTimeChange(); if(S.panel) openContext(false); return; }
+  go({id:r.id}); }
+function openSearch(){ const el=$('#search'); if(!el.hidden) return; el.hidden=false; document.body.classList.add('searching'); $('#q').value=''; renderSearch(); setTimeout(()=>$('#q').focus(),30); }
+function closeSearch(){ const el=$('#search'); if(el.hidden) return; el.hidden=true; document.body.classList.remove('searching'); $('#q').blur(); }
+$('#b-search').onclick=()=>{ Sound.init(); uiSound('tick'); openSearch(); };
+$('#q').addEventListener('input',renderSearch);
+$('#q').addEventListener('keydown',e=>{ if(e.key==='ArrowDown'){ e.preventDefault(); sIdx=Math.min(sList.length-1,sIdx+1); markSearch(); } else if(e.key==='ArrowUp'){ e.preventDefault(); sIdx=Math.max(0,sIdx-1); markSearch(); } else if(e.key==='Enter'){ e.preventDefault(); pickResult(sIdx); } else if(e.key==='Escape'){ closeSearch(); } });
+$('#q-x').onclick=closeSearch;
+$('#search').addEventListener('pointerdown',e=>{ if(e.target.id==='search') closeSearch(); });
+
 function enter(watch){
   S.entered=true; Sound.init(); setNarr($('#in-narr').checked);
   setAmb($('#in-amb').checked);
   $('#intro').classList.add('off'); setTimeout(()=>$('#intro').hidden=true,800);
-  const f=FOC(); flyTo(f.center,900,f.zoom);
-  if(watch){ S.t=RANGE[0]; onTimeChange(); setTimeout(play,700); }
-  else { const first={europa:'republica',mundo:'republica',africa:'cartago-fundacao',oriente:'ciro-persia',india:'buda',china:'confucio',americas:'olmecas-cabecas'}[f.id]; const e=EV[first]; S.t=e.y; onTimeChange(); setTimeout(()=>go({kind:'event',id:first}),600); }
+  flyTo([14,34],1200,1);
+  if(watch){ S.t=RANGE[0]; onTimeChange(); setTimeout(play,900); }
+  else { const first='roma-republica'; S.t=-509; onTimeChange(); setTimeout(()=>go({kind:'period',id:first}),700); }
 }
 $('#go-watch').onclick=()=>enter(true);
 $('#go-explore').onclick=()=>enter(false);
+$('#go-search').onclick=()=>{ enter(false); setTimeout(openSearch,900); };
 S.ui=store.get('ec-ui',true); setSwitch('#sw-ui',S.ui);
-computeStops(); renderFocusUI(); { const f=FOC(); S.rot=[-f.center[0],-f.center[1]]; S.zoom=f.zoom; }
+computeStops(); useProj(); renderViewBtn(); S.rot=[-14,-30]; S.zoom=1; S.mc=[14,16]; S.mz=1;
+document.addEventListener('keydown',e=>{
+  if(e.target.closest&&e.target.closest('input,select')) return;
+  if(e.key==='/'||((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k')){ e.preventDefault(); openSearch(); return; }
+  if(e.key===' '){ e.preventDefault(); $('#b-play').click(); } else if(e.key==='ArrowRight'){ jumpMarco(1); } else if(e.key==='ArrowLeft'){ jumpMarco(-1); } else if(e.key==='Escape'){ if(!$('#search').hidden) closeSearch(); else if(S.panel) closePanel(); }
+  else if(e.key.toLowerCase()==='m'){ $('#b-view').click(); } });
 document.addEventListener('keydown',e=>{ if(e.target.closest('input,select')) return;
   if(e.key===' '){ e.preventDefault(); $('#b-play').click(); } else if(e.key==='ArrowRight'){ jumpMarco(1); } else if(e.key==='ArrowLeft'){ jumpMarco(-1); } else if(e.key==='Escape'&&S.panel){ closePanel(); } });
 
@@ -2703,10 +3458,10 @@ document.addEventListener('keydown',e=>{ if(e.target.closest('input,select')) re
 let last=performance.now(), lastDraw=0;
 function frame(now){
   const dt=Math.min(80,now-last); last=now;
-  stepPlay(dt,now); stepFly(now);
+  stepPlay(dt,now); stepFly(now); stepLens();
   const anim=S.playing||S.fly||Object.values(S.fade).some(f=>now-f.t0<fadeMs)||(S.sel&&S.sel.kind==='event');
   if(S.dirty||(anim&&now-lastDraw>30)||now-lastDraw>120){ drawGlobe(now); S.dirty=false; lastDraw=now; }
-  if(S.dirtyTL){ drawTL(); S.dirtyTL=false; }
+  if(S.dirtyTL){ S.dirtyTL=false; drawTL(); }
   requestAnimationFrame(frame);
 }
 window.addEventListener('resize',()=>{ layout(); if(S.panel&&innerWidth<860) setSheet(S.sheet); });
@@ -2716,7 +3471,7 @@ async function boot(){
   catch(e){ $('#loading').textContent='Não foi possível carregar o mapa-múndi. Os períodos e a linha do tempo continuam disponíveis.'; }
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ S.dirty=true; S.dirtyTL=true; });
 }
-window.ECUMENA={S,go,play,pause,PERIODS,EVENTS,LINKS,polAt,Sound};
+window.ECUMENA={S,go,play,pause,PERIODS,EVENTS,LINKS,SUBS,polAt,Sound,setView,runSearch,openSearch,flyTo};
 boot();
 </script>
 </body></html>
