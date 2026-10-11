@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Projetos de Pedro</title>
+<meta name="description" content="Dois sites interativos: um globo de dados do mundo e uma galeria de arte com uma obra por dia.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=Jost:wght@400;500&display=swap">
+<style>
+:root{--bg:#f4f1ec;--ink:#1c1a17;--muted:#6d665d;--line:#d9d2c6;--f-d:"Fraunces",Georgia,serif;--f-l:"Jost","Segoe UI",system-ui,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#121110;--ink:#ece6dc;--muted:#a49c90;--line:#2c2925;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--f-l);min-height:100vh;padding:clamp(28px,7vw,90px) clamp(16px,5vw,48px)}
+main{max-width:980px;margin:0 auto}
+h1{font:400 clamp(40px,7vw,76px)/1 var(--f-d);margin:0 0 14px;letter-spacing:-.01em}
+h1 em{font-style:italic}
+.lead{color:var(--muted);max-width:52ch;margin:0 0 clamp(32px,6vw,56px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px}
+a.card{display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit;border-radius:6px;overflow:hidden;border:1px solid var(--line);transition:transform .35s cubic-bezier(.22,.8,.24,1),box-shadow .35s}
+a.card:hover{transform:translateY(-4px);box-shadow:0 22px 40px -24px rgba(0,0,0,.45)}
+.art{height:200px;position:relative;overflow:hidden}
+.orbe .art{background:radial-gradient(circle at 50% 60%,#0d3b78 0 38%,transparent 39%),radial-gradient(circle at 50% 60%,transparent 0 46%,rgba(53,224,255,.55) 46.4%,transparent 47%),radial-gradient(120% 100% at 50% 0%,#0a1a3a,#02050d)}
+.orbe .art::after{content:"ORBE";position:absolute;left:22px;bottom:18px;font:700 22px/1 var(--f-l);letter-spacing:.4em;color:#e6f4ff;text-shadow:0 0 18px rgba(53,224,255,.7)}
+.gal .art{background:#7d2e26}
+.gal .art::before{content:"";position:absolute;left:50%;top:50%;width:120px;height:150px;transform:translate(-50%,-50%);background:linear-gradient(160deg,#2f4f8a,#16181c 60%);border:10px solid #c9a24a;outline:8px solid #efe9dd;outline-offset:-18px;box-shadow:0 20px 30px -12px rgba(0,0,0,.6)}
+.txt{padding:4px 22px 22px}
+.txt b{display:block;font:500 26px/1.15 var(--f-d)}
+.txt p{margin:6px 0 0;color:var(--muted);font-size:15.5px}
+footer{margin-top:56px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Dois sites, <em>dois mundos</em></h1>
+  <p class="lead">Um globo para explorar o planeta em dados e uma galeria para aprender uma obra de arte por dia.</p>
+  <div class="grid">
+    <a class="card orbe" href="orbe/"><div class="art"></div><div class="txt"><b>ORBE</b><p>Atlas-globo com 30 índices do mundo, o tamanho real dos países e o que fica do outro lado do planeta.</p></div></a>
+    <a class="card gal" href="galeria/"><div class="art"></div><div class="txt"><b>Galeria de Bolso</b><p>Uma pintura por dia, linha do tempo da arte em onze salas, artistas e um acervo de 77 obras.</p></div></a>
+  </div>
+  <footer>Valores e textos aproximados, com fontes indicadas em cada site.</footer>
+</main>
+</body>
+</html>

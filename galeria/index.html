@@ -1,0 +1,1466 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body><title>Galeria de Bolso</title>
+<meta name="description" content="Uma obra de arte por dia, uma linha do tempo da pintura e um acervo para explorar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Conceito: um museu em salas. Cada período tem a cor de parede da sua sala;
+   a obra ocupa a parede, e a plaqueta ao lado funciona como etiqueta de museu. */
+:root{
+  --paper:#f2ede3; --paper-2:#e8e1d3; --card:#fbf8f2; --ink:#1f1b16; --muted:#6a6157; --line:#d6ccba;
+  --wine:#6e1f2b; --gold:#94722f; --ok:#3d6b4a; --bad:#9c372d;
+  --wall-l:#7d2e26; --wall-d:#3a1612; --wall-ink-l:#f3ece0; --wall-ink-d:#efe6d6;
+  --mat:#efe9dd; --shadow:rgba(30,18,8,.42);
+  --f-disp:"Cormorant Garamond","Cormorant",Garamond,"Times New Roman",serif;
+  --f-text:"Source Serif 4","Source Serif Pro",Georgia,serif;
+  --f-label:"Jost","Futura","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --ease:cubic-bezier(.22,.8,.24,1); --ease-io:cubic-bezier(.65,0,.35,1);
+  --gut:clamp(16px,4vw,40px); --max:1180px;
+}
+.wall{--wall:var(--wall-l);--wall-ink:var(--wall-ink-l)}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --paper:#111714; --paper-2:#17201b; --card:#1b2420; --ink:#ece5d8; --muted:#a49b8c; --line:#2e3934;
+  --wine:#d98394; --gold:#d6b066; --ok:#7fbf92; --bad:#e48a7f;
+  --mat:#e6dfd1; --shadow:rgba(0,0,0,.65); color-scheme:dark }
+  :root:not([data-theme="light"]) .wall{--wall:var(--wall-d); --wall-ink:var(--wall-ink-d)} }
+:root[data-theme="dark"]{
+  --paper:#111714; --paper-2:#17201b; --card:#1b2420; --ink:#ece5d8; --muted:#a49b8c; --line:#2e3934;
+  --wine:#d98394; --gold:#d6b066; --ok:#7fbf92; --bad:#e48a7f;
+  --mat:#e6dfd1; --shadow:rgba(0,0,0,.65); color-scheme:dark }
+:root[data-theme="dark"] .wall{--wall:var(--wall-d); --wall-ink:var(--wall-ink-d)}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+section[id],#room{scroll-margin-top:76px}
+@media (max-width:720px){ section[id],#room{scroll-margin-top:118px} }
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--f-text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-disp);font-weight:600;line-height:1.08;text-wrap:balance;margin:0}
+.label{font:500 12px/1.3 var(--f-label);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:var(--max);margin:0 auto;padding-inline:var(--gut)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Topo ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:20px;min-height:60px}
+.brand{display:flex;flex-direction:column;text-decoration:none;line-height:1}
+.brand b{font:italic 600 26px/1 var(--f-disp);letter-spacing:.01em}
+.brand small{font:500 10px/1.4 var(--f-label);letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none;min-width:0}
+.nav::-webkit-scrollbar{display:none}
+.nav a{font:500 13px/1 var(--f-label);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;padding:10px 12px;border-radius:999px;white-space:nowrap;color:var(--muted);transition:color .25s var(--ease),background .25s var(--ease)}
+.nav a:hover,.nav a[aria-current="true"]{color:var(--ink);background:var(--paper-2)}
+@media (max-width:720px){ .top .wrap{flex-wrap:wrap;gap:6px 12px;padding-block:10px} .nav{margin-left:0;width:100%} .nav a{padding:8px 10px;font-size:12px} }
+
+/* ---------- Parede (sala) ---------- */
+.wall{position:relative;background:var(--wall);color:var(--wall-ink);overflow:hidden;transition:background-color .6s var(--ease)}
+.wall::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60% 55% at 50% -6%,rgba(255,238,205,.30),transparent 70%),radial-gradient(120% 80% at 50% 120%,rgba(0,0,0,.28),transparent 60%)}
+.wall::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.10;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .4 0 0 0 0 .3 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wall>*{position:relative;z-index:1}
+.wall .label{color:color-mix(in srgb,var(--wall-ink) 72%,transparent)}
+.hero{padding-block:clamp(22px,4vw,48px) clamp(30px,5vw,64px)}
+.hero-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;margin-bottom:clamp(18px,3vw,34px)}
+.hero-head .date{font:italic 500 clamp(22px,3vw,30px)/1.1 var(--f-disp);color:var(--wall-ink)}
+.chip-streak{display:inline-flex;align-items:center;gap:8px;font:500 12px/1 var(--f-label);letter-spacing:.08em;padding:7px 12px;border-radius:999px;border:1px solid color-mix(in srgb,var(--wall-ink) 35%,transparent);color:var(--wall-ink)}
+.chip-streak i{width:7px;height:7px;border-radius:50%;background:#e7c46b;box-shadow:0 0 0 3px rgba(231,196,107,.25)}
+.stage{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.85fr);gap:clamp(28px,5vw,64px);align-items:center}
+@media (max-width:860px){ .stage{grid-template-columns:minmax(0,1fr)} }
+.stage .art{display:flex;justify-content:center;min-width:0}
+
+/* Cortina de abertura */
+.curtain{position:absolute;inset:0;z-index:5;pointer-events:none;display:flex}
+.curtain i{flex:1;background:repeating-linear-gradient(90deg,#4d1019 0 18px,#5e1520 18px 30px,#47101a 30px 46px);box-shadow:inset 0 -40px 60px rgba(0,0,0,.35);transition:transform 1.25s var(--ease-io)}
+.curtain i:last-child{box-shadow:inset 0 -40px 60px rgba(0,0,0,.35),inset 14px 0 30px rgba(0,0,0,.35)}
+.curtain.open i:first-child{transform:translateX(-101%)} .curtain.open i:last-child{transform:translateX(101%)}
+.curtain[hidden]{display:none}
+
+/* ---------- Moldura ---------- */
+.frame{--ar:1;--maxh:62vh;position:relative;width:min(100%,calc(var(--maxh) * var(--ar) + 72px));transform-style:preserve-3d;
+  transform:perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--py,0px));
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease);margin:0}
+.frame .gild{padding:11px;border-radius:2px;
+  background:linear-gradient(135deg,#7a5a22,#d9b86a 18%,#9a7330 34%,#f0d891 50%,#8d6a2b 66%,#d2ae5f 82%,#6e501d);
+  box-shadow:0 34px 60px -22px var(--shadow),0 10px 22px -8px var(--shadow),inset 0 0 0 1px rgba(0,0,0,.25);transition:box-shadow .5s var(--ease)}
+.frame.f-wood .gild{padding:9px;background:linear-gradient(135deg,#8a6a48,#c9a982 30%,#a4825c 55%,#d8bd98 80%,#7d5d3d)}
+.frame.f-black .gild{padding:6px;background:#141210}
+.frame.f-black .mat{padding:clamp(12px,3vw,30px)}
+.frame .mat{background:var(--mat);padding:clamp(8px,2vw,22px);box-shadow:inset 0 2px 6px rgba(0,0,0,.18)}
+.frame .pic{position:relative;aspect-ratio:var(--ar);max-width:100%;overflow:hidden;background:#2a2622;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.frame canvas,.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.frame img{opacity:0;transition:opacity .8s var(--ease)}
+.frame img.on{opacity:1}
+.frame .sheen{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s var(--ease);
+  background:radial-gradient(40% 50% at var(--mx,50%) var(--my,30%),rgba(255,255,255,.22),transparent 70%)}
+.frame.tilt:hover .gild{box-shadow:0 50px 80px -24px var(--shadow),0 16px 30px -10px var(--shadow),inset 0 0 0 1px rgba(0,0,0,.25)}
+.frame.tilt:hover .sheen{opacity:1}
+.study-note{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;margin-top:14px;font:500 12px/1.4 var(--f-label);letter-spacing:.06em;text-align:center}
+.study-note a{text-underline-offset:3px}
+.wall .study-note{color:color-mix(in srgb,var(--wall-ink) 78%,transparent)}
+
+/* ---------- Plaqueta ---------- */
+.placard{background:var(--card);color:var(--ink);padding:clamp(20px,3vw,32px);border-radius:3px;box-shadow:0 18px 40px -24px rgba(0,0,0,.5);min-width:0}
+.p-artist{font:600 12px/1.4 var(--f-label);letter-spacing:.18em;text-transform:uppercase;margin:0}
+.p-artist span{display:block;font-weight:400;letter-spacing:.06em;text-transform:none;color:var(--muted);margin-top:2px;font-size:13px}
+.p-title{font:italic 500 clamp(34px,4.6vw,52px)/1.02 var(--f-disp);margin:16px 0 4px}
+.p-orig{font:italic 400 15px/1.4 var(--f-text);color:var(--muted);margin:0 0 18px}
+.p-meta{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0 0 18px;padding:14px 0;border-block:1px solid var(--line);font-size:15px}
+.p-meta dt{font:500 11px/1.9 var(--f-label);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.p-meta dd{margin:0;min-width:0}
+.p-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.tag{font:500 12px/1 var(--f-label);letter-spacing:.06em;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:none;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:border-color .25s var(--ease),background .25s var(--ease)}
+.tag:hover{border-color:var(--ink)}
+.tag i{width:10px;height:10px;border-radius:50%;background:var(--c,#999);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.p-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:9px;font:500 13px/1 var(--f-label);letter-spacing:.06em;padding:11px 15px;border-radius:999px;border:1px solid var(--line);background:var(--card);text-decoration:none;transition:transform .25s var(--ease),border-color .25s var(--ease),background .25s var(--ease)}
+.btn:hover{border-color:var(--ink)}
+.btn:active{transform:scale(.97)}
+.btn.solid{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn svg{width:16px;height:16px;flex:none}
+.seal{position:relative}
+.seal .wax{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:transparent;border:1.5px solid currentColor;transition:background .3s var(--ease),border-color .3s var(--ease)}
+.seal .wax svg{width:11px;height:11px;opacity:0;transition:opacity .3s}
+.seal[aria-pressed="true"] .wax{background:radial-gradient(circle at 35% 30%,#b8404f,#7c1a27 70%);border-color:#7c1a27}
+.seal[aria-pressed="true"] .wax svg{opacity:1;color:#f5d9a8}
+.seal.stamp .wax{animation:stamp .5s var(--ease)}
+@keyframes stamp{0%{transform:scale(1.9) rotate(-18deg);opacity:.2}60%{transform:scale(.9) rotate(4deg);opacity:1}100%{transform:none}}
+
+/* ---------- Texto da obra ---------- */
+.reading{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);padding-block:clamp(36px,6vw,72px)}
+@media (max-width:860px){ .reading{grid-template-columns:minmax(0,1fr)} }
+.reading h2{font-size:clamp(26px,3vw,34px);margin:0 0 14px}
+.lead{font-size:clamp(19px,2vw,22px);line-height:1.55;max-width:62ch;margin:0}
+.lead::first-letter{font:600 3.2em/0.8 var(--f-disp);float:left;margin:.08em .1em 0 0;color:var(--wine)}
+.look{list-style:none;counter-reset:l;padding:0;margin:0;display:grid;gap:14px}
+.look li{counter-increment:l;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:baseline}
+.look li::before{content:counter(l);font:italic 600 26px/1 var(--f-disp);color:var(--wine)}
+.facts{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.facts li{padding-left:20px;position:relative}
+.facts li::before{content:"";position:absolute;left:2px;top:.72em;width:7px;height:7px;transform:rotate(45deg);background:var(--gold)}
+.ctx{margin-top:28px;padding:18px 20px;border:1px solid var(--line);border-radius:3px;display:grid;gap:8px}
+.ctx p{margin:0;color:var(--muted);font-size:15.5px}
+.ctx button{justify-self:start}
+.col{display:grid;gap:32px;align-content:start;min-width:0}
+
+/* ---------- Seções ---------- */
+section.block{padding-block:clamp(44px,7vw,92px);border-top:1px solid var(--line)}
+.sec-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px;margin-bottom:clamp(22px,3vw,36px)}
+.sec-head h2{font-size:clamp(34px,5vw,56px);font-weight:500}
+.sec-head h2 em{font-style:italic;color:var(--wine)}
+.sec-head p{margin:6px 0 0;color:var(--muted);max-width:56ch}
+
+/* Quiz */
+.quiz{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:900px){ .quiz{grid-template-columns:minmax(0,1fr)} }
+.q{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.q h3{font:500 22px/1.2 var(--f-disp)}
+.q .opts{display:grid;gap:8px}
+.q .opt{text-align:left;padding:11px 14px;border:1px solid var(--line);border-radius:3px;background:var(--paper);font-size:15.5px;line-height:1.3;transition:border-color .2s var(--ease),background .25s var(--ease),transform .2s var(--ease)}
+.q .opt:hover:not([disabled]){border-color:var(--ink);transform:translateX(3px)}
+.q .opt[disabled]{cursor:default}
+.q .opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--paper))}
+.q .opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--paper))}
+.q .fb{font-size:14.5px;color:var(--muted);min-height:1.4em;margin:0}
+.mystery{aspect-ratio:16/9;border-radius:2px;overflow:hidden;background:#222;position:relative}
+.mystery .swatches{display:flex;height:100%}
+.mystery .swatches i{flex:1}
+.mystery .zoom{position:absolute;inset:0;background-size:420%;background-repeat:no-repeat;transition:background-size 1.2s var(--ease)}
+.mystery.reveal .zoom{background-size:100%;background-position:center!important}
+.score{grid-column:1/-1;font:italic 500 22px/1.3 var(--f-disp);margin:4px 0 0}
+
+/* Arquivo */
+.strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(150px,1fr);gap:18px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.strip>*{scroll-snap-align:start}
+.mini{display:grid;gap:10px;text-align:left;background:none;border:0;padding:0;color:inherit}
+.mini .when{font:500 11px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.mini b{font:italic 500 19px/1.15 var(--f-disp)}
+.mini small{color:var(--muted);font-size:13.5px;margin-top:-6px}
+.mini .frame{--maxh:150px}
+.mini .frame .gild{padding:5px}.mini .frame .mat{padding:6px}
+.mini:hover .frame{transform:translateY(-4px)}
+
+/* Linha do tempo */
+.ruler-scroll{overflow-x:auto;padding-bottom:6px;scrollbar-width:thin;cursor:grab}
+.ruler-scroll.dragging{cursor:grabbing}
+.ruler{position:relative;width:2400px;height:154px;margin-bottom:10px;user-select:none}
+.band{position:absolute;height:34px;border:0;border-radius:2px;padding:0 10px;font:500 12px/34px var(--f-label);letter-spacing:.06em;text-align:left;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;background:var(--bc);color:var(--bi);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);transition:transform .3s var(--ease),box-shadow .3s var(--ease),filter .3s}
+.band:hover{transform:translateY(-2px);box-shadow:0 8px 16px -8px rgba(0,0,0,.5)}
+.band[aria-pressed="true"]{box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--ink)}
+.axis{position:absolute;left:0;right:0;top:92px;height:1px;background:var(--ink);opacity:.55}
+.tick{position:absolute;top:92px;width:1px;height:7px;background:var(--ink);opacity:.5}
+.tick.big{height:12px;opacity:.8}
+.tick span{position:absolute;top:16px;left:50%;transform:translateX(-50%);font:500 11.5px/1 var(--f-label);letter-spacing:.04em;color:var(--muted);font-variant-numeric:tabular-nums}
+.dot{position:absolute;top:84px;width:16px;height:16px;margin-left:-8px;border-radius:50%;border:2px solid var(--paper);background:var(--dc);padding:0;box-shadow:0 0 0 1px rgba(0,0,0,.28);transition:transform .25s var(--ease)}
+.dot:hover,.dot:focus-visible{transform:scale(1.5);z-index:2}
+.rooms{display:flex;gap:14px;overflow-x:auto;padding:22px 30% 26px 2px;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;perspective:900px}
+.rooms::-webkit-scrollbar{display:none}
+.rooms.dragging{cursor:grabbing;scroll-snap-type:none}
+.room-card{flex:0 0 clamp(190px,24vw,240px);scroll-snap-align:start;text-align:left;border:0;border-radius:3px;padding:18px 18px 16px;min-height:178px;display:flex;flex-direction:column;gap:6px;
+  background:var(--rc);color:var(--ri);transform:scale(var(--s,1));opacity:var(--o,1);transition:transform .35s var(--ease),opacity .35s var(--ease),box-shadow .35s var(--ease);box-shadow:0 14px 30px -20px rgba(0,0,0,.6)}
+.room-card b{font:italic 600 27px/1.05 var(--f-disp)}
+.room-card span{font:500 12px/1.2 var(--f-label);letter-spacing:.08em;opacity:.8}
+.room-card .pals{display:flex;gap:4px;margin-top:auto}
+.room-card .pals i{flex:1;height:22px;border-radius:2px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.room-card[aria-pressed="true"]{box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--ink),0 18px 30px -18px rgba(0,0,0,.6)}
+.room{margin-top:10px;border-radius:3px;overflow:hidden}
+.room .wall{padding:clamp(24px,4vw,44px) clamp(18px,4vw,44px)}
+.room-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px 40px;align-items:end}
+@media (max-width:760px){ .room-head{grid-template-columns:minmax(0,1fr)} }
+.room-head h3{font:italic 500 clamp(42px,6vw,74px)/1 var(--f-disp)}
+.room-head p{margin:0;font-size:17px;max-width:52ch}
+.traits{list-style:none;padding:0;margin:22px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:760px){ .traits{grid-template-columns:minmax(0,1fr)} }
+.traits li{border-top:1px solid color-mix(in srgb,var(--wall-ink) 35%,transparent);padding-top:10px;font-size:15px}
+.room-body{background:var(--card);padding:clamp(20px,3vw,36px)}
+.artist-chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 24px}
+
+/* Grade de obras */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:clamp(22px,3vw,36px) clamp(16px,2.4vw,28px);align-items:end}
+.card{display:grid;gap:12px;text-align:left;background:none;border:0;padding:0;color:inherit;min-width:0}
+.card .frame{--maxh:230px;justify-self:center}
+.card .frame .gild{padding:6px}.card .frame .mat{padding:8px}
+.card:hover .frame{transform:translateY(-6px)}
+.card .cap{display:grid;gap:2px;min-width:0}
+.card .cap b{font:italic 500 20px/1.15 var(--f-disp)}
+.card .cap small{font-size:13.5px;color:var(--muted)}
+.card .cap .yr{font:500 11px/1 var(--f-label);letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+
+/* Artistas */
+.artists{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:12px}
+.artist{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:14px 16px;transition:border-color .25s var(--ease),transform .25s var(--ease)}
+.artist:hover{border-color:var(--ink);transform:translateY(-2px)}
+.artist .sw{grid-row:span 2;width:38px;height:48px;border-radius:2px;background:linear-gradient(var(--a1),var(--a2) 55%,var(--a3));box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.artist b{font:600 21px/1.1 var(--f-disp)}
+.artist small{font-size:13px;color:var(--muted)}
+
+/* Acervo */
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:26px}
+.search{flex:1 1 260px;display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:999px;padding:0 16px;background:var(--card);min-width:0}
+.search input{border:0;background:none;outline:none;padding:12px 0;width:100%;min-width:0;font-size:16px}
+.search svg{width:18px;height:18px;color:var(--muted);flex:none}
+select{border:1px solid var(--line);border-radius:999px;padding:11px 14px;background:var(--card);font:500 13px var(--f-label);letter-spacing:.04em}
+.themes{display:flex;flex-wrap:wrap;gap:8px;width:100%}
+.themes .tag[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.count{font:500 12px/1 var(--f-label);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 18px}
+.empty{padding:36px 20px;border:1px dashed var(--line);border-radius:3px;text-align:center;color:var(--muted)}
+.empty b{display:block;font:italic 500 24px/1.2 var(--f-disp);color:var(--ink);margin-bottom:6px}
+
+/* Visualizador */
+.viewer{position:fixed;inset:0;z-index:80;background:var(--paper);overflow-y:auto;overscroll-behavior:contain;opacity:0;transform:scale(.985);transition:opacity .35s var(--ease),transform .35s var(--ease)}
+.viewer.on{opacity:1;transform:none}
+.v-bar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) var(--gut) 10px;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.v-bar .ctx-name{font:500 12px/1.2 var(--f-label);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iconbtn{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;flex:none}
+.iconbtn svg{width:18px;height:18px}
+.iconbtn:hover{border-color:var(--ink)}
+.artist-hero{padding-block:clamp(26px,4vw,48px)}
+.artist-hero h2{font:italic 500 clamp(44px,7vw,80px)/1 var(--f-disp)}
+.artist-hero p{max-width:60ch;font-size:18px}
+
+/* Aviso e toast */
+.notice{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;line-height:1.5;padding:14px 16px;border:1px solid var(--line);border-left:3px solid var(--gold);background:var(--card);border-radius:2px;margin-top:22px}
+.notice b{font-weight:600}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);transform:translate(-50%,30px);opacity:0;z-index:99;background:var(--ink);color:var(--paper);font:500 14px/1.3 var(--f-label);letter-spacing:.03em;padding:12px 18px;border-radius:999px;transition:opacity .3s var(--ease),transform .3s var(--ease);pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+footer{border-top:1px solid var(--line);padding-block:40px 60px;color:var(--muted);font-size:14.5px}
+footer .wrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 48px}
+@media (max-width:760px){ footer .wrap{grid-template-columns:minmax(0,1fr)} }
+footer b{font:italic 600 22px/1.2 var(--f-disp);color:var(--ink);display:block;margin-bottom:6px}
+footer p{margin:0 0 10px}
+
+/* Revelar ao rolar */
+.motion .rv{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:var(--d,0ms)}
+.motion .rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.12s!important;scroll-behavior:auto!important}
+  .frame{transform:none!important}
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#hoje"><b>Galeria de Bolso</b><small>uma obra por dia</small></a>
+    <nav class="nav" aria-label="Seções">
+      <a href="#hoje">Hoje</a><a href="#salas">Linha do tempo</a><a href="#artistas">Artistas</a><a href="#acervo">Acervo</a><a href="#favoritas">Favoritas</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="hoje" aria-labelledby="today-title">
+    <div class="wall" id="today-wall">
+      <div class="curtain" id="curtain" aria-hidden="true"><i></i><i></i></div>
+      <div class="wrap hero">
+        <div class="hero-head">
+          <span class="label">Obra do dia</span>
+          <span class="date" id="today-date"></span>
+          <span class="chip-streak" id="streak"><i></i><span></span></span>
+        </div>
+        <div class="stage" id="today-stage"></div>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="reading" id="today-reading"></div>
+    </div>
+  </section>
+
+  <section class="block" id="quiz-sec" aria-labelledby="quiz-title">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div><span class="label">Três perguntas</span><h2 id="quiz-title">O jogo <em>do dia</em></h2><p>Teste o olhar. As perguntas mudam a cada dia.</p></div>
+      </div>
+      <div class="quiz" id="quiz"></div>
+    </div>
+  </section>
+
+  <section class="block" id="arquivo" aria-labelledby="arch-title">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div><span class="label">Arquivo</span><h2 id="arch-title">Dias <em>anteriores</em></h2><p>As obras da última semana. Perdeu alguma? Ela continua aqui.</p></div>
+        <button class="btn" id="btn-another"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg>Sortear outra obra</button>
+      </div>
+      <div class="strip rv" id="strip"></div>
+    </div>
+  </section>
+
+  <section class="block" id="salas" aria-labelledby="tl-title">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div><span class="label">Linha do tempo</span><h2 id="tl-title">Sete séculos, <em>onze salas</em></h2><p>Cada ponto na régua é uma obra. Arraste para percorrer os períodos e toque em um para entrar na sala.</p></div>
+      </div>
+      <div class="ruler-scroll rv" id="ruler-scroll"><div class="ruler" id="ruler" role="group" aria-label="Régua do tempo, de 1250 a 1950"></div></div>
+      <div class="rooms" id="rooms" role="group" aria-label="Períodos"></div>
+      <div class="room rv" id="room"></div>
+    </div>
+  </section>
+
+  <section class="block" id="artistas" aria-labelledby="art-title">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div><span class="label">Quem pintou</span><h2 id="art-title">Os <em>artistas</em></h2><p>Em ordem cronológica. Toque em um nome para ver a biografia e as obras.</p></div>
+      </div>
+      <div class="artists" id="artists"></div>
+    </div>
+  </section>
+
+  <section class="block" id="acervo" aria-labelledby="col-title">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div><span class="label">Acervo completo</span><h2 id="col-title">Todas as <em>obras</em></h2></div>
+      </div>
+      <div class="filters">
+        <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="sr">Buscar</span><input id="q" type="search" placeholder="Buscar obra, artista ou museu" autocomplete="off"></label>
+        <label><span class="sr">Período</span><select id="fp"></select></label>
+        <div class="themes" id="themes" role="group" aria-label="Temas"></div>
+      </div>
+      <p class="count" id="count" aria-live="polite"></p>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="block" id="favoritas" aria-labelledby="fav-title">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div><span class="label">Sua coleção</span><h2 id="fav-title">Obras <em>favoritas</em></h2><p>Ficam guardadas neste navegador.</p></div>
+      </div>
+      <div class="grid" id="favs"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b>Sobre os textos</b><p>Os textos foram escritos para este site a partir de informações públicas de museus e enciclopédias. Datas e locais seguem as referências mais comuns; onde há dúvida entre especialistas, o texto diz isso. As paletas de cor são aproximadas.</p></div>
+    <div><b>Sobre as imagens</b><p id="img-about">As imagens vêm da Wikipédia e do Wikimedia Commons, com obras em domínio público. Obras ainda protegidas por direito autoral aparecem só com ficha e texto.</p></div>
+  </div>
+</footer>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Obra"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const PERIODS = [
+  {id:"gotico", name:"Gótico", from:1150, to:1400, label:"c. 1150 – 1400", wall:"#24345e",
+   intro:"A pintura nasce nas igrejas: retábulos de ouro, figuras sagradas e, no fim do período, os primeiros sinais de volume e emoção humana.",
+   traits:["Fundos dourados e figuras de proporções simbólicas, não naturais.","Arte quase toda religiosa, feita para altares, capelas e livros de oração.","Com Giotto e os sieneses, o espaço e o sentimento começam a parecer reais."]},
+  {id:"renascimento", name:"Renascimento", from:1400, to:1600, label:"c. 1400 – 1600", wall:"#7d2e26",
+   intro:"O ser humano volta ao centro. A perspectiva, o estudo do corpo e a Antiguidade clássica mudam para sempre a maneira de pintar.",
+   traits:["Perspectiva matemática e composições equilibradas.","Interesse pela anatomia, pela natureza e pelos mitos greco-romanos.","No norte da Europa, a pintura a óleo permite um detalhe nunca visto."]},
+  {id:"maneirismo", name:"Maneirismo", from:1520, to:1600, label:"c. 1520 – 1600", wall:"#55634f",
+   intro:"Depois da harmonia perfeita do Renascimento, os artistas buscam o artifício: corpos alongados, poses torcidas e cores inesperadas.",
+   traits:["Figuras esticadas e poses complicadas, de elegância artificial.","Cores ácidas e espaços instáveis, sem chão firme.","Enigmas e alegorias pensados para um público culto."]},
+  {id:"barroco", name:"Barroco", from:1600, to:1730, label:"c. 1600 – 1730", wall:"#22362c",
+   intro:"Luz dramática, movimento e emoção. A pintura quer comover, seja nas igrejas da Contrarreforma, seja nas casas burguesas da Holanda.",
+   traits:["Claro-escuro forte: figuras saindo da sombra para a luz.","Diagonais, gestos teatrais e cenas no instante de maior tensão.","Retratos, cenas domésticas e naturezas-mortas ganham prestígio."]},
+  {id:"rococo", name:"Rococó", from:1720, to:1780, label:"c. 1720 – 1780", wall:"#d4b3ae",
+   intro:"A aristocracia francesa troca o drama pela leveza: festas em jardins, amores, tons pastel. Ao lado disso, alguns pintores olham para a vida simples.",
+   traits:["Cores claras, rosas e azuis suaves, e curvas por toda parte.","Temas de amor, flerte e lazer da elite.","Pinceladas mais soltas e um clima íntimo, de salão."]},
+  {id:"neoclassico", name:"Neoclassicismo", from:1760, to:1830, label:"c. 1760 – 1830", wall:"#a8a59c",
+   intro:"Em reação ao Rococó e no clima das revoluções, a pintura volta à Grécia e a Roma: ordem, clareza e virtude cívica.",
+   traits:["Desenho nítido, contornos firmes e cores contidas.","Composições claras, como cenas de teatro clássico.","Temas de dever, sacrifício e heroísmo, muitas vezes políticos."]},
+  {id:"romantismo", name:"Romantismo", from:1800, to:1850, label:"c. 1800 – 1850", wall:"#2f4254",
+   intro:"A emoção vale mais que a regra. Natureza imensa, tragédias reais e revoltas populares tomam as telas.",
+   traits:["Sentimento intenso: medo, êxtase, melancolia.","A natureza como força grandiosa e assustadora.","Acontecimentos do próprio tempo pintados como epopeias."]},
+  {id:"realismo", name:"Realismo", from:1840, to:1880, label:"c. 1840 – 1880", wall:"#6e5a45",
+   intro:"Nada de deuses ou heróis: a vida como ela é. Trabalhadores, camponeses e gente comum ganham o tamanho das grandes pinturas históricas.",
+   traits:["Temas do cotidiano, sem idealização.","Gente comum em telas enormes, antes reservadas à história.","Ruptura com as regras da Academia e com o gosto oficial."]},
+  {id:"impressionismo", name:"Impressionismo", from:1860, to:1890, label:"c. 1860 – 1890", wall:"#bfc8c8",
+   intro:"Pintar ao ar livre, depressa, antes que a luz mude. Um grupo de artistas recusados pelo Salão inventa uma nova forma de ver.",
+   traits:["Luz e atmosfera de um instante, muitas vezes ao ar livre.","Pinceladas visíveis e cores puras lado a lado.","Cenas da vida moderna: lazer, cidade, cafés e bailes."]},
+  {id:"posimp", name:"Pós-impressionismo", from:1885, to:1910, label:"c. 1885 – 1910", wall:"#c0943c",
+   intro:"Cada artista leva o Impressionismo para um caminho próprio: a estrutura de Cézanne, os pontos de Seurat, a cor emocional de Van Gogh e Gauguin.",
+   traits:["Cor e forma usadas para expressar, não só para descrever.","Estilos muito pessoais, sem um programa comum.","Ponte direta para a arte moderna do século XX."]},
+  {id:"modernismo", name:"Modernismo", from:1900, to:1945, label:"c. 1900 – 1945", wall:"#e7e4dc",
+   intro:"As vanguardas rompem com a imitação da realidade. Cor, forma e ideia ganham vida própria, até chegar à abstração total.",
+   traits:["Ruptura com a perspectiva e com a representação fiel.","Movimentos com manifestos: Expressionismo, Cubismo, Suprematismo, Neoplasticismo.","A abstração surge como linguagem própria da pintura."]},
+];
+
+const ARTISTS = {
+  cimabue:{name:"Cimabue", life:"c. 1240 – 1302", nat:"italiano", bio:"Pintor florentino que começou a dar peso e volume às figuras sagradas da tradição bizantina. Segundo a tradição, foi mestre de Giotto."},
+  giotto:{name:"Giotto di Bondone", life:"c. 1267 – 1337", nat:"italiano", bio:"Considerado o pai da pintura ocidental moderna. Trouxe peso, espaço e emoção humana às cenas religiosas."},
+  duccio:{name:"Duccio di Buoninsegna", life:"c. 1255 – 1319", nat:"italiano", bio:"Grande mestre de Siena. Uniu a elegância bizantina a uma narrativa delicada e cheia de cor."},
+  martini:{name:"Simone Martini", life:"c. 1284 – 1344", nat:"italiano", bio:"Pintor sienês de linhas elegantes e ouro refinado. Trabalhou na corte papal de Avignon, onde conheceu o poeta Petrarca."},
+  wilton:{name:"Mestre do Díptico de Wilton", life:"ativo c. 1395 – 1399", nat:"anônimo", bio:"Artista desconhecido, provavelmente formado na tradição do Gótico Internacional. Já foi associado a pintores ingleses, franceses e italianos."},
+  limbourg:{name:"Irmãos Limbourg", life:"ativos c. 1385 – 1416", nat:"neerlandeses", bio:"Herman, Paul e Johan, iluminadores de manuscritos a serviço do duque de Berry. Os três morreram em 1416."},
+  vaneyck:{name:"Jan van Eyck", life:"c. 1390 – 1441", nat:"flamengo", bio:"Mestre de Bruges que levou a pintura a óleo a um nível de detalhe e luz sem precedentes."},
+  bosch:{name:"Hieronymus Bosch", life:"c. 1450 – 1516", nat:"neerlandês", bio:"Criador de mundos fantásticos, povoados de monstros, pecados e paraísos. Suas imagens seguem sem decifração completa."},
+  botticelli:{name:"Sandro Botticelli", life:"c. 1445 – 1510", nat:"italiano", bio:"Pintor da Florença dos Médici, conhecido pela linha graciosa e pelos temas mitológicos."},
+  leonardo:{name:"Leonardo da Vinci", life:"1452 – 1519", nat:"italiano", bio:"Pintor, inventor e cientista. Deixou poucas pinturas, quase todas decisivas para a história da arte."},
+  michelangelo:{name:"Michelangelo Buonarroti", life:"1475 – 1564", nat:"italiano", bio:"Escultor, pintor e arquiteto. Via o corpo humano como a forma mais alta de expressão."},
+  rafael:{name:"Rafael Sanzio", life:"1483 – 1520", nat:"italiano", bio:"Mestre da harmonia e da clareza. Morreu aos 37 anos, já como um dos artistas mais admirados de Roma."},
+  ticiano:{name:"Ticiano", life:"c. 1488 – 1576", nat:"italiano", bio:"O grande pintor de Veneza. Fez da cor e da pincelada solta a base da pintura."},
+  bruegel:{name:"Pieter Bruegel, o Velho", life:"c. 1525 – 1569", nat:"flamengo", bio:"Pintou camponeses, festas e paisagens com humor e atenção ao cotidiano."},
+  pontormo:{name:"Jacopo Pontormo", life:"1494 – 1557", nat:"italiano", bio:"Pintor florentino solitário e inquieto, um dos criadores do Maneirismo."},
+  parmigianino:{name:"Parmigianino", life:"1503 – 1540", nat:"italiano", bio:"Pintor de Parma de elegância extrema, conhecido pelas figuras alongadas."},
+  bronzino:{name:"Agnolo Bronzino", life:"1503 – 1572", nat:"italiano", bio:"Pintor da corte dos Médici, célebre pelos retratos frios e impecáveis."},
+  elgreco:{name:"El Greco", life:"1541 – 1614", nat:"grego, radicado na Espanha", bio:"Nascido em Creta, passou por Veneza e Roma e se fixou em Toledo. Suas figuras alongadas e místicas são inconfundíveis."},
+  arcimboldo:{name:"Giuseppe Arcimboldo", life:"c. 1526 – 1593", nat:"italiano", bio:"Pintor da corte dos Habsburgo, famoso por montar rostos com frutas, flores, peixes e objetos."},
+  caravaggio:{name:"Caravaggio", life:"1571 – 1610", nat:"italiano", bio:"Revolucionou a pintura com luz dramática e modelos tirados das ruas. Teve uma vida violenta e curta."},
+  artemisia:{name:"Artemisia Gentileschi", life:"1593 – c. 1656", nat:"italiana", bio:"Uma das maiores pintoras do Barroco. Retratou mulheres fortes da Bíblia e da história com intensidade rara."},
+  rubens:{name:"Peter Paul Rubens", life:"1577 – 1640", nat:"flamengo", bio:"Pintor, diplomata e empresário de um ateliê enorme. Sua pintura é movimento, carne e cor."},
+  rembrandt:{name:"Rembrandt van Rijn", life:"1606 – 1669", nat:"holandês", bio:"Mestre da luz e da sombra e do autorretrato. Pintou a si mesmo dezenas de vezes, da juventude à velhice."},
+  velazquez:{name:"Diego Velázquez", life:"1599 – 1660", nat:"espanhol", bio:"Pintor da corte de Filipe IV. Sua pincelada solta e precisa impressionou séculos de pintores."},
+  vermeer:{name:"Johannes Vermeer", life:"1632 – 1675", nat:"holandês", bio:"Pintor de Delft com cerca de 35 obras conhecidas. Mestre dos interiores silenciosos e da luz da janela."},
+  watteau:{name:"Antoine Watteau", life:"1684 – 1721", nat:"francês", bio:"Criador da “festa galante”: encontros amorosos em parques, com um fundo de melancolia."},
+  chardin:{name:"Jean-Siméon Chardin", life:"1699 – 1779", nat:"francês", bio:"Pintor de naturezas-mortas e cenas domésticas simples, tratadas com silêncio e dignidade."},
+  canaletto:{name:"Canaletto", life:"1697 – 1768", nat:"italiano", bio:"Pintor de vistas de Veneza, muito procuradas pelos viajantes ingleses."},
+  boucher:{name:"François Boucher", life:"1703 – 1770", nat:"francês", bio:"O pintor do Rococó por excelência, com deusas, cupidos e cores de confeitaria."},
+  fragonard:{name:"Jean-Honoré Fragonard", life:"1732 – 1806", nat:"francês", bio:"Pintor de cenas galantes e retratos rápidos, de pincelada brilhante e solta."},
+  david:{name:"Jacques-Louis David", life:"1748 – 1825", nat:"francês", bio:"Líder do Neoclassicismo, pintor da Revolução Francesa e depois de Napoleão."},
+  kauffman:{name:"Angelica Kauffman", life:"1741 – 1807", nat:"suíça", bio:"Pintora de temas históricos e retratos, uma das duas mulheres fundadoras da Royal Academy de Londres."},
+  vigee:{name:"Élisabeth Vigée Le Brun", life:"1755 – 1842", nat:"francesa", bio:"Retratista favorita de Maria Antonieta. Fugiu da Revolução e trabalhou em cortes de toda a Europa."},
+  ingres:{name:"Jean-Auguste-Dominique Ingres", life:"1780 – 1867", nat:"francês", bio:"Aluno de David, defensor do desenho perfeito. Seus retratos e nus são de uma precisão gelada."},
+  goya:{name:"Francisco de Goya", life:"1746 – 1828", nat:"espanhol", bio:"Pintor da corte espanhola que registrou também a guerra, a violência e os pesadelos de seu tempo."},
+  friedrich:{name:"Caspar David Friedrich", life:"1774 – 1840", nat:"alemão", bio:"O grande paisagista romântico alemão, de paisagens silenciosas e espirituais."},
+  gericault:{name:"Théodore Géricault", life:"1791 – 1824", nat:"francês", bio:"Pintor romântico apaixonado por cavalos e por temas contemporâneos. Morreu aos 32 anos."},
+  delacroix:{name:"Eugène Delacroix", life:"1798 – 1863", nat:"francês", bio:"Líder do Romantismo francês, mestre da cor e do movimento."},
+  constable:{name:"John Constable", life:"1776 – 1837", nat:"inglês", bio:"Pintor da paisagem rural inglesa, estudioso atento das nuvens e do céu."},
+  turner:{name:"J. M. W. Turner", life:"1775 – 1851", nat:"inglês", bio:"Pintor da luz, do vapor e das tempestades. Suas telas finais se aproximam da abstração."},
+  pedroamerico:{name:"Pedro Américo", life:"1843 – 1905", nat:"brasileiro", bio:"Pintor paraibano formado na Europa, autor de grandes telas históricas do Brasil Império."},
+  courbet:{name:"Gustave Courbet", life:"1819 – 1877", nat:"francês", bio:"Líder do Realismo. Dizia que só pintava o que podia ver."},
+  millet:{name:"Jean-François Millet", life:"1814 – 1875", nat:"francês", bio:"Pintor da vida camponesa, ligado à escola de Barbizon."},
+  bonheur:{name:"Rosa Bonheur", life:"1822 – 1899", nat:"francesa", bio:"A pintora de animais mais famosa do século XIX, com enorme sucesso na Europa e nos Estados Unidos."},
+  manet:{name:"Édouard Manet", life:"1832 – 1883", nat:"francês", bio:"Fez a ponte entre o Realismo e o Impressionismo, e escandalizou Paris mais de uma vez."},
+  whistler:{name:"James McNeill Whistler", life:"1834 – 1903", nat:"americano", bio:"Viveu entre Paris e Londres e defendia a “arte pela arte”, pensando a pintura como música."},
+  almeida:{name:"Almeida Júnior", life:"1850 – 1899", nat:"brasileiro", bio:"Pintor de Itu, SP, que levou o caipira e o interior paulista para o centro da pintura brasileira."},
+  monet:{name:"Claude Monet", life:"1840 – 1926", nat:"francês", bio:"Figura central do Impressionismo. Pintou o mesmo motivo várias vezes para captar a luz em horas diferentes."},
+  renoir:{name:"Pierre-Auguste Renoir", life:"1841 – 1919", nat:"francês", bio:"Impressionista da alegria de viver: bailes, almoços, pessoas ao sol."},
+  degas:{name:"Edgar Degas", life:"1834 – 1917", nat:"francês", bio:"Observador das bailarinas, dos cafés e das corridas, com enquadramentos ousados."},
+  morisot:{name:"Berthe Morisot", life:"1841 – 1895", nat:"francesa", bio:"Uma das fundadoras do Impressionismo, de pincelada leve e temas íntimos."},
+  caillebotte:{name:"Gustave Caillebotte", life:"1848 – 1894", nat:"francês", bio:"Pintor e mecenas dos impressionistas, fascinado pela nova Paris."},
+  seurat:{name:"Georges Seurat", life:"1859 – 1891", nat:"francês", bio:"Criador do pontilhismo, unindo pintura e teoria científica da cor. Morreu aos 31 anos."},
+  vangogh:{name:"Vincent van Gogh", life:"1853 – 1890", nat:"holandês", bio:"Pintou cerca de 860 quadros em dez anos de carreira. Vendeu pouquíssimos em vida."},
+  cezanne:{name:"Paul Cézanne", life:"1839 – 1906", nat:"francês", bio:"Buscou a estrutura por trás da aparência das coisas. Os cubistas o viam como mestre."},
+  lautrec:{name:"Henri de Toulouse-Lautrec", life:"1864 – 1901", nat:"francês", bio:"Cronista da noite de Montmartre e grande criador de cartazes."},
+  gauguin:{name:"Paul Gauguin", life:"1848 – 1903", nat:"francês", bio:"Abandonou a vida de corretor para pintar, e terminou no Taiti e nas Ilhas Marquesas."},
+  munch:{name:"Edvard Munch", life:"1863 – 1944", nat:"norueguês", bio:"Pintor da angústia, do amor e da morte, precursor do Expressionismo."},
+  klimt:{name:"Gustav Klimt", life:"1862 – 1918", nat:"austríaco", bio:"Líder da Secessão de Viena, famoso pelo uso de ouro e padrões decorativos."},
+  marc:{name:"Franz Marc", life:"1880 – 1916", nat:"alemão", bio:"Expressionista que pintava animais em cores simbólicas. Cofundador de O Cavaleiro Azul."},
+  kandinsky:{name:"Wassily Kandinsky", life:"1866 – 1944", nat:"russo", bio:"Um dos pioneiros da pintura abstrata, que ele comparava à música."},
+  malevich:{name:"Kazimir Malevich", life:"1879 – 1935", nat:"russo, nascido em Kiev", bio:"Criador do Suprematismo, a arte das formas geométricas puras."},
+  mondrian:{name:"Piet Mondrian", life:"1872 – 1944", nat:"holandês", bio:"Reduziu a pintura a linhas retas e cores primárias, no movimento chamado Neoplasticismo."},
+  picasso:{name:"Pablo Picasso", life:"1881 – 1973", nat:"espanhol", bio:"Cofundador do Cubismo e um dos artistas mais influentes do século XX."},
+  frida:{name:"Frida Kahlo", life:"1907 – 1954", nat:"mexicana", bio:"Pintou sobretudo a si mesma, a dor física e a identidade mexicana."},
+  tarsila:{name:"Tarsila do Amaral", life:"1886 – 1973", nat:"brasileira", bio:"Figura central do Modernismo brasileiro e da Antropofagia."},
+};
+
+const WORKS = [
+// ---------------- GÓTICO ----------------
+{id:"maesta-santa-trinita", t:"Maestà de Santa Trinita", o:"Maestà di Santa Trinita", a:"cimabue", y:"c. 1280–1290", yr:1285, p:"gotico",
+ tech:"Têmpera e ouro sobre madeira", mus:"Galleria degli Uffizi", city:"Florença", th:"religião", wiki:"Santa Trinita Maestà", ar:0.58,
+ pal:["#b8892e","#2b3a6b","#7a2a22","#d9c49a","#1d1a17"],
+ about:"A Virgem entronizada com o Menino, cercada por anjos, e embaixo quatro profetas sob arcos. O trono, desenhado com uma perspectiva ainda hesitante, mostra a pintura começando a buscar profundidade.",
+ look:["Os anjos empilhados dos dois lados do trono, repetidos como um padrão.","O trono, que parece visto de ângulos diferentes ao mesmo tempo.","Os quatro profetas sob os arcos da base, segurando seus pergaminhos."],
+ facts:["Nos Uffizi, ela fica na mesma sala que as Maestàs de Duccio e de Giotto, o que permite comparar as três lado a lado.","Dante cita Cimabue na Divina Comédia como o pintor que dominava o campo até a chegada de Giotto."]},
+{id:"lamentacao-giotto", t:"Lamentação (O Luto por Cristo)", o:"Compianto sul Cristo morto", a:"giotto", y:"c. 1305", yr:1305, p:"gotico",
+ tech:"Afresco", mus:"Capela Scrovegni", city:"Pádua", th:"religião", wiki:"Lamentation (The Mourning of Christ)", ar:1.08,
+ pal:["#3a5f8f","#c9b28a","#7d3b2e","#e6d9bf","#2a2622"],
+ about:"Parte do ciclo de afrescos que Giotto pintou na capela encomendada por Enrico Scrovegni. Figuras de costas e uma dor visível trazem o drama humano para dentro da cena sagrada.",
+ look:["As duas figuras de costas no primeiro plano, que colocam você dentro do círculo.","A diagonal da rocha, que conduz o olhar até o rosto de Cristo.","Os anjos no céu, cada um com um gesto diferente de desespero."],
+ facts:["Figuras de costas eram uma ousadia: Giotto passou a construir o espaço como um palco diante do espectador.","Os ciclos de afrescos do século XIV de Pádua, incluindo esta capela, são Patrimônio Mundial da UNESCO desde 2021."]},
+{id:"maesta-duccio", t:"Maestà", o:"Maestà", a:"duccio", y:"1308–1311", yr:1310, p:"gotico",
+ tech:"Têmpera e ouro sobre madeira", mus:"Museo dell’Opera del Duomo", city:"Siena", th:"religião", wiki:"Maestà (Duccio)", ar:1.92,
+ pal:["#c79a3b","#26305c","#8c2f27","#e7d6ad","#3b2b1e"],
+ about:"Grande retábulo pintado para a catedral de Siena. Na frente, a Virgem e o Menino em meio à corte celeste; no verso, dezenas de pequenas cenas da vida de Cristo.",
+ look:["O brilho do fundo de ouro, que muda conforme a luz.","Os santos padroeiros de Siena, ajoelhados em primeiro plano.","A inscrição na base do trono, em que Duccio pede paz para Siena e vida para si mesmo."],
+ facts:["Ao ser concluído, em 1311, o painel foi levado em procissão festiva pelas ruas até a catedral.","O retábulo foi desmontado no século XVIII, e alguns painéis estão hoje em museus de Londres, Nova York e Washington."]},
+{id:"anunciacao-martini", t:"Anunciação com Santa Margarida e Santo Ansano", o:"Annunciazione tra i santi Ansano e Margherita", a:"martini", y:"1333", yr:1333, p:"gotico",
+ tech:"Têmpera e ouro sobre madeira", mus:"Galleria degli Uffizi", city:"Florença", th:"religião", wiki:"Annunciation with St. Margaret and St. Ansanus", ar:1.14,
+ pal:["#c8a24a","#3a3f6e","#a83a2c","#efe4c8","#4a5a3a"],
+ about:"Pintada com Lippo Memmi para a catedral de Siena. O anjo Gabriel chega até Maria, e as palavras da saudação saem de sua boca em letras douradas em relevo.",
+ look:["A frase em latim que atravessa o ouro, do anjo até Maria.","O gesto de Maria, recuando e fechando o manto.","O vaso de lírios no centro, símbolo de pureza."],
+ facts:["As palavras gravadas são “Ave gratia plena Dominus tecum” (Ave, cheia de graça, o Senhor é contigo).","Simone Martini trabalhou depois na corte papal de Avignon, onde foi amigo do poeta Petrarca."]},
+{id:"diptico-wilton", t:"Díptico de Wilton", o:"The Wilton Diptych", a:"wilton", y:"c. 1395–1399", yr:1397, p:"gotico",
+ tech:"Têmpera sobre madeira de carvalho", mus:"National Gallery", city:"Londres", th:"religião", wiki:"Wilton Diptych", ar:1.4,
+ pal:["#2f4fa8","#c9a24a","#7b2f2a","#e8e2d0","#3c4a2c"],
+ about:"Pequeno altar portátil feito para o rei Ricardo II da Inglaterra, que aparece ajoelhado à esquerda, apresentado por três santos à Virgem e a um coro de anjos.",
+ look:["O azul intenso dos anjos, feito com ultramar.","O cervo branco, emblema de Ricardo II, usado como broche pelos anjos.","O estandarte com a cruz de São Jorge, segurado por um anjo."],
+ facts:["O nome vem da Wilton House, onde a obra ficou por muito tempo antes de chegar à National Gallery, em 1929.","O autor é desconhecido; já se pensou em pintores ingleses, franceses e italianos."]},
+{id:"tres-riches-heures", t:"As Riquíssimas Horas do Duque de Berry", o:"Les Très Riches Heures du duc de Berry", a:"limbourg", y:"c. 1412–1416", yr:1414, p:"gotico",
+ tech:"Iluminura sobre pergaminho", mus:"Musée Condé", city:"Chantilly", th:"vida cotidiana", wiki:"Très Riches Heures du Duc de Berry", ar:0.7,
+ pal:["#2f53a3","#c9a24a","#b23a2e","#efe7d4","#3d6b3a"],
+ about:"Livro de orações iluminado para o duque de Berry. O calendário mostra a vida de cada mês: banquetes, colheitas, caçadas, sempre com castelos ao fundo.",
+ look:["Em janeiro, o próprio duque à mesa, vestido de azul.","Os castelos desenhados com detalhe, vários reconhecíveis até hoje.","Os signos do zodíaco no arco que coroa cada mês."],
+ facts:["Os irmãos Limbourg e o duque morreram em 1416, provavelmente de peste; o livro foi completado por outros artistas décadas depois.","O manuscrito é tão frágil que quase nunca é exposto ao público."]},
+
+// ---------------- RENASCIMENTO ----------------
+{id:"casal-arnolfini", t:"O Casal Arnolfini", o:"Portret van Giovanni Arnolfini en zijn vrouw", a:"vaneyck", y:"1434", yr:1434, p:"renascimento",
+ tech:"Óleo sobre madeira de carvalho", mus:"National Gallery", city:"Londres", th:"retrato", wiki:"Arnolfini Portrait", ar:0.73,
+ pal:["#2c4a2a","#7a3d22","#1e1a16","#c9a46a","#5a2a2a"],
+ about:"Retrato de um mercador italiano e sua esposa em Bruges, pintado com um detalhe que parecia impossível na época. É um marco da pintura a óleo flamenga.",
+ look:["O espelho convexo no fundo, que reflete duas pessoas na porta.","A inscrição acima do espelho: “Johannes de eyck fuit hic 1434” (Jan van Eyck esteve aqui).","O lustre com uma única vela acesa, em plena luz do dia."],
+ facts:["A identidade do casal e o significado da cena ainda são debatidos por historiadores.","As laranjas perto da janela eram uma fruta cara no norte da Europa, sinal de riqueza."]},
+{id:"jardim-delicias", t:"O Jardim das Delícias Terrenas", o:"De tuin der lusten", a:"bosch", y:"c. 1490–1510", yr:1500, p:"renascimento",
+ tech:"Óleo sobre madeira", mus:"Museo del Prado", city:"Madri", th:"alegoria", wiki:"The Garden of Earthly Delights", ar:1.77,
+ pal:["#7fa16a","#e2cfa8","#3d5a7a","#c46a5a","#2b2b25"],
+ about:"Tríptico com o Paraíso à esquerda, um jardim cheio de figuras nuas, frutas gigantes e animais ao centro, e um inferno noturno à direita. Não há consenso sobre o que Bosch queria dizer.",
+ look:["Os morangos e frutas enormes do painel central.","A fonte rosada no meio do Paraíso.","No inferno, instrumentos musicais transformados em máquinas de tortura, e até uma partitura escrita nas nádegas de um condenado."],
+ facts:["Com as portas fechadas, o tríptico mostra o mundo em tons de cinza, dentro de uma esfera transparente.","A obra pertenceu ao rei Filipe II da Espanha."]},
+{id:"nascimento-venus", t:"O Nascimento de Vênus", o:"Nascita di Venere", a:"botticelli", y:"c. 1484–1486", yr:1485, p:"renascimento",
+ tech:"Têmpera sobre tela", mus:"Galleria degli Uffizi", city:"Florença", th:"mitologia", wiki:"The Birth of Venus", ar:1.61,
+ pal:["#9fc1b6","#e8d6b5","#c98a6a","#6a8a5a","#d9b04a"],
+ about:"A deusa do amor chega à praia sobre uma concha, soprada pelo vento Zéfiro, enquanto uma figura ligada à primavera a espera com um manto. É uma das primeiras grandes pinturas mitológicas do Renascimento.",
+ look:["A pose de Vênus, inspirada em estátuas antigas.","Os cabelos, que ondulam como chamas.","As rosas que caem pelo ar ao redor dos ventos."],
+ facts:["Foi pintada sobre tela, algo incomum em Florença naquela época.","Botticelli usou ouro em detalhes, como os cabelos e as folhas."]},
+{id:"mona-lisa", t:"Mona Lisa", o:"La Gioconda", a:"leonardo", y:"c. 1503–1519", yr:1503, p:"renascimento",
+ tech:"Óleo sobre madeira de choupo", mus:"Museu do Louvre", city:"Paris", th:"retrato", wiki:"Mona Lisa", ar:0.67,
+ pal:["#4b5a3a","#a8834a","#2a2219","#c9a46a","#6b7a6a"],
+ about:"Retrato de Lisa Gherardini, esposa de um mercador florentino, que Leonardo continuou retocando por anos. O sorriso ambíguo e a passagem suave entre luz e sombra a tornaram o quadro mais famoso do mundo.",
+ look:["O sfumato: a transição sem contornos entre luz e sombra nos cantos da boca e dos olhos.","A paisagem ao fundo, cujo horizonte não fica na mesma altura dos dois lados.","As mãos cruzadas, pintadas com o mesmo cuidado que o rosto."],
+ facts:["Foi roubada do Louvre em 1911 por Vincenzo Peruggia e recuperada em Florença em 1913; o roubo a tornou ainda mais famosa.","É um quadro pequeno: cerca de 77 por 53 centímetros."]},
+{id:"ultima-ceia", t:"A Última Ceia", o:"Il Cenacolo", a:"leonardo", y:"c. 1495–1498", yr:1497, p:"renascimento",
+ tech:"Têmpera e óleo sobre gesso (pintura mural)", mus:"Santa Maria delle Grazie", city:"Milão", th:"religião", wiki:"The Last Supper (Leonardo)", ar:1.91,
+ pal:["#8a7a5a","#3d4a5a","#b88a5a","#d9c9a8","#6a3a2a"],
+ about:"Pintada no refeitório de um convento, mostra o instante em que Jesus anuncia que um dos apóstolos o trairá. Cada grupo de apóstolos reage de um jeito.",
+ look:["As linhas da sala, que convergem todas para a cabeça de Cristo.","Os apóstolos organizados em grupos de três.","Judas, recuado, segurando a bolsa de dinheiro."],
+ facts:["Leonardo pintou sobre a parede seca, e não em afresco, e a pintura começou a se deteriorar ainda durante a vida dele.","A última grande restauração levou cerca de vinte anos e terminou em 1999."]},
+{id:"criacao-adao", t:"A Criação de Adão", o:"La creazione di Adamo", a:"michelangelo", y:"c. 1508–1512", yr:1510, p:"renascimento",
+ tech:"Afresco", mus:"Capela Sistina", city:"Vaticano", th:"religião", wiki:"The Creation of Adam", ar:2.04,
+ pal:["#c9a07a","#7a8a9a","#b85a4a","#e6d6b8","#5a6a4a"],
+ about:"Parte do teto da Capela Sistina, encomendado pelo papa Júlio II. Deus estende o braço para dar vida a Adão, e os dedos quase se tocam.",
+ look:["O pequeno espaço entre os dois dedos, onde está toda a tensão da cena.","O corpo de Adão, ainda sem energia.","O manto atrás de Deus, que alguns estudiosos comparam ao formato de um cérebro humano."],
+ facts:["Michelangelo se considerava acima de tudo escultor e relutou em aceitar a encomenda do teto.","Ele pintou de pé nos andaimes, olhando para cima, e não deitado como diz a lenda."]},
+{id:"escola-atenas", t:"A Escola de Atenas", o:"Scuola di Atene", a:"rafael", y:"1509–1511", yr:1510, p:"renascimento",
+ tech:"Afresco", mus:"Stanza della Segnatura, Palácios Vaticanos", city:"Vaticano", th:"alegoria", wiki:"The School of Athens", ar:1.54,
+ pal:["#c9b89a","#6a7aa0","#b86a4a","#e8dcc4","#4a4a3a"],
+ about:"Reúne filósofos da Grécia Antiga numa arquitetura grandiosa. No centro, Platão aponta para o céu e Aristóteles estende a mão para a terra, resumindo duas visões de mundo.",
+ look:["Platão e Aristóteles, bem no ponto de fuga.","A figura sentada no primeiro plano, apoiada num bloco, muitas vezes identificada como Michelangelo no papel de Heráclito.","O próprio Rafael, olhando para fora do quadro no canto direito."],
+ facts:["Muitos estudiosos veem o rosto de Leonardo da Vinci na figura de Platão.","As salas com os afrescos foram encomendadas pelo papa Júlio II."]},
+{id:"venus-urbino", t:"Vênus de Urbino", o:"Venere di Urbino", a:"ticiano", y:"1534", yr:1534, p:"renascimento",
+ tech:"Óleo sobre tela", mus:"Galleria degli Uffizi", city:"Florença", th:"mitologia", wiki:"Venus of Urbino", ar:1.39,
+ pal:["#e3c6a2","#3a2a22","#8a2a22","#3d4a3a","#c9a46a"],
+ about:"Uma jovem nua, deitada, encara o espectador, enquanto ao fundo duas criadas mexem num baú. Ticiano levou o tema da deusa para um interior doméstico de Veneza.",
+ look:["O olhar direto da mulher.","O cachorrinho dormindo aos pés dela, símbolo de fidelidade.","A linha vertical da cortina escura, que divide a cena ao meio."],
+ facts:["Foi comprada por Guidobaldo della Rovere, futuro duque de Urbino, daí o nome.","Mais de três séculos depois, inspirou a “Olympia”, de Manet."]},
+{id:"cacadores-neve", t:"Caçadores na Neve", o:"Jagers in de sneeuw", a:"bruegel", y:"1565", yr:1565, p:"renascimento",
+ tech:"Óleo sobre madeira", mus:"Kunsthistorisches Museum", city:"Viena", th:"paisagem", wiki:"The Hunters in the Snow", ar:1.38,
+ pal:["#dfe3e0","#5a6a6a","#2a2a24","#8a9a9a","#7a4a2a"],
+ about:"Parte de uma série sobre as épocas do ano. Caçadores voltam cansados, com pouca caça, enquanto no vale as pessoas patinam sobre lagos congelados.",
+ look:["A diagonal das árvores, que leva o olhar até o vale.","Os corvos pousados nos galhos nus.","A placa da pousada, à esquerda, pendurada por um fio."],
+ facts:["A série tinha provavelmente seis quadros, e cinco sobreviveram.","Foi pintada durante um inverno especialmente rigoroso, na chamada Pequena Idade do Gelo."]},
+
+// ---------------- MANEIRISMO ----------------
+{id:"deposicao-pontormo", t:"Deposição da Cruz", o:"Deposizione dalla croce", a:"pontormo", y:"1525–1528", yr:1527, p:"maneirismo",
+ tech:"Óleo sobre madeira", mus:"Igreja de Santa Felicita", city:"Florença", th:"religião", wiki:"Deposition from the Cross (Pontormo)", ar:0.61,
+ pal:["#e7a7b0","#7fb3d5","#f0d68a","#c95a4a","#f2e6d8"],
+ about:"O corpo de Cristo é carregado por figuras que parecem flutuar, sem chão e sem cruz à vista. As cores claras, quase ácidas, são uma marca do Maneirismo.",
+ look:["A falta de cenário: só uma nuvem e corpos.","Os tons de rosa, azul-claro e amarelo.","O rosto à direita, olhando para fora, que pode ser um autorretrato de Pontormo."],
+ facts:["A pintura ainda está na capela para a qual foi feita, a Capela Capponi.","Pontormo deixou um diário em que anotava o que comia e como se sentia, raro documento íntimo de um pintor da época."]},
+{id:"madona-pescoco", t:"Madona do Pescoço Longo", o:"Madonna dal collo lungo", a:"parmigianino", y:"1534–1540", yr:1537, p:"maneirismo",
+ tech:"Óleo sobre madeira", mus:"Galleria degli Uffizi", city:"Florença", th:"religião", wiki:"Madonna with the Long Neck", ar:0.61,
+ pal:["#c9a5a0","#5a6a8a","#e8d6c4","#3a3a3a","#a87a5a"],
+ about:"Uma Virgem com o Menino de proporções propositalmente esticadas: pescoço, mãos e o próprio Menino parecem alongados. Parmigianino trocou a naturalidade pela elegância.",
+ look:["O tamanho do Menino, grande demais para o colo.","A fileira de colunas ao fundo, sem capitéis.","A figura minúscula do profeta perto das colunas, que confunde a noção de escala."],
+ facts:["Ficou inacabada quando Parmigianino morreu, em 1540.","O alongamento das figuras virou um símbolo de todo o Maneirismo."]},
+{id:"alegoria-bronzino", t:"Alegoria com Vênus e Cupido", o:"Allegoria del trionfo di Venere", a:"bronzino", y:"c. 1545", yr:1545, p:"maneirismo",
+ tech:"Óleo sobre madeira", mus:"National Gallery", city:"Londres", th:"alegoria", wiki:"Venus, Cupid, Folly and Time", ar:0.8,
+ pal:["#e8d8c8","#2f4a8a","#7aa05a","#c9a46a","#3a3a3a"],
+ about:"Pintura cheia de enigmas, provavelmente enviada como presente ao rei Francisco I da França. Vênus e Cupido se beijam cercados de figuras que parecem representar o Tempo, a Loucura, o Engano e o Ciúme.",
+ look:["O velho careca no alto, o Tempo, puxando a cortina azul.","A menina de rosto bonito e corpo de serpente, atrás do menino.","As máscaras no canto inferior direito."],
+ facts:["O significado de várias figuras ainda é discutido pelos historiadores.","As cores frias e a pele de porcelana são típicas de Bronzino."]},
+{id:"juizo-final", t:"O Juízo Final", o:"Giudizio universale", a:"michelangelo", y:"1536–1541", yr:1540, p:"maneirismo",
+ tech:"Afresco", mus:"Capela Sistina", city:"Vaticano", th:"religião", wiki:"The Last Judgment (Michelangelo)", ar:0.88,
+ pal:["#6f8fb8","#c9a07a","#8a5a4a","#3a3a3a","#e0cfb4"],
+ about:"Ocupa toda a parede do altar da Capela Sistina, com mais de 300 figuras. Cristo, no centro, decide quem sobe ao céu e quem desce ao inferno.",
+ look:["O gesto de Cristo, com o braço erguido.","São Bartolomeu segurando a própria pele, em que se vê um rosto lido como autorretrato de Michelangelo.","O barqueiro Caronte e os demônios no canto inferior direito."],
+ facts:["Depois do Concílio de Trento, vários nus foram cobertos com panos; o trabalho ficou com Daniele da Volterra, apelidado de “il Braghettone”.","Michelangelo a pintou mais de vinte anos depois de terminar o teto da mesma capela."]},
+{id:"enterro-orgaz", t:"O Enterro do Conde de Orgaz", o:"El entierro del señor de Orgaz", a:"elgreco", y:"1586–1588", yr:1587, p:"maneirismo",
+ tech:"Óleo sobre tela", mus:"Igreja de Santo Tomé", city:"Toledo", th:"religião", wiki:"The Burial of the Count of Orgaz", ar:0.75,
+ pal:["#2a2a2a","#c9a24a","#e8e0d0","#6a7a8a","#8a3a2a"],
+ about:"Mostra a lenda de um nobre do século XIV em cujo enterro santos teriam descido do céu. A metade de baixo é terrena e realista; a de cima é celeste, com figuras alongadas e luz fria.",
+ look:["A fileira de rostos de nobres de Toledo, muitos deles retratos reais.","O menino à esquerda, filho do pintor, apontando a cena.","A alma do conde, subindo como uma figura translúcida."],
+ facts:["No lenço do menino aparecem a assinatura de El Greco e o ano de 1578, data de nascimento do filho do pintor.","A obra continua no lugar para o qual foi pintada."]},
+{id:"vertumno", t:"Vertumno", o:"Vertumnus", a:"arcimboldo", y:"c. 1590–1591", yr:1590, p:"maneirismo",
+ tech:"Óleo sobre madeira", mus:"Castelo de Skokloster", city:"Suécia", th:"retrato", wiki:"Rudolf II as Vertumnus", ar:0.83,
+ pal:["#8a6a2a","#c94a2a","#6a8a3a","#e8c06a","#2a2a1a"],
+ about:"Retrato do imperador Rodolfo II como Vertumno, deus romano das estações, montado inteiramente com frutas, legumes e flores. É ao mesmo tempo uma brincadeira e uma homenagem.",
+ look:["A pera que forma o nariz.","As espigas, uvas e frutas que compõem o cabelo.","A guirlanda de flores no peito."],
+ facts:["O quadro foi levado de Praga pelo exército sueco em 1648, no fim da Guerra dos Trinta Anos.","Os surrealistas do século XX redescobriram Arcimboldo e o trataram como um precursor."]},
+
+// ---------------- BARROCO ----------------
+{id:"vocacao-mateus", t:"A Vocação de São Mateus", o:"Vocazione di san Matteo", a:"caravaggio", y:"1599–1600", yr:1600, p:"barroco",
+ tech:"Óleo sobre tela", mus:"Igreja de San Luigi dei Francesi", city:"Roma", th:"religião", wiki:"The Calling of Saint Matthew", ar:1.06,
+ pal:["#1a1612","#c9a46a","#8a2a1a","#e0cfa8","#4a3a2a"],
+ about:"Jesus entra numa sala escura e aponta para Mateus, um cobrador de impostos sentado com outros homens contando dinheiro. Um feixe de luz atravessa a parede e marca o chamado.",
+ look:["A mão de Jesus, que lembra a de Adão na Capela Sistina.","O feixe de luz em diagonal, vindo da direita.","O homem de barba apontando para si mesmo, como quem pergunta “eu?”."],
+ facts:["Ainda se discute qual dos homens à mesa é Mateus.","A tela continua na capela Contarelli, ao lado de outras duas cenas de São Mateus pintadas por Caravaggio."]},
+{id:"judite-holofernes", t:"Judite Decapitando Holofernes", o:"Giuditta che decapita Oloferne", a:"artemisia", y:"c. 1620", yr:1620, p:"barroco",
+ tech:"Óleo sobre tela", mus:"Galleria degli Uffizi", city:"Florença", th:"religião", wiki:"Judith Slaying Holofernes (Artemisia Gentileschi, Florence)", ar:0.81,
+ pal:["#1a1410","#c9b08a","#8a1a1a","#d9c8b0","#3a2a4a"],
+ about:"Cena bíblica em que a viúva Judite e sua serva matam o general inimigo Holofernes. Artemisia pintou o momento com uma força física e uma decisão raras na época.",
+ look:["Os braços firmes de Judite, empurrando a cabeça.","A serva segurando o general, como parceira ativa.","O sangue que espirra em arcos sobre o lençol."],
+ facts:["Artemisia foi a primeira mulher aceita na Accademia delle Arti del Disegno de Florença, em 1616.","Ela pintou uma versão anterior do tema, hoje no Museu de Capodimonte, em Nápoles."]},
+{id:"elevacao-cruz", t:"A Elevação da Cruz", o:"De kruisoprichting", a:"rubens", y:"1610–1611", yr:1610, p:"barroco",
+ tech:"Óleo sobre madeira", mus:"Catedral de Nossa Senhora", city:"Antuérpia", th:"religião", wiki:"The Elevation of the Cross", ar:1.4,
+ pal:["#8a5a3a","#2a2a22","#c9a07a","#5a6a7a","#a83a2a"],
+ about:"Tríptico em que homens musculosos fazem força para erguer a cruz com Cristo. A diagonal forte e a tensão dos corpos são puro Barroco.",
+ look:["A diagonal da cruz, que atravessa o painel central.","O esforço visível nos músculos dos carrascos.","O cachorro no canto inferior esquerdo."],
+ facts:["Rubens a pintou pouco depois de voltar de oito anos na Itália, onde estudou Michelangelo e Caravaggio.","Ela aparece no livro “O Cão de Flandres”, cujo protagonista sonha em ver as pinturas de Rubens na catedral."]},
+{id:"ronda-noturna", t:"A Ronda Noturna", o:"De Nachtwacht", a:"rembrandt", y:"1642", yr:1642, p:"barroco",
+ tech:"Óleo sobre tela", mus:"Rijksmuseum", city:"Amsterdã", th:"retrato", wiki:"The Night Watch", ar:1.2,
+ pal:["#1e1a12","#c9a24a","#8a2a1a","#e8d8a8","#3a3a2a"],
+ about:"Retrato coletivo de uma milícia de Amsterdã, liderada pelo capitão Frans Banninck Cocq. Em vez de enfileirar os retratados, Rembrandt os mostrou em movimento, como se a tropa estivesse saindo.",
+ look:["O capitão de preto com faixa vermelha e o tenente de amarelo, no centro.","A menina iluminada à esquerda, com uma galinha presa à cintura.","O tambor e os mosquetes em plena ação."],
+ facts:["O nome “Ronda Noturna” veio depois: a cena se passa de dia, mas o verniz escurecido fazia parecer noite.","Em 1715, a tela foi cortada nas bordas para caber numa parede da prefeitura de Amsterdã."]},
+{id:"as-meninas", t:"As Meninas", o:"Las Meninas", a:"velazquez", y:"1656", yr:1656, p:"barroco",
+ tech:"Óleo sobre tela", mus:"Museo del Prado", city:"Madri", th:"retrato", wiki:"Las Meninas", ar:0.87,
+ pal:["#3a3228","#c9b08a","#6a5a4a","#e0d0b0","#8a3a2a"],
+ about:"A infanta Margarida Teresa aparece cercada de damas de companhia, anões da corte e um cão. Ao lado, o próprio Velázquez pinta uma tela enorme, e um espelho no fundo reflete o rei e a rainha.",
+ look:["O espelho ao fundo, com Filipe IV e a rainha Mariana.","O pintor olhando para você, como se você estivesse no lugar dos reis.","O homem parado na porta iluminada, ao fundo."],
+ facts:["A cruz vermelha da Ordem de Santiago, no peito de Velázquez, teria sido acrescentada depois que ele recebeu o título, em 1659.","Picasso pintou 58 variações sobre esta obra em 1957."]},
+{id:"moca-perola", t:"Moça com Brinco de Pérola", o:"Meisje met de parel", a:"vermeer", y:"c. 1665", yr:1665, p:"barroco",
+ tech:"Óleo sobre tela", mus:"Mauritshuis", city:"Haia", th:"retrato", wiki:"Girl with a Pearl Earring", ar:0.88,
+ pal:["#16181c","#2f4f8a","#e3c48a","#c9a46a","#e8e0d4"],
+ about:"Não é um retrato encomendado, e sim um “tronie”, estudo de rosto com roupa exótica. A moça vira o rosto por cima do ombro e parece ter acabado de nos ver.",
+ look:["O turbante azul, pintado com ultramar, um pigmento caríssimo.","O brilho da pérola, feito com poucas pinceladas.","O pequeno reflexo de luz no canto da boca."],
+ facts:["O fundo escuro era originalmente verde, e o pigmento se alterou com o tempo.","O quadro inspirou o romance de Tracy Chevalier e o filme de 2003."]},
+{id:"leiteira", t:"A Leiteira", o:"Het melkmeisje", a:"vermeer", y:"c. 1657–1658", yr:1658, p:"barroco",
+ tech:"Óleo sobre tela", mus:"Rijksmuseum", city:"Amsterdã", th:"vida cotidiana", wiki:"The Milkmaid (Vermeer)", ar:0.9,
+ pal:["#e8d8b0","#2f4f8a","#e0b84a","#5a5a4a","#c9a07a"],
+ about:"Uma criada despeja leite com atenção total, num canto de cozinha iluminado pela janela. Vermeer transformou um gesto banal em algo quase solene.",
+ look:["O fio de leite, que parece estar mesmo escorrendo.","Os pontinhos de luz no pão e na cesta.","Os pregos e o furo na parede branca."],
+ facts:["É um quadro pequeno, com cerca de 45 centímetros de altura.","Vermeer usava ultramar até em áreas onde outros pintores usariam pigmentos baratos, como o avental."]},
+];
+
+WORKS.push(
+// ---------------- ROCOCÓ ----------------
+{id:"peregrinacao-citera", t:"Peregrinação à Ilha de Citera", o:"Pèlerinage à l’île de Cythère", a:"watteau", y:"1717", yr:1717, p:"rococo",
+ tech:"Óleo sobre tela", mus:"Museu do Louvre", city:"Paris", th:"alegoria", wiki:"The Embarkation for Cythera", ar:1.5,
+ pal:["#b8b08a","#d9c0a0","#c98a8a","#6a7a5a","#8aa0b0"],
+ about:"Casais elegantes se preparam para partir da ilha de Vênus, deusa do amor, ou para chegar a ela: a leitura muda conforme o historiador. É a obra que criou o gênero da “festa galante”.",
+ look:["A sequência de casais, da direita para a esquerda, como etapas de um namoro.","A estátua de Vênus coberta de flores.","Os cupidos que voam sobre o barco."],
+ facts:["Watteau a apresentou para entrar na Academia Real, que criou uma categoria nova para ela: “fête galante”.","Ele pintou uma segunda versão, hoje no Palácio de Charlottenburg, em Berlim."]},
+{id:"bolhas-sabao", t:"Bolhas de Sabão", o:"Les Bulles de savon", a:"chardin", y:"c. 1733–1734", yr:1734, p:"rococo",
+ tech:"Óleo sobre tela", mus:"Metropolitan Museum of Art", city:"Nova York", th:"vida cotidiana", wiki:"Soap Bubbles (Chardin)", ar:0.98,
+ pal:["#4a3a2a","#c9b08a","#6a6a4a","#e0d4b8","#2a2620"],
+ about:"Um jovem sopra uma bolha de sabão numa janela, enquanto uma criança observa. Chardin pintou o instante antes de a bolha estourar, sem pressa e sem enfeite.",
+ look:["A bolha transparente, quase invisível.","A criança de olhos fixos, atrás do parapeito.","A textura áspera da pedra da janela."],
+ facts:["Chardin pintou o tema mais de uma vez; outras versões estão em Washington e em Los Angeles.","A bolha costuma ser lida como símbolo da fragilidade da vida."]},
+{id:"patio-pedreiro", t:"O Pátio do Pedreiro", o:"Campo San Vidal and Santa Maria della Carità", a:"canaletto", y:"c. 1725", yr:1725, p:"rococo",
+ tech:"Óleo sobre tela", mus:"National Gallery", city:"Londres", th:"vida cotidiana", wiki:"The Stonemason's Yard", ar:1.32,
+ pal:["#c9b89a","#8aa0b0","#6a5a4a","#e8dcc4","#3a3a32"],
+ about:"Em vez dos cartões-postais de Veneza que o tornaram famoso, Canaletto mostra um canto de trabalho: pedreiros talhando blocos para uma igreja, roupas penduradas e crianças brincando.",
+ look:["A mãe que corre até a criança caída, à esquerda.","A igreja da Carità, do outro lado do canal.","As roupas secando nas janelas."],
+ facts:["Costuma ser apontada como uma das melhores obras de Canaletto.","Canaletto vendeu muitas vistas de Veneza a jovens ingleses que faziam o Grand Tour pela Itália."]},
+{id:"toalete-venus", t:"A Toalete de Vênus", o:"La Toilette de Vénus", a:"boucher", y:"1751", yr:1751, p:"rococo",
+ tech:"Óleo sobre tela", mus:"Metropolitan Museum of Art", city:"Nova York", th:"mitologia", wiki:"The Toilet of Venus (Boucher)", ar:0.79,
+ pal:["#e8d0c8","#9ab0c8","#c9a46a","#f0e4d8","#8a9a7a"],
+ about:"Vênus é penteada e enfeitada por cupidos, entre sedas, pérolas e pombas. Foi pintada para Madame de Pompadour, favorita do rei Luís XV.",
+ look:["Os tons rosados e azul-claros, típicos do Rococó.","As pombas, aves ligadas a Vênus.","As joias e os tecidos espalhados pela cena."],
+ facts:["Boucher foi o pintor preferido de Madame de Pompadour e chegou a primeiro pintor do rei em 1765.","A obra decorava o castelo de Bellevue, residência da Pompadour."]},
+{id:"o-balanco", t:"O Balanço", o:"Les Hasards heureux de l’escarpolette", a:"fragonard", y:"1767", yr:1767, p:"rococo",
+ tech:"Óleo sobre tela", mus:"Wallace Collection", city:"Londres", th:"vida cotidiana", wiki:"The Swing (Fragonard)", ar:0.79,
+ pal:["#6a8a4a","#e8b0b8","#c9b08a","#3a4a2a","#f0e0d0"],
+ about:"Uma jovem balança num jardim, empurrada por um homem mais velho, enquanto um admirador escondido entre as folhagens a espia. O tom é de brincadeira e flerte.",
+ look:["O sapatinho rosa voando no ar.","A estátua de Cupido pedindo silêncio com o dedo nos lábios.","O admirador estendendo o chapéu entre as rosas."],
+ facts:["A encomenda veio de um barão que queria ver a amante no balanço; outro pintor recusou o trabalho antes de Fragonard aceitar.","O título original fala dos “felizes acasos do balanço”."]},
+{id:"jovem-lendo", t:"Jovem Lendo", o:"La Liseuse", a:"fragonard", y:"c. 1769", yr:1769, p:"rococo",
+ tech:"Óleo sobre tela", mus:"National Gallery of Art", city:"Washington", th:"retrato", wiki:"Young Girl Reading", ar:0.8,
+ pal:["#e0c060","#c9a46a","#d8a8a0","#6a5a3a","#f0e4c8"],
+ about:"Uma jovem de vestido amarelo lê, absorta, apoiada numa almofada. Fragonard pintou rápido, com pinceladas soltas e visíveis.",
+ look:["Os riscos na gola, feitos com o cabo do pincel na tinta fresca.","O amarelo vivo do vestido.","O livro pequeno, seguro com uma só mão."],
+ facts:["Exames recentes revelaram outro rosto por baixo, que olhava para o espectador.","Faz parte de uma série de “figuras de fantasia” que Fragonard pintava em pouco tempo."]},
+
+// ---------------- NEOCLASSICISMO ----------------
+{id:"juramento-horacios", t:"O Juramento dos Horácios", o:"Le Serment des Horaces", a:"david", y:"1784", yr:1784, p:"neoclassico",
+ tech:"Óleo sobre tela", mus:"Museu do Louvre", city:"Paris", th:"história", wiki:"Oath of the Horatii", ar:1.28,
+ pal:["#5a4a3a","#a83a2a","#c9b89a","#3a3a32","#e0d4bc"],
+ about:"Três irmãos romanos juram ao pai lutar até a morte por Roma, enquanto as mulheres da família choram à direita. Clareza, ordem e dever: um resumo do Neoclassicismo.",
+ look:["Os três arcos ao fundo, cada um emoldurando um grupo.","Os braços estendidos dos irmãos, em paralelo.","O contraste entre a rigidez dos homens e as curvas das mulheres."],
+ facts:["David pintou a obra em Roma e a expôs no Salão de Paris de 1785, com enorme sucesso.","A cena não está nos textos antigos sobre os Horácios: o juramento foi uma invenção de composição."]},
+{id:"morte-marat", t:"A Morte de Marat", o:"La Mort de Marat", a:"david", y:"1793", yr:1793, p:"neoclassico",
+ tech:"Óleo sobre tela", mus:"Museus Reais de Belas-Artes da Bélgica", city:"Bruxelas", th:"história", wiki:"The Death of Marat", ar:0.78,
+ pal:["#4a3a28","#1e1a14","#e0d0b0","#6a5a3a","#8a2a1a"],
+ about:"O revolucionário Jean-Paul Marat aparece assassinado na banheira, ainda segurando a carta de sua assassina, Charlotte Corday. David, amigo de Marat, o pintou como um mártir.",
+ look:["A metade de cima do quadro, totalmente vazia.","O braço caído, que lembra um Cristo descido da cruz.","A caixa de madeira com a dedicatória “À Marat, David”."],
+ facts:["Marat trabalhava dentro da banheira por causa de uma doença de pele.","Charlotte Corday foi guilhotinada quatro dias depois do crime."]},
+{id:"cornelia-gracos", t:"Cornélia, Mãe dos Gracos", o:"Cornelia, Mother of the Gracchi, Pointing to Her Children as Her Treasures", a:"kauffman", y:"c. 1785", yr:1785, p:"neoclassico",
+ tech:"Óleo sobre tela", mus:"Virginia Museum of Fine Arts", city:"Richmond", th:"história", wiki:null, cq:"Kauffman Cornelia Mother of the Gracchi", ar:1.25,
+ pal:["#c9a07a","#8a2a2a","#3a4a6a","#e8dcc4","#6a5a4a"],
+ about:"Uma visitante exibe suas joias para Cornélia, nobre romana, que responde apresentando os filhos: “Estas são as minhas joias”. A cena coloca a virtude acima do luxo.",
+ look:["O gesto de Cornélia, apresentando os filhos.","O colar nas mãos da visitante.","A filha mais nova, que olha curiosa para as joias."],
+ facts:["Angelica Kauffman foi uma das duas mulheres fundadoras da Royal Academy de Londres, em 1768.","Os dois meninos da cena se tornariam os tribunos Tibério e Caio Graco."]},
+{id:"maria-antonieta-rosa", t:"Maria Antonieta com uma Rosa", o:"Marie-Antoinette dit « à la Rose »", a:"vigee", y:"1783", yr:1783, p:"neoclassico",
+ tech:"Óleo sobre tela", mus:"Palácio de Versalhes", city:"Versalhes", th:"retrato", wiki:"Marie Antoinette with a Rose", ar:0.77,
+ pal:["#3a5a7a","#c9b8a0","#e8d0c8","#6a7a8a","#2a2a30"],
+ about:"A rainha da França aparece com vestido de seda e uma rosa na mão. Esta versão foi pintada depois que um retrato anterior, com um vestido simples de musselina, foi considerado impróprio para uma rainha.",
+ look:["O brilho da seda azul-acinzentada.","A rosa, oferecida ao espectador.","Os cabelos empoados, enfeitados com pérolas."],
+ facts:["Vigée Le Brun retratou Maria Antonieta muitas vezes.","Ela deixou a França em 1789, no início da Revolução, e trabalhou em cortes de toda a Europa."]},
+{id:"napoleao-alpes", t:"Napoleão Cruzando os Alpes", o:"Bonaparte franchissant le Grand-Saint-Bernard", a:"david", y:"1801", yr:1801, p:"neoclassico",
+ tech:"Óleo sobre tela", mus:"Castelo de Malmaison (primeira versão)", city:"Rueil-Malmaison", th:"retrato", wiki:"Napoleon Crossing the Alps", ar:0.85,
+ pal:["#5a6a7a","#c9a24a","#a82a1a","#e0d8c8","#3a3a3a"],
+ about:"Napoleão sobre um cavalo empinado, apontando para o alto da montanha. É propaganda: na travessia real, em 1800, ele subiu numa mula, guiado por um camponês.",
+ look:["Os nomes gravados nas pedras: Bonaparte, Aníbal e Carlos Magno, que também cruzaram os Alpes.","O manto inflado pelo vento.","O rosto calmo, em contraste com o cavalo assustado."],
+ facts:["David pintou cinco versões do quadro.","Em 1850, Paul Delaroche pintou a versão “realista”, com Napoleão numa mula."]},
+{id:"grande-odalisca", t:"A Grande Odalisca", o:"La Grande Odalisque", a:"ingres", y:"1814", yr:1814, p:"neoclassico",
+ tech:"Óleo sobre tela", mus:"Museu do Louvre", city:"Paris", th:"retrato", wiki:"Grande Odalisque", ar:1.78,
+ pal:["#2f3a5a","#e0c8a8","#c9a24a","#1e1e24","#8a6a4a"],
+ about:"Uma concubina nua, de costas, vira o rosto para nós. Ingres alongou o corpo de propósito, buscando uma linha mais elegante que a anatomia real.",
+ look:["As costas longas demais; críticos da época disseram que tinham vértebras a mais.","O leque de penas de pavão.","O cachimbo e o incensário, à direita."],
+ facts:["A obra foi encomendada por Carolina Murat, irmã de Napoleão e rainha de Nápoles.","Na sua primeira exposição, em 1819, foi duramente criticada."]},
+
+// ---------------- ROMANTISMO ----------------
+{id:"tres-de-maio", t:"O Três de Maio de 1808", o:"El tres de mayo de 1808 en Madrid", a:"goya", y:"1814", yr:1814, p:"romantismo",
+ tech:"Óleo sobre tela", mus:"Museo del Prado", city:"Madri", th:"história", wiki:"The Third of May 1808", ar:1.3,
+ pal:["#2a2620","#e8d080","#3a3a3a","#a83a2a","#6a6a5a"],
+ about:"Soldados franceses fuzilam civis espanhóis na noite seguinte à revolta de Madri contra a ocupação. O homem de camisa branca abre os braços diante do pelotão.",
+ look:["A lanterna no chão, única fonte de luz.","Os soldados sem rosto, vistos de costas.","As marcas nas mãos do homem de branco, como estigmas."],
+ facts:["Foi pintada seis anos depois dos acontecimentos, quando a Espanha já estava livre.","Influenciou obras posteriores, como a “Guernica”, de Picasso."]},
+{id:"viajante-nevoa", t:"Viajante sobre o Mar de Névoa", o:"Der Wanderer über dem Nebelmeer", a:"friedrich", y:"c. 1818", yr:1818, p:"romantismo",
+ tech:"Óleo sobre tela", mus:"Hamburger Kunsthalle", city:"Hamburgo", th:"paisagem", wiki:"Wanderer above the Sea of Fog", ar:0.79,
+ pal:["#8a9aa8","#2a2a2a","#c9c0b0","#5a6a6a","#e0dcd4"],
+ about:"Um homem de costas, no alto de um rochedo, contempla montanhas cobertas de névoa. Sem ver seu rosto, nós ocupamos o lugar dele.",
+ look:["A figura exatamente no centro da tela.","As camadas de névoa e picos, que se perdem ao fundo.","A bengala, apoiada na pedra."],
+ facts:["A figura de costas virou marca de Friedrich; em alemão ela tem nome próprio: Rückenfigur.","Virou uma das imagens mais usadas para ilustrar o Romantismo e até capas de livros de filosofia."]},
+{id:"jangada-medusa", t:"A Jangada da Medusa", o:"Le Radeau de La Méduse", a:"gericault", y:"1818–1819", yr:1819, p:"romantismo",
+ tech:"Óleo sobre tela", mus:"Museu do Louvre", city:"Paris", th:"história", wiki:"The Raft of the Medusa", ar:1.46,
+ pal:["#5a4a32","#2a2a22","#c9a87a","#8a7a5a","#a0a090"],
+ about:"Sobreviventes de um naufrágio real, de 1816, estão à deriva numa jangada. Ao avistar um navio no horizonte, alguns acenam desesperados.",
+ look:["A pirâmide de corpos, que sobe até o homem que acena.","O navio minúsculo no horizonte.","O velho à esquerda, segurando um corpo, alheio ao resgate."],
+ facts:["Géricault entrevistou sobreviventes e construiu uma maquete da jangada no ateliê.","Dos cerca de 150 que embarcaram na jangada, apenas 15 foram resgatados."]},
+{id:"saturno", t:"Saturno Devorando um Filho", o:"Saturno devorando a su hijo", a:"goya", y:"c. 1819–1823", yr:1821, p:"romantismo",
+ tech:"Pintura mural transferida para tela", mus:"Museo del Prado", city:"Madri", th:"mitologia", wiki:"Saturn Devouring His Son", ar:0.57,
+ pal:["#1a1612","#c9a07a","#8a1a14","#3a3228","#e0d0b0"],
+ about:"Faz parte das “Pinturas Negras”, que Goya pintou nas paredes da própria casa, sem intenção de expô-las. O titã que devora os filhos com medo de ser destronado aparece em pânico.",
+ look:["Os olhos arregalados de Saturno.","As mãos cravadas no corpo.","O fundo totalmente escuro."],
+ facts:["Os murais foram transferidos para tela no fim do século XIX e chegaram ao Prado.","Goya não deu títulos a essas pinturas; os nomes foram dados depois."]},
+{id:"liberdade-povo", t:"A Liberdade Guiando o Povo", o:"La Liberté guidant le peuple", a:"delacroix", y:"1830", yr:1830, p:"romantismo",
+ tech:"Óleo sobre tela", mus:"Museu do Louvre", city:"Paris", th:"história", wiki:"Liberty Leading the People", ar:1.25,
+ pal:["#5a4a3a","#2f4a8a","#a82a1a","#e0d4b8","#3a3a32"],
+ about:"Celebra a Revolução de Julho de 1830, em Paris. Uma mulher que personifica a Liberdade avança sobre uma barricada com a bandeira francesa, seguida por gente de diferentes classes.",
+ look:["A bandeira tricolor no ponto mais alto.","O menino com duas pistolas, que lembra o Gavroche de “Os Miseráveis”.","As torres de Notre-Dame ao fundo, à direita."],
+ facts:["O governo comprou a obra, mas a manteve fora de vista por anos, por considerá-la inflamatória.","A figura da Liberdade com barrete frígio virou a Marianne, símbolo da República Francesa."]},
+{id:"carroca-feno", t:"A Carroça de Feno", o:"The Hay Wain", a:"constable", y:"1821", yr:1821, p:"romantismo",
+ tech:"Óleo sobre tela", mus:"National Gallery", city:"Londres", th:"paisagem", wiki:"The Hay Wain", ar:1.42,
+ pal:["#6a7a4a","#c9c4b0","#3a4a2a","#8aa0b8","#7a5a3a"],
+ about:"Uma carroça atravessa um rio raso no interior da Inglaterra. Constable pintava a paisagem que conhecia desde a infância, no vale do rio Stour.",
+ look:["O céu, com nuvens em movimento.","O cachorro na margem, observando a carroça.","A casa à esquerda, que ainda existe."],
+ facts:["Ganhou medalha de ouro no Salão de Paris de 1824 e impressionou pintores franceses como Delacroix.","Constable fazia estudos a óleo de nuvens, anotando data, hora e vento."]},
+{id:"temeraire", t:"O Temeraire Rebocado para o Desmanche", o:"The Fighting Temeraire", a:"turner", y:"1839", yr:1839, p:"romantismo",
+ tech:"Óleo sobre tela", mus:"National Gallery", city:"Londres", th:"paisagem", wiki:"The Fighting Temeraire", ar:1.34,
+ pal:["#e0a050","#8aa0b0","#c9c0b0","#3a3a3a","#e8d8a8"],
+ about:"Um velho navio de guerra, que lutou na Batalha de Trafalgar, é puxado por um pequeno rebocador a vapor para ser desmontado. O pôr do sol marca o fim de uma era.",
+ look:["O navio claro e fantasmagórico, contra o rebocador escuro.","O sol se pondo à direita.","A lua fina no céu da esquerda."],
+ facts:["Em 2005, foi eleita a pintura favorita do Reino Unido numa votação da BBC.","Aparece na nota de 20 libras lançada em 2020."]},
+{id:"independencia-morte", t:"Independência ou Morte!", o:"Independência ou Morte!", a:"pedroamerico", y:"1888", yr:1888, p:"romantismo",
+ tech:"Óleo sobre tela", mus:"Museu Paulista (Museu do Ipiranga)", city:"São Paulo", th:"história", wiki:"Independence or Death (painting)", ar:1.83,
+ pal:["#6a7a4a","#c9b080","#8a2a1a","#3a3a32","#e0d8c0"],
+ about:"D. Pedro proclama a Independência do Brasil às margens do Ipiranga, em 1822. Pintada 66 anos depois, é uma versão heroica e idealizada do episódio, típica da pintura acadêmica de espírito romântico.",
+ look:["D. Pedro com a espada erguida, no centro.","O carreiro com o carro de bois, à esquerda, assistindo de fora.","A Guarda de Honra erguendo as espadas em resposta."],
+ facts:["Pedro Américo pintou a tela em Florença, na Itália.","Na viagem real, a comitiva usava mulas e animais de carga, mais adequados à serra, e não cavalos imponentes."]},
+
+// ---------------- REALISMO ----------------
+{id:"enterro-ornans", t:"Um Enterro em Ornans", o:"Un enterrement à Ornans", a:"courbet", y:"1849–1850", yr:1850, p:"realismo",
+ tech:"Óleo sobre tela", mus:"Musée d’Orsay", city:"Paris", th:"vida cotidiana", wiki:"A Burial at Ornans", ar:2.12,
+ pal:["#1e1e1e","#5a5a4a","#c9c0a8","#8a7a5a","#a83a2a"],
+ about:"Um enterro comum numa cidade do interior, pintado no tamanho reservado às grandes cenas históricas. Os próprios moradores de Ornans posaram para Courbet.",
+ look:["A cova aberta no primeiro plano, bem diante de nós.","A fila de figuras de preto, sem um herói central.","O cachorro, à direita."],
+ facts:["No Salão de 1850–1851, críticos se escandalizaram ao ver gente comum tratada com tanta importância.","A tela tem cerca de 6,7 metros de largura."]},
+{id:"respigadeiras", t:"As Respigadeiras", o:"Des glaneuses", a:"millet", y:"1857", yr:1857, p:"realismo",
+ tech:"Óleo sobre tela", mus:"Musée d’Orsay", city:"Paris", th:"vida cotidiana", wiki:"The Gleaners", ar:1.32,
+ pal:["#c9a86a","#8a9aa8","#6a4a3a","#a83a2a","#e0d4b0"],
+ about:"Três camponesas recolhem as espigas que sobraram depois da colheita, trabalho reservado aos mais pobres. Ao fundo, a fartura da colheita contrasta com a dureza do primeiro plano.",
+ look:["As costas curvadas, num ritmo quase de dança.","Os montes de trigo ao fundo.","O capataz a cavalo, bem pequeno, à direita."],
+ facts:["Parte da crítica viu na obra uma ameaça política, por dar dignidade aos mais pobres.","Respigar era um direito tradicional dos pobres no campo francês."]},
+{id:"feira-cavalos", t:"A Feira de Cavalos", o:"Le Marché aux chevaux", a:"bonheur", y:"1852–1855", yr:1853, p:"realismo",
+ tech:"Óleo sobre tela", mus:"Metropolitan Museum of Art", city:"Nova York", th:"animais", wiki:"The Horse Fair", ar:2.07,
+ pal:["#5a4a3a","#c9b89a","#8a9ab0","#2a2420","#e0d8c8"],
+ about:"Uma feira de cavalos em Paris, com animais enormes e agitados conduzidos por tratadores. A tela tem mais de cinco metros de largura.",
+ look:["O cavalo cinza empinado, no centro.","O movimento em espiral da manada.","A poeira levantada pelos cascos."],
+ facts:["Para estudar os animais na feira, Rosa Bonheur obteve uma autorização da polícia para usar calças.","Em 1865, ela se tornou a primeira artista mulher a receber a Legião de Honra."]},
+{id:"almoco-relva", t:"O Almoço na Relva", o:"Le Déjeuner sur l’herbe", a:"manet", y:"1863", yr:1863, p:"realismo",
+ tech:"Óleo sobre tela", mus:"Musée d’Orsay", city:"Paris", th:"vida cotidiana", wiki:"Le Déjeuner sur l'herbe", ar:1.27,
+ pal:["#3a4a2a","#e0d4c0","#1e1e1e","#6a8a5a","#c9b08a"],
+ about:"Dois homens vestidos conversam num bosque ao lado de uma mulher nua que encara o espectador. Recusada pelo Salão, foi mostrada no “Salão dos Recusados” e causou escândalo.",
+ look:["O olhar direto da mulher.","A cesta de piquenique e as roupas jogadas no canto.","A mulher ao fundo, grande demais para a distância em que está."],
+ facts:["A composição vem de uma gravura de Marcantonio Raimondi baseada em Rafael.","Monet pintou depois sua própria versão do tema, hoje em fragmentos."]},
+{id:"olympia", t:"Olympia", o:"Olympia", a:"manet", y:"1863", yr:1863, p:"realismo",
+ tech:"Óleo sobre tela", mus:"Musée d’Orsay", city:"Paris", th:"retrato", wiki:"Olympia (Manet)", ar:1.46,
+ pal:["#e8dcc8","#2a2a22","#3a4a2a","#c9a46a","#8a5a4a"],
+ about:"Uma mulher nua, deitada, com uma flor no cabelo e uma fita no pescoço, nos olha sem pudor, enquanto a criada traz flores de um cliente. Manet atualizou a Vênus de Ticiano para a Paris do seu tempo.",
+ look:["O gato preto de rabo erguido, no lugar do cachorrinho fiel de Ticiano.","A mão firme sobre a coxa.","A criada, Laure, com o buquê."],
+ facts:["Exposta no Salão de 1865, precisou de guardas para protegê-la do público.","A modelo, Victorine Meurent, também era pintora."]},
+{id:"mae-whistler", t:"Arranjo em Cinza e Preto nº 1", o:"Arrangement in Grey and Black No. 1", a:"whistler", y:"1871", yr:1871, p:"realismo",
+ tech:"Óleo sobre tela", mus:"Musée d’Orsay", city:"Paris", th:"retrato", wiki:"Whistler's Mother", ar:1.13,
+ pal:["#3a3a36","#1e1e1e","#c9c4b8","#7a7a70","#e0dcd4"],
+ about:"Anna McNeill Whistler, mãe do pintor, aparece sentada de perfil. Whistler deu ao quadro um título musical para dizer que o importante eram as cores e as formas, não o tema.",
+ look:["Os retângulos da parede e da moldura, quase abstratos.","A cortina com motivo japonês, à esquerda.","A paleta reduzida a cinzas e pretos."],
+ facts:["O quadro ficou conhecido popularmente como “A Mãe de Whistler”.","Foi comprado pelo Estado francês em 1891."]},
+{id:"caipira-fumo", t:"Caipira Picando Fumo", o:"Caipira Picando Fumo", a:"almeida", y:"1893", yr:1893, p:"realismo",
+ tech:"Óleo sobre tela", mus:"Pinacoteca do Estado de São Paulo", city:"São Paulo", th:"vida cotidiana", wiki:"Caipira picando fumo", wl:"pt", ar:0.7,
+ pal:["#c9a46a","#6a4a2a","#e0d4b0","#3a3a2a","#8a8a6a"],
+ about:"Um caipira sentado na soleira de casa pica fumo com uma faca, sob o sol forte do interior paulista. Almeida Júnior levou o homem do campo brasileiro para o centro da pintura acadêmica.",
+ look:["A luz dura e quente do meio-dia.","Os pés descalços sobre a terra.","A parede de pau a pique, descascada."],
+ facts:["Almeida Júnior estudou em Paris, mas preferiu pintar o interior de São Paulo.","Ele nasceu em Itu, no interior paulista."]},
+);
+
+WORKS.push(
+// ---------------- IMPRESSIONISMO ----------------
+{id:"impressao-nascer-sol", t:"Impressão, Nascer do Sol", o:"Impression, soleil levant", a:"monet", y:"1872", yr:1872, p:"impressionismo",
+ tech:"Óleo sobre tela", mus:"Musée Marmottan Monet", city:"Paris", th:"paisagem", wiki:"Impression, Sunrise", ar:1.31,
+ pal:["#8a9aa8","#e0703a","#3a4a5a","#b0b8b8","#5a6a7a"],
+ about:"O porto de Le Havre na névoa da manhã, com um sol laranja refletido na água. Foi o título deste quadro que deu nome ao movimento.",
+ look:["O sol laranja, que tem quase a mesma luminosidade do céu ao redor.","Os barcos escuros, feitos com poucas pinceladas.","Os guindastes e chaminés do porto, ao fundo."],
+ facts:["Um crítico usou o título para zombar do grupo na exposição de 1874, chamando-os de “impressionistas”.","Foi roubado do museu em 1985 e recuperado em 1990."]},
+{id:"mulher-sombrinha", t:"Mulher com Sombrinha", o:"La Promenade", a:"monet", y:"1875", yr:1875, p:"impressionismo",
+ tech:"Óleo sobre tela", mus:"National Gallery of Art", city:"Washington", th:"retrato", wiki:"Woman with a Parasol – Madame Monet and Her Son", ar:0.81,
+ pal:["#8ab0d8","#e8e4d8","#6a8a4a","#c9c060","#4a5a6a"],
+ about:"Camille, esposa de Monet, e o filho Jean num dia de vento, vistos de baixo contra o céu. Parece um instantâneo de passeio.",
+ look:["O vento no véu e no vestido.","As sombras coloridas, verdes e azuis, sob a sombrinha.","O menino, pequeno, atrás da elevação do terreno."],
+ facts:["Anos depois, em 1886, Monet pintou o mesmo tema com outra modelo, em duas telas hoje no Musée d’Orsay.","Camille, a modelo, morreu quatro anos depois, em 1879."]},
+{id:"baile-moulin", t:"Baile no Moulin de la Galette", o:"Bal du moulin de la Galette", a:"renoir", y:"1876", yr:1876, p:"impressionismo",
+ tech:"Óleo sobre tela", mus:"Musée d’Orsay", city:"Paris", th:"vida cotidiana", wiki:"Bal du moulin de la Galette", ar:1.33,
+ pal:["#3a4a6a","#e0c8a8","#c9a0a0","#6a8a6a","#e8e0d0"],
+ about:"Uma tarde de domingo num salão de baile ao ar livre em Montmartre, com gente dançando, conversando e bebendo. A luz que passa pelas árvores salpica todo mundo de manchas claras.",
+ look:["As manchas de sol nas roupas e no chão.","Os vestidos listrados de azul e rosa.","Os casais girando ao fundo."],
+ facts:["Os modelos eram amigos de Renoir.","Uma versão menor foi vendida em 1990 por cerca de 78 milhões de dólares, recorde na época."]},
+{id:"aula-danca", t:"A Aula de Dança", o:"La Classe de danse", a:"degas", y:"1873–1876", yr:1875, p:"impressionismo",
+ tech:"Óleo sobre tela", mus:"Musée d’Orsay", city:"Paris", th:"vida cotidiana", wiki:"The Dance Class", ar:0.88,
+ pal:["#c9b8a0","#e8e4dc","#6a7a6a","#c9a040","#3a3a3a"],
+ about:"Bailarinas descansam, se coçam e ajeitam o figurino enquanto o mestre Jules Perrot conduz a aula. Degas mostra os bastidores, e não o espetáculo.",
+ look:["O mestre apoiado no bastão, no centro.","A bailarina sentada no piano, coçando as costas.","O regador no chão, usado para molhar o piso."],
+ facts:["Degas é lembrado como impressionista, mas preferia trabalhar no ateliê e se dizia realista.","Ele fez centenas de obras com bailarinas, entre pinturas, pastéis e esculturas."]},
+{id:"o-berco", t:"O Berço", o:"Le Berceau", a:"morisot", y:"1872", yr:1872, p:"impressionismo",
+ tech:"Óleo sobre tela", mus:"Musée d’Orsay", city:"Paris", th:"retrato", wiki:"The Cradle (painting)", ar:0.82,
+ pal:["#e8e4e0","#c9b0b8","#3a3a4a","#8a8a9a","#e0d8c8"],
+ about:"Edma, irmã da pintora, observa a filha dormindo sob um véu transparente. Morisot pintou a intimidade doméstica com uma delicadeza nova.",
+ look:["A diagonal que liga o olhar da mãe à criança.","O véu branco, quase sem cor.","A mão da mãe apoiada no rosto, em espelho com a da criança."],
+ facts:["Foi exposta na primeira exposição impressionista, em 1874, em que Morisot era a única mulher do grupo.","Edma também pintava, mas abandonou a carreira depois do casamento."]},
+{id:"rua-paris-chuva", t:"Rua de Paris, Dia de Chuva", o:"Rue de Paris, temps de pluie", a:"caillebotte", y:"1877", yr:1877, p:"impressionismo",
+ tech:"Óleo sobre tela", mus:"Art Institute of Chicago", city:"Chicago", th:"vida cotidiana", wiki:"Paris Street; Rainy Day", ar:1.3,
+ pal:["#8a8a88","#3a3a3a","#c9c0b0","#5a5a5a","#a08a6a"],
+ about:"Um cruzamento da nova Paris, redesenhada pelo barão Haussmann, num dia de chuva. Os passantes se cruzam sem se olhar, debaixo de guarda-chuvas.",
+ look:["O poste verde que divide a tela ao meio.","As pedras molhadas, que brilham.","O casal elegante caminhando em nossa direção."],
+ facts:["Foi mostrada na terceira exposição impressionista, em 1877, que o próprio Caillebotte ajudou a organizar.","O cruzamento ainda existe, perto da estação Saint-Lazare."]},
+{id:"almoco-remadores", t:"O Almoço dos Remadores", o:"Le Déjeuner des canotiers", a:"renoir", y:"1880–1881", yr:1881, p:"impressionismo",
+ tech:"Óleo sobre tela", mus:"Phillips Collection", city:"Washington", th:"vida cotidiana", wiki:"Luncheon of the Boating Party", ar:1.33,
+ pal:["#e0d8c8","#6a8a5a","#c94a3a","#2a3a5a","#e8c890"],
+ about:"Amigos de Renoir almoçam na varanda de um restaurante à beira do Sena. A moça com o cachorrinho, à esquerda, é Aline Charigot, futura esposa do pintor.",
+ look:["O toldo listrado de vermelho e branco.","As garrafas e frutas sobre a mesa.","O rapaz de regata sentado ao contrário na cadeira, à direita."],
+ facts:["O restaurante, a Maison Fournaise, ainda existe na ilha de Chatou e funciona como restaurante e museu.","Entre os retratados está o pintor Gustave Caillebotte, sentado à direita."]},
+
+// ---------------- PÓS-IMPRESSIONISMO ----------------
+{id:"grande-jatte", t:"Uma Tarde de Domingo na Ilha de La Grande Jatte", o:"Un dimanche après-midi à l’Île de la Grande Jatte", a:"seurat", y:"1884–1886", yr:1885, p:"posimp",
+ tech:"Óleo sobre tela", mus:"Art Institute of Chicago", city:"Chicago", th:"vida cotidiana", wiki:"A Sunday Afternoon on the Island of La Grande Jatte", ar:1.49,
+ pal:["#4a7a4a","#c9c090","#2a2a3a","#e0a070","#8ab0d0"],
+ about:"Parisienses passeiam e descansam numa ilha do rio Sena. Seurat pintou tudo com pontinhos de cor pura, que se misturam no olho de quem vê.",
+ look:["Os pontos de cor, visíveis de perto.","A mulher que leva um macaquinho na coleira, à direita.","As figuras de perfil, rígidas como estátuas."],
+ facts:["Seurat levou cerca de dois anos para concluí-la e fez dezenas de estudos preparatórios.","A técnica ficou conhecida como pontilhismo."]},
+{id:"noite-estrelada", t:"A Noite Estrelada", o:"De sterrennacht", a:"vangogh", y:"1889", yr:1889, p:"posimp",
+ tech:"Óleo sobre tela", mus:"MoMA", city:"Nova York", th:"paisagem", wiki:"The Starry Night", ar:1.25,
+ pal:["#1e3a7a","#e8c840","#2a4a3a","#8ab0d8","#0e1a3a"],
+ about:"A vista da janela do quarto de Van Gogh no asilo de Saint-Rémy-de-Provence, com a aldeia acrescentada de memória. O céu gira em espirais de luz.",
+ look:["O cipreste escuro, que sobe como uma chama.","O redemoinho no centro do céu.","A torre pontuda da igreja, que lembra as da Holanda natal do pintor."],
+ facts:["Van Gogh pintou o quadro durante o dia, a partir de esboços e da memória.","Está no MoMA, em Nova York, desde 1941."]},
+{id:"terraco-cafe", t:"Terraço do Café à Noite", o:"Caféterras bij nacht", a:"vangogh", y:"1888", yr:1888, p:"posimp",
+ tech:"Óleo sobre tela", mus:"Museu Kröller-Müller", city:"Otterlo", th:"paisagem", wiki:"Café Terrace at Night", ar:0.81,
+ pal:["#1e3a7a","#e8c040","#e08a30","#3a5a3a","#8ab0d8"],
+ about:"O terraço iluminado de um café em Arles, numa noite de setembro. Foi a primeira pintura em que Van Gogh usou um céu estrelado.",
+ look:["O céu azul, pintado sem nenhum preto.","O amarelo da luz no toldo e na parede.","As pedras da rua em tons de rosa e violeta."],
+ facts:["O café ainda existe, na Place du Forum, em Arles.","Numa carta à irmã, Van Gogh escreveu que a noite é mais viva e mais rica em cores que o dia."]},
+{id:"cesta-macas", t:"A Cesta de Maçãs", o:"Le Panier de pommes", a:"cezanne", y:"c. 1893", yr:1893, p:"posimp",
+ tech:"Óleo sobre tela", mus:"Art Institute of Chicago", city:"Chicago", th:"natureza-morta", wiki:"The Basket of Apples", ar:1.24,
+ pal:["#c9a040","#a83a2a","#e0d8c8","#6a7a8a","#4a3a2a"],
+ about:"Uma garrafa, um prato de biscoitos e uma cesta de maçãs sobre uma mesa coberta por um pano. Nada está exatamente “certo”: cada objeto parece visto de um ângulo diferente.",
+ look:["As duas bordas da mesa, que não se alinham sob o pano.","A garrafa inclinada.","As maçãs, construídas com pequenos planos de cor."],
+ facts:["Esses pontos de vista múltiplos abriram caminho para o Cubismo de Picasso e Braque.","Cézanne disse que queria espantar Paris com uma maçã."]},
+{id:"no-moulin-rouge", t:"No Moulin Rouge", o:"Au Moulin Rouge", a:"lautrec", y:"1892–1895", yr:1893, p:"posimp",
+ tech:"Óleo sobre tela", mus:"Art Institute of Chicago", city:"Chicago", th:"vida cotidiana", wiki:"At the Moulin Rouge", ar:1.15,
+ pal:["#3a4a3a","#c9a87a","#e08a5a","#1e1e1e","#8ac0a0"],
+ about:"Frequentadores do famoso cabaré de Montmartre ao redor de uma mesa, com o próprio Lautrec passando ao fundo. À direita, um rosto iluminado de verde corta a cena.",
+ look:["O rosto esverdeado da mulher no canto direito, iluminado de baixo.","Lautrec, baixinho, passando ao fundo ao lado do primo, que era muito alto.","A dançarina ajeitando o cabelo diante do espelho."],
+ facts:["A faixa da direita, com o rosto verde, chegou a ser cortada da tela e foi recolocada depois.","Lautrec tinha um lugar reservado no Moulin Rouge e fez cartazes para o cabaré."]},
+{id:"de-onde-viemos", t:"De Onde Viemos? O Que Somos? Para Onde Vamos?", o:"D’où venons-nous ? Que sommes-nous ? Où allons-nous ?", a:"gauguin", y:"1897–1898", yr:1897, p:"posimp",
+ tech:"Óleo sobre tela", mus:"Museum of Fine Arts", city:"Boston", th:"alegoria", wiki:"Where Do We Come From? What Are We? Where Are We Going?", ar:2.7,
+ pal:["#2a5a5a","#c9a040","#6a4a2a","#3a6a4a","#e0c8a0"],
+ about:"Gauguin a pintou no Taiti e a considerava seu testamento artístico. A leitura vai da direita para a esquerda: do nascimento até a velhice.",
+ look:["O bebê dormindo, à direita.","A figura central colhendo uma fruta.","O ídolo azul ao fundo, à esquerda."],
+ facts:["Gauguin escreveu o título no canto superior esquerdo da própria tela.","Tem quase quatro metros de largura."]},
+{id:"o-grito", t:"O Grito", o:"Skrik", a:"munch", y:"1893", yr:1893, p:"posimp",
+ tech:"Têmpera e giz de cera sobre papelão", mus:"Museu Nacional", city:"Oslo", th:"alegoria", wiki:"The Scream", ar:0.81,
+ pal:["#e07030","#2a4a6a","#c9a040","#3a3a2a","#8aa0a0"],
+ about:"Uma figura numa ponte cobre os ouvidos sob um céu vermelho-alaranjado. Munch contou ter sentido um grito infinito atravessando a natureza. A obra virou símbolo da angústia moderna e anuncia o Expressionismo.",
+ look:["As linhas ondulantes do céu e do fiorde, que contagiam a figura.","As duas pessoas ao fundo, indiferentes.","A diagonal reta da ponte."],
+ facts:["Munch fez várias versões, em pintura, pastel e litografia.","Uma das versões em pastel foi vendida em 2012 por cerca de 120 milhões de dólares."]},
+
+// ---------------- MODERNISMO ----------------
+{id:"o-beijo", t:"O Beijo", o:"Der Kuss", a:"klimt", y:"1907–1908", yr:1908, p:"modernismo",
+ tech:"Óleo e folha de ouro sobre tela", mus:"Belvedere", city:"Viena", th:"alegoria", wiki:"The Kiss (Klimt)", ar:1.0,
+ pal:["#c9a040","#8a6a2a","#e0c070","#3a5a3a","#a83a3a"],
+ about:"Um casal abraçado, envolto em mantos dourados, à beira de um campo de flores. Klimt misturou pintura e ouro, como nos mosaicos bizantinos que viu em Ravena.",
+ look:["Os retângulos no manto dele e os círculos no vestido dela.","Os pés da mulher, na beira do precipício florido.","O fundo dourado, sem profundidade."],
+ facts:["O governo austríaco comprou a obra em 1908, antes mesmo de ela ser totalmente concluída.","A tela é quadrada, com 1,80 metro de lado."]},
+{id:"cavalos-azuis", t:"Os Grandes Cavalos Azuis", o:"Die großen blauen Pferde", a:"marc", y:"1911", yr:1911, p:"modernismo",
+ tech:"Óleo sobre tela", mus:"Walker Art Center", city:"Minneapolis", th:"animais", wiki:"The Large Blue Horses", ar:1.71,
+ pal:["#2a4aa0","#c94a2a","#e0b040","#6a3a7a","#3a7a4a"],
+ about:"Três cavalos azuis entrelaçados diante de colinas vermelhas. Para Franz Marc, o azul era a cor do espiritual, e os animais eram mais puros que as pessoas.",
+ look:["As curvas dos cavalos, que repetem as das colinas.","As cores sem relação com a realidade.","Os três pescoços abaixados, que formam um só bloco."],
+ facts:["Marc fundou com Kandinsky o grupo O Cavaleiro Azul (Der Blaue Reiter).","Ele morreu na Primeira Guerra Mundial, em Verdun, em 1916."]},
+{id:"composicao-vii", t:"Composição VII", o:"Komposition VII", a:"kandinsky", y:"1913", yr:1913, p:"modernismo",
+ tech:"Óleo sobre tela", mus:"Galeria Tretyakov", city:"Moscou", th:"abstração", wiki:"Composition VII", ar:1.5,
+ pal:["#2a4a8a","#c94a3a","#e0c040","#1e1e1e","#e8e0d0"],
+ about:"Uma das obras mais complexas de Kandinsky, com manchas, linhas e formas em turbilhão. Ele a pensou como uma sinfonia visual, sem representar nada reconhecível.",
+ look:["O núcleo escuro perto do centro, de onde tudo parece explodir.","As linhas pretas que cortam as manchas de cor.","As áreas mais calmas, perto das bordas."],
+ facts:["Kandinsky fez mais de 30 estudos e pintou a versão final em poucos dias.","Ele relacionava cores a sons: o amarelo seria como um trompete, o azul como um violoncelo."]},
+{id:"quadrado-preto", t:"Quadrado Preto", o:"Чёрный квадрат", a:"malevich", y:"1915", yr:1915, p:"modernismo",
+ tech:"Óleo sobre linho", mus:"Galeria Tretyakov", city:"Moscou", th:"abstração", wiki:"Black Square (painting)", ar:1.0,
+ pal:["#141414","#e8e4dc","#c9c0b0","#3a3a3a","#8a8a80"],
+ about:"Um quadrado preto sobre fundo branco. Malevich o apresentou como o ponto zero da pintura, o início do Suprematismo, uma arte de formas puras.",
+ look:["O quadrado, que não é perfeitamente quadrado.","As rachaduras na tinta preta.","O branco ao redor, que funciona como espaço infinito."],
+ facts:["Na exposição de 1915, foi pendurado no canto alto da sala, lugar dos ícones religiosos nas casas russas.","Em 2015, pesquisadores encontraram outras imagens e uma inscrição sob a camada preta."]},
+{id:"composicao-mondrian", t:"Composição com Vermelho, Azul e Amarelo", o:"Compositie met rood, blauw en geel", a:"mondrian", y:"1930", yr:1930, p:"modernismo",
+ tech:"Óleo sobre tela", mus:"Kunsthaus Zürich", city:"Zurique", th:"abstração", wiki:"Composition with Red, Blue and Yellow", ar:1.0,
+ pal:["#e8e4dc","#c92a2a","#1e3a8a","#e8c020","#141414"],
+ about:"Linhas pretas e retângulos de cores primárias sobre fundo branco. Mondrian buscava uma harmonia universal com o mínimo de elementos.",
+ look:["O grande quadrado vermelho, que domina a composição.","O pequeno retângulo amarelo e o azul, nas extremidades.","As linhas pretas, de espessuras diferentes."],
+ facts:["Mondrian começou pintando paisagens e árvores, que foi simplificando até chegar à abstração.","Ele nunca usou linhas diagonais nessas composições, e rompeu com um colega por causa disso."]},
+{id:"guernica", t:"Guernica", o:"Guernica", a:"picasso", y:"1937", yr:1937, p:"modernismo", rights:true,
+ tech:"Óleo sobre tela", mus:"Museo Reina Sofía", city:"Madri", th:"história", wiki:"Guernica (Picasso)", ar:2.22,
+ pal:["#1e1e1e","#e8e4dc","#8a8a84","#4a4a46","#c9c4b8"],
+ about:"Resposta de Picasso ao bombardeio da cidade basca de Guernica durante a Guerra Civil Espanhola. Pintada só em preto, branco e cinza, mostra mulheres, um cavalo e um touro em agonia.",
+ look:["O cavalo ferido, no centro.","A mãe que grita com o filho morto nos braços, à esquerda.","A lâmpada no alto, que lembra um olho."],
+ facts:["Picasso não quis que a obra fosse para a Espanha enquanto o país não fosse uma democracia; ela chegou em 1981.","Tem quase oito metros de largura."]},
+{id:"duas-fridas", t:"As Duas Fridas", o:"Las dos Fridas", a:"frida", y:"1939", yr:1939, p:"modernismo", rights:true,
+ tech:"Óleo sobre tela", mus:"Museo de Arte Moderno", city:"Cidade do México", th:"retrato", wiki:"The Two Fridas", ar:1.0,
+ pal:["#5a6a8a","#e8e0d0","#a82a2a","#3a5a3a","#8a6a4a"],
+ about:"Duas Fridas sentadas de mãos dadas, ligadas por uma veia que passa por seus corações expostos. Uma veste roupas europeias; a outra, o traje tehuana mexicano. Foi pintada na época do divórcio de Diego Rivera.",
+ look:["Os dois corações à mostra.","A pinça que tenta estancar a veia cortada.","O céu carregado ao fundo."],
+ facts:["É uma das maiores telas que Frida pintou.","Ela foi exposta em 1940 numa grande exposição internacional do Surrealismo na Cidade do México."]},
+{id:"abaporu", t:"Abaporu", o:"Abaporu", a:"tarsila", y:"1928", yr:1928, p:"modernismo", rights:true,
+ tech:"Óleo sobre tela", mus:"MALBA", city:"Buenos Aires", th:"alegoria", wiki:"Abaporu", ar:0.86,
+ pal:["#e8c040","#3a7a4a","#5a9ad0","#d08a5a","#e8e0c8"],
+ about:"Uma figura de pé enorme e cabeça minúscula, sentada ao lado de um cacto sob o sol. Tarsila a deu de presente a Oswald de Andrade, e a obra inspirou o Manifesto Antropófago.",
+ look:["A desproporção entre o pé e a cabeça.","O sol, que parece brotar do cacto.","As cores que lembram a bandeira brasileira."],
+ facts:["O nome vem do tupi e significa “homem que come gente”.","Foi comprada em 1995 pelo colecionador argentino Eduardo Costantini e está no MALBA, em Buenos Aires."]},
+);
+
+(function(){
+"use strict";
+/* ============ utilidades ============ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const motionOK=!matchMedia("(prefers-reduced-motion: reduce)").matches;
+const finePointer=matchMedia("(pointer: fine)").matches;
+function hash(s){ let h=2166136261; for(const c of s){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); } return h>>>0; }
+function rng(seed){ let a=seed>>>0; return ()=>{ a=(a+0x6D2B79F5)>>>0; let t=a; t=Math.imul(t^t>>>15,t|1); t^=t+Math.imul(t^t>>>7,t|61); return ((t^t>>>14)>>>0)/4294967296; }; }
+function shuffle(arr,r){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(r()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const store={ get(k,d){ try{ const v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove("on"),2600); }
+function hexRGB(h){ const n=parseInt(h.slice(1),16); return [n>>16&255,n>>8&255,n&255]; }
+function rgba(h,a){ const [r,g,b]=hexRGB(h); return `rgba(${r},${g},${b},${a})`; }
+function lum(h){ const c=hexRGB(h).map(v=>{ v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4); }); return .2126*c[0]+.7152*c[1]+.0722*c[2]; }
+function mix(h1,h2,t){ const a=hexRGB(h1),b=hexRGB(h2); return "#"+a.map((v,i)=>Math.round(v+(b[i]-v)*t).toString(16).padStart(2,"0")).join(""); }
+const ICON={
+  seal:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.3 6L12 16.4 6.6 19.4l1.3-6L3.4 9.3l6-.7z"/></svg>',
+  copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg>',
+  out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  prev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 5-7 7 7 7"/></svg>',
+  next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 5 7 7-7 7"/></svg>',
+};
+
+/* ============ dados ============ */
+const PER=Object.fromEntries(PERIODS.map(p=>[p.id,p]));
+const W=Object.fromEntries(WORKS.map(w=>[w.id,w]));
+const BY_YEAR=WORKS.slice().sort((a,b)=>a.yr-b.yr);
+const THEMES=["retrato","paisagem","religião","mitologia","história","vida cotidiana","alegoria","natureza-morta","animais","abstração"];
+PERIODS.forEach(p=>{ p.wallD=mix(p.wall,"#0b100d",lum(p.wall)>.35?.68:.5); p.ink=lum(p.wall)>.3?"#1f1b16":"#f3ece0"; p.inkD="#efe6d6"; });
+function artistOf(w){ return ARTISTS[w.a]; }
+function frameKind(w){ return ["impressionismo","posimp","realismo"].includes(w.p)?"f-wood":w.p==="modernismo"?"f-black":"f-gold"; }
+function setWall(el,p){ el.style.setProperty("--wall-l",p.wall); el.style.setProperty("--wall-d",p.wallD); el.style.setProperty("--wall-ink-l",p.ink); el.style.setProperty("--wall-ink-d",p.inkD); }
+
+/* ============ datas e obra do dia ============ */
+const now=new Date();
+const dayNum=d=>Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5);
+const dayKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const TODAY=dayNum(now);
+const POOL=shuffle(WORKS.filter(w=>!w.rights),rng(1888));
+const workForDay=n=>POOL[((n%POOL.length)+POOL.length)%POOL.length];
+const fmtLong=new Intl.DateTimeFormat("pt-BR",{weekday:"long",day:"numeric",month:"long"});
+const fmtShort=new Intl.DateTimeFormat("pt-BR",{weekday:"short",day:"numeric",month:"short"});
+function streak(){
+  const v=new Set(store.get("gb-visits",[])); v.add(TODAY); const arr=[...v].filter(n=>TODAY-n<120).sort((a,b)=>a-b); store.set("gb-visits",arr);
+  let s=0; while(v.has(TODAY-s)) s++; return s;
+}
+
+/* ============ favoritas ============ */
+let FAV=new Set(store.get("gb-favs",[]));
+function toggleFav(id){ if(FAV.has(id)) FAV.delete(id); else FAV.add(id); store.set("gb-favs",[...FAV]); renderFavs(); document.querySelectorAll(`[data-fav="${id}"]`).forEach(b=>b.setAttribute("aria-pressed",FAV.has(id))); return FAV.has(id); }
+
+/* ============ imagens (Wikipédia / Wikimedia Commons) ============
+   Tamanhos sempre nos degraus padrão do Wikimedia (500 e 960 px): tamanhos fora
+   do padrão costumam ser recusados pelo servidor de miniaturas. */
+const IMG=store.get("gb-img-v2",{});
+let IMG_BLOCKED=false, IMG_OK=false;
+const imgWaiters=new Map(); let firstJob=null;
+let active=0; const waiting=[];
+function slot(){ return new Promise(r=>{ if(active<4){ active++; r(); } else waiting.push(r); }); }
+function release(){ const n=waiting.shift(); if(n) n(); else active--; }
+function urlFor(res,want){
+  if(!res) return [];
+  const out=[];
+  if(res.ow&&res.ow<=want) out.push(res.orig);
+  else if(res.thumb) out.push(res.thumb.replace(/\/\d+px-([^/]+)$/,`/${want}px-$1`));
+  if(res.thumb) out.push(res.thumb);
+  if(res.orig&&res.ow&&res.ow<=3000) out.push(res.orig);
+  return [...new Set(out)];
+}
+async function imageFor(w){
+  if(w.rights||IMG_BLOCKED) return null;
+  if(IMG[w.id]!==undefined) return IMG[w.id];
+  if(imgWaiters.has(w.id)) return imgWaiters.get(w.id);
+  const job=(async()=>{
+    if(firstJob) await firstJob; if(IMG_BLOCKED) return null;
+    await slot();
+    let res=null;
+    try{
+      if(w.wiki){
+        let r;
+        try{ r=await fetch(`https://${w.wl||"en"}.wikipedia.org/api/rest_v1/page/summary/`+encodeURIComponent(w.wiki.replace(/ /g,"_"))); }
+        catch(e){ IMG_BLOCKED=true; imagesUnavailable(); return null; }
+        if(r.ok){ const j=await r.json(); if(j.thumbnail&&j.thumbnail.source) res={thumb:j.thumbnail.source,orig:j.originalimage&&j.originalimage.source,ow:j.originalimage&&j.originalimage.width}; }
+      }
+      if(!res){
+        try{
+          const q=encodeURIComponent(w.cq||`${w.o||w.t} ${artistOf(w).name}`);
+          const r=await fetch(`https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrsearch=${q}&gsrlimit=1&prop=imageinfo&iiprop=url|size&iiurlwidth=960`);
+          const j=await r.json(); const pg=j.query&&Object.values(j.query.pages)[0]; const ii=pg&&pg.imageinfo&&pg.imageinfo[0];
+          if(ii&&ii.thumburl) res={thumb:ii.thumburl,orig:ii.url,ow:ii.width};
+        }catch(e){ if(!w.wiki){ IMG_BLOCKED=true; imagesUnavailable(); return null; } }
+      }
+    } finally { release(); }
+    IMG[w.id]=res; store.set("gb-img-v2",IMG); return res;
+  })();
+  if(!firstJob) firstJob=job.catch(()=>null);
+  imgWaiters.set(w.id,job); return job;
+}
+let unavailableShown=false;
+function imagesUnavailable(){
+  if(unavailableShown) return; unavailableShown=true;
+  document.querySelectorAll(".study-note[data-pending]").forEach(n=>{ n.hidden=false; });
+  $("#img-about").textContent="Esta visualização bloqueia imagens de outros sites, por isso cada obra aparece como um estudo de cor feito a partir da paleta dela. Hospedado em outro endereço, o site carrega as imagens da Wikipédia e do Wikimedia Commons, com obras em domínio público. Obras ainda protegidas por direito autoral aparecem só com ficha e texto.";
+  const n=document.createElement("div"); n.className="notice"; n.innerHTML='<div><b>As imagens não carregaram aqui.</b> Esta visualização bloqueia imagens de outros sites. Cada obra aparece como um <i>estudo de cor</i> feito com a paleta dela, e o link “Ver a pintura” abre a imagem original.</div>';
+  $("#today-reading").before(n); n.style.margin="22px 0 0";
+}
+
+/* ============ estudo de cor (canvas) ============ */
+function drawStudy(cv,w){
+  const Wd=cv.width,H=cv.height,g=cv.getContext("2d"),R=rng(hash(w.id)),P=w.pal,pick=()=>P[Math.floor(R()*P.length)];
+  const blob=(x,y,r,c,a)=>{ const gr=g.createRadialGradient(x,y,0,x,y,r); gr.addColorStop(0,rgba(c,a)); gr.addColorStop(.6,rgba(c,a*.45)); gr.addColorStop(1,rgba(c,0)); g.fillStyle=gr; g.fillRect(x-r,y-r,r*2,r*2); };
+  g.fillStyle=P[0]; g.fillRect(0,0,Wd,H);
+  let dir=null;
+  if(w.id==="composicao-mondrian"){
+    g.fillStyle="#efebe2"; g.fillRect(0,0,Wd,H);
+    g.fillStyle=P[1]; g.fillRect(Wd*.3,0,Wd*.7,H*.68); g.fillStyle=P[2]; g.fillRect(0,H*.68,Wd*.3,H*.32); g.fillStyle=P[3]; g.fillRect(Wd*.92,H*.86,Wd*.08,H*.14);
+    g.fillStyle="#141414"; const lw=Wd*.022; [[.3,0,.3,1],[0,.68,1,.68],[0,.34,.3,.34],[.92,.68,.92,1],[.92,.86,1,.86]].forEach(([x1,y1,x2,y2])=>{ if(x1===x2) g.fillRect(Wd*x1-lw/2,H*y1,lw,H*(y2-y1)); else g.fillRect(Wd*x1,H*y1-lw/2,Wd*(x2-x1),lw); });
+  } else if(w.id==="quadrado-preto"){
+    g.fillStyle="#e9e4d8"; g.fillRect(0,0,Wd,H); g.fillStyle="#151413"; g.fillRect(Wd*.12,H*.11,Wd*.75,H*.77);
+    g.strokeStyle="rgba(200,190,170,.18)"; g.lineWidth=1; for(let i=0;i<70;i++){ g.beginPath(); let x=Wd*(.12+R()*.75),y=H*(.11+R()*.77); g.moveTo(x,y); for(let k=0;k<4;k++){ x+=(R()-.5)*Wd*.06; y+=(R()-.5)*H*.06; g.lineTo(x,y); } g.stroke(); }
+  } else if(w.th==="abstração"){
+    for(let i=0;i<10;i++) blob(R()*Wd,R()*H,Wd*(.12+R()*.25),pick(),.55);
+    for(let i=0;i<14;i++){ g.beginPath(); g.arc(R()*Wd,R()*H,Wd*(.02+R()*.08),0,7); g.fillStyle=rgba(pick(),.6+R()*.3); g.fill(); }
+    g.strokeStyle="#151515"; for(let i=0;i<16;i++){ g.lineWidth=1+R()*Wd*.008; g.beginPath(); g.moveTo(R()*Wd,R()*H); g.quadraticCurveTo(R()*Wd,R()*H,R()*Wd,R()*H); g.stroke(); }
+  } else if(w.th==="paisagem"){
+    const hz=H*(.42+R()*.2); const sky=g.createLinearGradient(0,0,0,hz); sky.addColorStop(0,P[3]); sky.addColorStop(1,mix(P[3],P[0],.5)); g.fillStyle=sky; g.fillRect(0,0,Wd,hz);
+    const land=g.createLinearGradient(0,hz,0,H); land.addColorStop(0,P[1]); land.addColorStop(1,P[2]); g.fillStyle=land; g.fillRect(0,hz,Wd,H-hz);
+    for(let i=0;i<9;i++) blob(R()*Wd,hz+(R()-.5)*H*.3,Wd*(.08+R()*.18),pick(),.45);
+    blob(Wd*(.2+R()*.6),H*(.12+R()*.2),Wd*.14,P[4]&&lum(P[4])>lum(P[0])?P[4]:P[3],.7);
+    dir=0;
+  } else if(w.th==="retrato"){
+    const bg=g.createRadialGradient(Wd*.5,H*.35,0,Wd*.5,H*.4,Math.max(Wd,H)*.8); bg.addColorStop(0,mix(P[0],P[3],.25)); bg.addColorStop(1,P[0]); g.fillStyle=bg; g.fillRect(0,0,Wd,H);
+    blob(Wd*.5,H*.72,Wd*.55,P[1],.9); blob(Wd*.5,H*.66,Wd*.35,P[2],.55); blob(Wd*.5,H*.32,Wd*.2,P[3],.95); blob(Wd*.48,H*.29,Wd*.08,"#ffffff",.25);
+    dir=Math.PI/2;
+  } else if(w.th==="natureza-morta"){
+    g.fillStyle=mix(P[0],P[2],.3); g.fillRect(0,H*.6,Wd,H*.4);
+    for(let i=0;i<7;i++) blob(Wd*(.2+R()*.6),H*(.55+R()*.15),Wd*(.06+R()*.08),pick(),.95);
+  } else {
+    const light=lum(P[0])<.12;
+    for(let i=0;i<7;i++) blob(R()*Wd,H*(.3+R()*.6),Wd*(.12+R()*.24),pick(),.6);
+    if(light){ blob(Wd*(.3+R()*.4),H*(.35+R()*.25),Wd*.32,P[3],.75); }
+  }
+  if(w.th!=="abstração"){
+    const data=g.getImageData(0,0,Wd,H).data; g.lineCap="round";
+    const N=Math.round(Wd*H/260);
+    for(let i=0;i<N;i++){
+      const x=R()*Wd,y=R()*H,o=(Math.floor(y)*Wd+Math.floor(x))*4, j=(R()-.5)*34;
+      const c=`rgba(${Math.max(0,Math.min(255,data[o]+j))|0},${Math.max(0,Math.min(255,data[o+1]+j))|0},${Math.max(0,Math.min(255,data[o+2]+j))|0},${(.35+R()*.4).toFixed(2)})`;
+      const len=Wd*(.012+R()*.03), a=dir==null?(R()-.5)*1.6+(R()<.5?0:Math.PI/2):dir+(R()-.5)*.5;
+      g.strokeStyle=c; g.lineWidth=Wd*(.006+R()*.012);
+      g.beginPath(); g.moveTo(x,y); g.lineTo(x+Math.cos(a)*len,y+Math.sin(a)*len); g.stroke();
+    }
+    for(let i=0;i<N/40;i++){ g.strokeStyle=rgba(pick(),.06+R()*.1); g.lineWidth=Wd*(.004+R()*.008); const x=R()*Wd,y=R()*H,a=dir==null?R()*6.3:dir+(R()-.5)*.5,len=Wd*(.02+R()*.04); g.beginPath(); g.moveTo(x,y); g.lineTo(x+Math.cos(a)*len,y+Math.sin(a)*len); g.stroke(); }
+  }
+  for(let i=0;i<Wd*H/220;i++){ g.fillStyle=R()<.5?"rgba(255,255,255,.05)":"rgba(0,0,0,.06)"; g.fillRect(R()*Wd,R()*H,1.4,1.4); }
+  const v=g.createRadialGradient(Wd/2,H/2,Math.min(Wd,H)*.3,Wd/2,H/2,Math.max(Wd,H)*.75); v.addColorStop(0,"rgba(0,0,0,0)"); v.addColorStop(1,"rgba(0,0,0,.32)"); g.fillStyle=v; g.fillRect(0,0,Wd,H);
+}
+const studyQueue=[]; let studyIO=null;
+function scheduleStudy(cv,w){
+  if(!("IntersectionObserver" in window)){ drawStudy(cv,w); return; }
+  if(!studyIO) studyIO=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ studyIO.unobserve(e.target); const it=e.target._w; drawStudy(e.target,it); } }),{rootMargin:"300px"});
+  cv._w=w; studyIO.observe(cv);
+}
+
+/* ============ moldura ============ */
+let lazyIO=null;
+function lazyImg(el,fn){ if(!lazyIO) lazyIO=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ lazyIO.unobserve(e.target); e.target._load(); } }),{rootMargin:"500px"}); el._load=fn; lazyIO.observe(el); }
+function altText(w){ return `${w.t}, de ${artistOf(w).name} (${w.y}). ${w.about.split(". ")[0].replace(/\.$/,"")}.`; }
+function wikiLink(w){ return "https://pt.wikipedia.org/w/index.php?search="+encodeURIComponent(`${w.o||w.t} ${artistOf(w).name}`); }
+function makeFrame(w,{size="thumb",maxh}={}){
+  const f=document.createElement("figure"); f.className="frame "+frameKind(w); f.style.setProperty("--ar",w.ar); if(maxh) f.style.setProperty("--maxh",maxh);
+  f.innerHTML=`<div class="gild"><div class="mat"><div class="pic"><canvas aria-hidden="true"></canvas><img alt="${esc(altText(w))}" decoding="async"><div class="sheen"></div></div></div></div>`;
+  const cv=f.querySelector("canvas"), base=size==="hero"?820:340;
+  cv.width=Math.round(w.ar>=1?base:base*w.ar); cv.height=Math.round(w.ar>=1?base/w.ar:base);
+  if(size==="hero") drawStudy(cv,w); else scheduleStudy(cv,w);
+  const img=f.querySelector("img");
+  const load=()=>imageFor(w).then(res=>{ if(!res) return; let tried=0; const urls=urlFor(res,size==="hero"?960:500);
+    img.onload=()=>{ IMG_OK=true; img.classList.add("on"); if(img.naturalWidth) f.style.setProperty("--ar",(img.naturalWidth/img.naturalHeight).toFixed(3)); };
+    img.onerror=()=>{ tried++; if(urls[tried]) img.src=urls[tried]; else { delete IMG[w.id]; } };
+    if(urls[0]) img.src=urls[0]; });
+  if(!w.rights){ if(size==="hero"||!("IntersectionObserver" in window)) load(); else lazyImg(f,load); }
+  if(size==="hero"&&finePointer&&motionOK) addTilt(f);
+  return f;
+}
+function addTilt(f){
+  f.classList.add("tilt");
+  f.addEventListener("pointermove",e=>{ const r=f.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
+    f.style.setProperty("--ry",((x-.5)*7).toFixed(2)+"deg"); f.style.setProperty("--rx",((.5-y)*5).toFixed(2)+"deg"); f.style.setProperty("--mx",(x*100).toFixed(1)+"%"); f.style.setProperty("--my",(y*100).toFixed(1)+"%"); });
+  f.addEventListener("pointerleave",()=>{ f.style.setProperty("--rx","0deg"); f.style.setProperty("--ry","0deg"); });
+}
+function studyNote(w){
+  const n=document.createElement("p"); n.className="study-note";
+  if(w.rights){ n.innerHTML=`<span>Imagem não exibida: obra protegida por direito autoral. Este é um estudo de cor.</span><a href="${wikiLink(w)}" target="_blank" rel="noopener">Ver a pintura ↗</a>`; return n; }
+  n.innerHTML=`<span>Estudo de cor a partir da paleta da obra.</span><a href="${wikiLink(w)}" target="_blank" rel="noopener">Ver a pintura ↗</a>`;
+  if(!IMG_BLOCKED){ n.hidden=true; n.dataset.pending="1"; imageFor(w).then(res=>{ if(!res) n.hidden=false; }); }
+  return n;
+}
+
+/* ============ exibição de uma obra ============ */
+function placardHTML(w){
+  const a=artistOf(w), p=PER[w.p];
+  return `<div class="placard">
+    <p class="p-artist">${esc(a.name)}<span>${esc(a.nat)}, ${esc(a.life)}</span></p>
+    <h1 class="p-title">${esc(w.t)}</h1>
+    ${w.o&&norm(w.o)!==norm(w.t)?`<p class="p-orig">${esc(w.o)}</p>`:`<p class="p-orig"></p>`}
+    <dl class="p-meta"><dt>Data</dt><dd>${esc(w.y)}</dd><dt>Técnica</dt><dd>${esc(w.tech)}</dd><dt>Onde está</dt><dd>${esc(w.mus)}, ${esc(w.city)}</dd></dl>
+    <div class="p-tags"><button class="tag" data-room="${p.id}" style="--c:${p.wall}"><i></i>${esc(p.name)}</button><button class="tag" data-theme-go="${esc(w.th)}">${esc(w.th[0].toUpperCase()+w.th.slice(1))}</button><button class="tag" data-artist="${w.a}">Mais de ${esc(a.name.split(",")[0])}</button></div>
+    <div class="p-actions">
+      <button class="btn seal" data-fav="${w.id}" aria-pressed="${FAV.has(w.id)}"><span class="wax">${ICON.seal}</span><span>Guardar</span></button>
+      <button class="btn" data-copy="${w.id}">${ICON.copy}Copiar ficha</button>
+      <a class="btn" href="${wikiLink(w)}" target="_blank" rel="noopener">${ICON.out}Wikipédia</a>
+    </div>
+  </div>`;
+}
+function readingHTML(w){
+  const p=PER[w.p];
+  return `<div class="col rv"><div><span class="label">Sobre a obra</span><h2 class="sr">Sobre a obra</h2><p class="lead">${esc(w.about)}</p></div>
+      <div class="ctx"><span class="label">No contexto</span><p><b style="color:var(--ink);font-weight:600">${esc(p.name)}, ${esc(p.label)}.</b> ${esc(p.intro)}</p><button class="btn" data-room="${p.id}">Entrar na sala do ${esc(p.name)}</button></div></div>
+    <div class="col">
+      <div class="rv" style="--d:80ms"><h2>Como olhar</h2><ol class="look">${w.look.map(l=>`<li>${esc(l)}</li>`).join("")}</ol></div>
+      <div class="rv" style="--d:160ms"><h2>Curiosidades</h2><ul class="facts">${w.facts.map(l=>`<li>${esc(l)}</li>`).join("")}</ul></div>
+    </div>`;
+}
+function stageInto(stage,w){
+  stage.innerHTML="";
+  const art=document.createElement("div"); art.className="art";
+  const holder=document.createElement("div"); holder.style.cssText="display:flex;flex-direction:column;align-items:center;width:100%;min-width:0";
+  const fr=makeFrame(w,{size:"hero"}); holder.append(fr,studyNote(w)); art.append(holder);
+  stage.append(art); stage.insertAdjacentHTML("beforeend",placardHTML(w));
+  return fr;
+}
+
+/* ============ hoje ============ */
+const todayWork=workForDay(TODAY);
+let heroFrame=null;
+function renderToday(){
+  const w=todayWork; setWall($("#today-wall"),PER[w.p]);
+  $("#today-date").textContent=fmtLong.format(now);
+  const s=streak(); $("#streak span").textContent=s>1?`${s} dias seguidos`:"Primeira visita de uma sequência";
+  heroFrame=stageInto($("#today-stage"),w);
+  $("#today-reading").innerHTML=readingHTML(w);
+}
+
+/* ============ quiz ============ */
+function renderQuiz(){
+  const r=rng(TODAY*7+3), w=todayWork, key="gb-quiz-"+dayKey(now), saved=store.get(key,{});
+  const others=shuffle(POOL.filter(x=>x!==w),r);
+  const per=shuffle([w.p,...shuffle(PERIODS.map(p=>p.id).filter(id=>id!==w.p),r).slice(0,3)],r);
+  const w2=others[0]; const arts=shuffle([w2.a,...shuffle([...new Set(WORKS.map(x=>x.a))].filter(a=>a!==w2.a),r).slice(0,3)],r);
+  const w3=others[1]; const opts3=shuffle([w3.id,others[2].id,others[3].id],r);
+  const Q=[
+    {q:`“${w.t}”, a obra de hoje, pertence a qual período?`, opts:per.map(id=>({v:id,t:PER[id].name})), ans:w.p, ex:`${PER[w.p].name} (${PER[w.p].label}).`},
+    {q:`Quem pintou “${w2.t}”?`, opts:arts.map(a=>({v:a,t:ARTISTS[a].name})), ans:w2.a, ex:`${ARTISTS[w2.a].name}, em ${w2.y}.`},
+    {q:"Detalhe misterioso: de qual obra é isto?", opts:opts3.map(id=>({v:id,t:W[id].t})), ans:w3.id, ex:`É “${w3.t}”, de ${artistOf(w3).name}.`, mystery:w3},
+  ];
+  const box=$("#quiz"); box.innerHTML="";
+  let answered=0, right=0;
+  Q.forEach((it,i)=>{
+    const card=document.createElement("div"); card.className="q rv"; card.style.setProperty("--d",(i*90)+"ms");
+    card.innerHTML=`<span class="label">Pergunta ${i+1} de 3</span>${it.mystery?`<div class="mystery"><div class="swatches">${it.mystery.pal.map(c=>`<i style="background:${c}"></i>`).join("")}</div></div>`:""}<h3>${esc(it.q)}</h3><div class="opts">${it.opts.map(o=>`<button class="opt" data-val="${esc(o.v)}">${esc(o.t)}</button>`).join("")}</div><p class="fb" aria-live="polite"></p>`;
+    box.append(card);
+    if(it.mystery){ const m=card.querySelector(".mystery"); const hint=card.querySelector("h3");
+      hint.textContent="Detalhe misterioso: de qual obra é esta paleta?";
+      imageFor(it.mystery).then(res=>{ if(!res) return; const im=new Image(); im.onload=()=>{ const z=document.createElement("div"); z.className="zoom"; const rr=rng(TODAY); z.style.backgroundImage=`url("${im.src}")`; z.style.backgroundPosition=`${20+rr()*60}% ${20+rr()*60}%`; m.append(z); hint.textContent="Detalhe misterioso: de qual obra é este pedaço?"; }; im.src=urlFor(res,960)[0]; }); }
+    const finish=(v,silent)=>{ const ok=v===it.ans; answered++; if(ok) right++;
+      card.querySelectorAll(".opt").forEach(b=>{ b.disabled=true; if(b.dataset.val===it.ans) b.classList.add("right"); else if(b.dataset.val===v) b.classList.add("wrong"); });
+      card.querySelector(".fb").textContent=(ok?"Isso mesmo. ":"Quase. ")+it.ex;
+      const m=card.querySelector(".mystery"); if(m) m.classList.add("reveal");
+      if(!silent){ saved[i]=v; store.set(key,saved); }
+      if(answered===3){ const s=document.createElement("p"); s.className="score"; s.textContent=right===3?"Três de três. Olho de curador.":right===2?"Dois de três. Muito bom.":right===1?"Um de três. Amanhã tem mais.":"Nenhum desta vez. Amanhã tem revanche."; box.append(s); }
+    };
+    card.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>finish(b.dataset.val)));
+    if(saved[i]!=null) finish(saved[i],true);
+  });
+  observeReveal(box);
+}
+
+/* ============ arquivo ============ */
+function renderStrip(){
+  const s=$("#strip"); s.innerHTML="";
+  for(let k=1;k<=7;k++){
+    const d=new Date(now); d.setDate(d.getDate()-k); const w=workForDay(TODAY-k);
+    const b=document.createElement("button"); b.className="mini"; b.dataset.open=w.id; b.dataset.list="arquivo";
+    b.innerHTML=`<span class="when">${k===1?"Ontem":esc(fmtShort.format(d).replace(/\./g,""))}</span>`;
+    b.append(makeFrame(w,{maxh:"150px"})); b.insertAdjacentHTML("beforeend",`<b>${esc(w.t)}</b><small>${esc(artistOf(w).name)}</small>`);
+    s.append(b);
+  }
+}
+
+/* ============ linha do tempo ============ */
+const T0=1250,T1=1950;
+let ROOM=todayWork.p;
+function renderRuler(){
+  const r=$("#ruler"); const x=y=>((y-T0)/(T1-T0)*100).toFixed(3)+"%";
+  const lanes=[]; let html="";
+  PERIODS.slice().sort((a,b)=>a.from-b.from).forEach(p=>{ let l=lanes.findIndex(e=>e<=p.from); if(l<0){ l=lanes.length; lanes.push(0); } lanes[l]=p.to;
+    html+=`<button class="band" title="${esc(p.name)}, ${esc(p.label)}" data-room="${p.id}" aria-pressed="${p.id===ROOM}" style="left:${x(Math.max(p.from,T0))};width:calc(${((p.to-Math.max(p.from,T0))/(T1-T0)*100).toFixed(3)}% - 3px);top:${l*40}px;--bc:${p.wall};--bi:${p.ink}">${esc(p.name)}</button>`; });
+  html+=`<div class="axis"></div>`;
+  for(let y=1250;y<=1950;y+=50) html+=`<div class="tick${y%100===0?" big":""}" style="left:${x(y)}">${y%100===0?`<span>${y}</span>`:""}</div>`;
+  BY_YEAR.forEach(w=>{ html+=`<button class="dot" data-open="${w.id}" data-list="tempo" style="left:${x(w.yr)};--dc:${PER[w.p].wall}" aria-label="${esc(w.t)}, ${esc(w.y)}" title="${esc(w.t)} · ${esc(w.y)}"></button>`; });
+  r.innerHTML=html;
+}
+function renderRooms(){
+  const box=$("#rooms");
+  box.innerHTML=PERIODS.map(p=>{ const ws=WORKS.filter(w=>w.p===p.id).slice(0,4);
+    return `<button class="room-card" data-room="${p.id}" aria-pressed="${p.id===ROOM}" style="--rc:${p.wall};--ri:${p.ink}"><span>${esc(p.label)}</span><b>${esc(p.name)}</b><span>${WORKS.filter(w=>w.p===p.id).length} obras</span><div class="pals">${ws.map(w=>`<i style="background:linear-gradient(${w.pal.slice(0,3).join(",")})"></i>`).join("")}</div></button>`; }).join("");
+  magnify();
+}
+function magnify(){
+  const box=$("#rooms"); if(!motionOK) return; const c=box.getBoundingClientRect(); const mid=c.left+Math.min(c.width,900)*.32;
+  box.querySelectorAll(".room-card").forEach(el=>{ const r=el.getBoundingClientRect(); const d=Math.abs(r.left+r.width/2-mid)/Math.max(300,c.width*.6); const s=1.04-Math.min(d,1)*.12; el.style.setProperty("--s",s.toFixed(3)); el.style.setProperty("--o",(1-Math.min(d,1)*.35).toFixed(3)); });
+}
+function renderRoom(scroll){
+  const p=PER[ROOM]; const box=$("#room"); const ws=WORKS.filter(w=>w.p===p.id).sort((a,b)=>a.yr-b.yr);
+  const arts=[...new Set(ws.map(w=>w.a))];
+  box.innerHTML=`<div class="wall" id="room-wall"><div class="room-head"><div><span class="label">Sala · ${esc(p.label)}</span><h3>${esc(p.name)}</h3></div><p>${esc(p.intro)}</p></div><ul class="traits">${p.traits.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>
+    <div class="room-body"><span class="label">Artistas desta sala</span><div class="artist-chips">${arts.map(a=>`<button class="tag" data-artist="${a}">${esc(ARTISTS[a].name)}</button>`).join("")}</div><div class="grid" id="room-grid"></div></div>`;
+  setWall($("#room-wall"),p);
+  const g=$("#room-grid"); ws.forEach((w,i)=>g.append(cardFor(w,"sala",i)));
+  document.querySelectorAll("[data-room]").forEach(b=>{ if(b.getAttribute("aria-pressed")!=null) b.setAttribute("aria-pressed",b.dataset.room===ROOM); });
+  observeReveal(box);
+  if(scroll==="room") box.scrollIntoView({behavior:motionOK?"smooth":"auto",block:"start"});
+  else if(scroll) $("#salas").scrollIntoView({behavior:motionOK?"smooth":"auto",block:"start"});
+  const band=$(`#ruler [data-room="${ROOM}"]`), rs=$("#ruler-scroll"); if(band) rs.scrollTo({left:band.offsetLeft-rs.clientWidth/2+band.offsetWidth/2,behavior:motionOK&&scroll?"smooth":"auto"});
+  const card=$(`#rooms [data-room="${ROOM}"]`); if(card){ const bx=$("#rooms"); bx.scrollTo({left:card.offsetLeft-bx.offsetLeft-4,behavior:motionOK?"smooth":"auto"}); }
+}
+function cardFor(w,list,i=0){
+  const b=document.createElement("button"); b.className="card rv"; b.dataset.open=w.id; b.dataset.list=list; b.style.setProperty("--d",(i%6*60)+"ms");
+  b.append(makeFrame(w)); b.insertAdjacentHTML("beforeend",`<span class="cap"><span class="yr">${esc(w.y)}</span><b>${esc(w.t)}</b><small>${esc(artistOf(w).name)}</small></span>`);
+  return b;
+}
+
+/* ============ artistas ============ */
+const ARTIST_ORDER=[...new Set(BY_YEAR.map(w=>w.a))];
+function renderArtists(){
+  const box=$("#artists");
+  box.innerHTML=ARTIST_ORDER.map((id,i)=>{ const a=ARTISTS[id]; const ws=WORKS.filter(w=>w.a===id); const pal=ws[0].pal;
+    return `<button class="artist rv" data-artist="${id}" style="--d:${(i%8)*40}ms;--a1:${pal[0]};--a2:${pal[1]};--a3:${pal[3]}"><span class="sw"></span><b>${esc(a.name)}</b><small>${esc(a.life)} · ${ws.length} ${ws.length>1?"obras":"obra"}</small></button>`; }).join("");
+}
+
+/* ============ acervo ============ */
+let THEME=null;
+function renderFilters(){
+  $("#fp").innerHTML=`<option value="">Todos os períodos</option>`+PERIODS.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");
+  $("#themes").innerHTML=THEMES.filter(t=>WORKS.some(w=>w.th===t)).map(t=>`<button class="tag" data-th="${esc(t)}" aria-pressed="false">${esc(t[0].toUpperCase()+t.slice(1))}</button>`).join("");
+  $("#themes").addEventListener("click",e=>{ const b=e.target.closest("[data-th]"); if(!b) return; THEME=THEME===b.dataset.th?null:b.dataset.th; document.querySelectorAll("#themes [data-th]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.th===THEME)); renderGrid(); });
+  $("#q").addEventListener("input",()=>{ clearTimeout(renderGrid.t); renderGrid.t=setTimeout(renderGrid,120); });
+  $("#fp").addEventListener("change",renderGrid);
+}
+let GRID_LIST=[];
+function renderGrid(){
+  const q=norm($("#q").value.trim()), p=$("#fp").value;
+  GRID_LIST=BY_YEAR.filter(w=>(!p||w.p===p)&&(!THEME||w.th===THEME)&&(!q||norm([w.t,w.o,artistOf(w).name,w.mus,w.city,PER[w.p].name].join(" ")).includes(q)));
+  $("#count").textContent=GRID_LIST.length===1?"1 obra":`${GRID_LIST.length} obras`;
+  const g=$("#grid"); g.innerHTML="";
+  if(!GRID_LIST.length){ g.innerHTML=`<div class="empty" style="grid-column:1/-1"><b>Nenhuma obra encontrada</b>Tente outro nome, ou limpe o filtro de período e de tema.</div>`; return; }
+  GRID_LIST.forEach((w,i)=>g.append(cardFor(w,"acervo",i)));
+  observeReveal(g);
+}
+function renderFavs(){
+  const g=$("#favs"); g.innerHTML="";
+  const ws=BY_YEAR.filter(w=>FAV.has(w.id));
+  if(!ws.length){ g.innerHTML=`<div class="empty" style="grid-column:1/-1"><b>Nenhuma obra guardada ainda</b>Toque em “Guardar” na plaqueta de uma obra e ela aparece aqui.</div>`; return; }
+  ws.forEach((w,i)=>g.append(cardFor(w,"favoritas",i)));
+  observeReveal(g);
+}
+
+/* ============ visualizador ============ */
+const V={list:[],i:0,last:null};
+function listFor(name,id){
+  if(name==="acervo") return GRID_LIST.map(w=>w.id);
+  if(name==="favoritas") return BY_YEAR.filter(w=>FAV.has(w.id)).map(w=>w.id);
+  if(name==="sala") return WORKS.filter(w=>w.p===ROOM).sort((a,b)=>a.yr-b.yr).map(w=>w.id);
+  if(name==="arquivo"){ const a=[]; for(let k=1;k<=7;k++) a.push(workForDay(TODAY-k).id); return a; }
+  if(name&&name.startsWith("artista:")){ const aid=name.slice(8); return BY_YEAR.filter(w=>w.a===aid).map(w=>w.id); }
+  return BY_YEAR.map(w=>w.id);
+}
+const LIST_NAME={acervo:"Acervo",favoritas:"Favoritas",sala:"Sala",arquivo:"Dias anteriores",tempo:"Linha do tempo",sorteio:"Obra sorteada"};
+function openViewer(id,list){
+  V.list=listFor(list,id); V.i=Math.max(0,V.list.indexOf(id)); if(V.list.indexOf(id)<0){ V.list=[id]; V.i=0; }
+  V.name=list&&list.startsWith("artista:")?ARTISTS[list.slice(8)].name:(LIST_NAME[list]||"Acervo");
+  if(list==="sala") V.name="Sala do "+PER[ROOM].name;
+  V.last=document.activeElement; showViewer();
+}
+function showViewer(){
+  const v=$("#viewer"), w=W[V.list[V.i]], n=V.list.length;
+  v.innerHTML=`<div class="v-bar"><span class="ctx-name">${esc(V.name)}${n>1?` · ${V.i+1} de ${n}`:""}</span>${n>1?`<button class="iconbtn" data-v="prev" aria-label="Obra anterior">${ICON.prev}</button><button class="iconbtn" data-v="next" aria-label="Próxima obra">${ICON.next}</button>`:""}<button class="iconbtn" data-v="close" aria-label="Fechar">${ICON.x}</button></div>
+    <div class="wall" id="v-wall"><div class="wrap hero"><div class="stage" id="v-stage"></div></div></div><div class="wrap"><div class="reading" id="v-reading"></div></div>`;
+  setWall($("#v-wall"),PER[w.p]); stageInto($("#v-stage"),w); $("#v-reading").innerHTML=readingHTML(w);
+  v.setAttribute("aria-label",w.t);
+  if(v.hidden){ v.hidden=false; document.body.style.overflow="hidden"; requestAnimationFrame(()=>requestAnimationFrame(()=>v.classList.add("on"))); }
+  v.scrollTop=0; observeReveal(v,v);
+  try{ history.replaceState(null,"","#obra-"+w.id); }catch(e){}
+  v.querySelector('[data-v="close"]').focus({preventScroll:true});
+}
+function openArtist(aid){
+  const a=ARTISTS[aid], v=$("#viewer"), ws=BY_YEAR.filter(w=>w.a===aid), p=PER[ws[0].p];
+  V.last=document.activeElement;
+  v.innerHTML=`<div class="v-bar"><span class="ctx-name">Artista</span><button class="iconbtn" data-v="close" aria-label="Fechar">${ICON.x}</button></div>
+    <div class="wall" id="v-wall"><div class="wrap artist-hero"><span class="label">${esc(a.nat)} · ${esc(a.life)}</span><h2>${esc(a.name)}</h2><p>${esc(a.bio)}</p></div></div>
+    <div class="wrap" style="padding-block:40px 70px"><span class="label">${ws.length} ${ws.length>1?"obras":"obra"} no acervo</span><div class="grid" id="v-grid" style="margin-top:18px"></div></div>`;
+  setWall($("#v-wall"),p); const g=$("#v-grid"); ws.forEach((w,i)=>g.append(cardFor(w,"artista:"+aid,i)));
+  v.setAttribute("aria-label",a.name);
+  if(v.hidden){ v.hidden=false; document.body.style.overflow="hidden"; requestAnimationFrame(()=>requestAnimationFrame(()=>v.classList.add("on"))); }
+  v.scrollTop=0; observeReveal(v,v); v.querySelector('[data-v="close"]').focus({preventScroll:true});
+}
+function closeViewer(){
+  const v=$("#viewer"); if(v.hidden) return; v.classList.remove("on"); document.body.style.overflow="";
+  setTimeout(()=>{ v.hidden=true; v.innerHTML=""; },motionOK?320:0);
+  try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){}
+  if(V.last&&V.last.focus) V.last.focus({preventScroll:true});
+}
+
+/* ============ revelar ao rolar ============ */
+let revealIO=null;
+function observeReveal(scope,root){
+  if(!document.documentElement.classList.contains("motion")) return;
+  const io=root?new IntersectionObserver(cb,{root,rootMargin:"0px 0px -6% 0px"}):(revealIO||(revealIO=new IntersectionObserver(cb,{rootMargin:"0px 0px -6% 0px"})));
+  function cb(es,o){ es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); o.unobserve(e.target); } }); }
+  (scope||document).querySelectorAll(".rv:not(.in)").forEach(el=>io.observe(el));
+}
+
+/* ============ arrastar com inércia ============ */
+function dragScroll(el,onMove){
+  let down=false,sx=0,sl=0,lx=0,vx=0,lt=0,raf=0,moved=false;
+  el.addEventListener("pointerdown",e=>{ if(e.pointerType!=="mouse") return; down=true; moved=false; sx=lx=e.clientX; sl=el.scrollLeft; vx=0; lt=performance.now(); cancelAnimationFrame(raf); });
+  addEventListener("pointermove",e=>{ if(!down) return; const dx=e.clientX-sx; if(Math.abs(dx)>4){ moved=true; el.classList.add("dragging"); } el.scrollLeft=sl-dx; const t=performance.now(); vx=(e.clientX-lx)/Math.max(1,t-lt); lx=e.clientX; lt=t; onMove&&onMove(); });
+  addEventListener("pointerup",()=>{ if(!down) return; down=false; el.classList.remove("dragging");
+    if(motionOK){ let v=-vx*16; const step=()=>{ if(Math.abs(v)<.4) return; el.scrollLeft+=v; v*=.93; onMove&&onMove(); raf=requestAnimationFrame(step); }; step(); } });
+  el.addEventListener("click",e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); moved=false; } },true);
+}
+
+/* ============ eventos globais ============ */
+document.addEventListener("click",e=>{
+  const t=e.target;
+  const open=t.closest("[data-open]"); if(open){ openViewer(open.dataset.open,open.dataset.list); return; }
+  const room=t.closest("[data-room]"); if(room){ const inViewer=!!t.closest("#viewer"); ROOM=room.dataset.room; if(inViewer) closeViewer(); renderRoom(room.closest("#salas")&&!inViewer?"room":true); return; }
+  const ar=t.closest("[data-artist]"); if(ar){ openArtist(ar.dataset.artist); return; }
+  const th=t.closest("[data-theme-go]"); if(th){ closeViewer(); THEME=th.dataset.themeGo; $("#fp").value=""; $("#q").value=""; document.querySelectorAll("#themes [data-th]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.th===THEME)); renderGrid(); $("#acervo").scrollIntoView({behavior:motionOK?"smooth":"auto"}); return; }
+  const fav=t.closest("[data-fav]"); if(fav){ const on=toggleFav(fav.dataset.fav); if(on&&motionOK){ fav.classList.remove("stamp"); void fav.offsetWidth; fav.classList.add("stamp"); } toast(on?"Guardada nas favoritas":"Removida das favoritas"); return; }
+  const cp=t.closest("[data-copy]"); if(cp){ copyFicha(W[cp.dataset.copy]); return; }
+  const vb=t.closest("[data-v]"); if(vb){ const a=vb.dataset.v; if(a==="close") closeViewer(); else { V.i=(V.i+(a==="next"?1:-1)+V.list.length)%V.list.length; showViewer(); } return; }
+});
+function copyFicha(w){
+  const a=artistOf(w); const text=`${w.t} (${w.y}), de ${a.name}. ${w.tech}. ${w.mus}, ${w.city}.\n\n${w.about}\n\nVi na Galeria de Bolso.`;
+  const fallback=()=>{ const ta=document.createElement("textarea"); ta.value=text; ta.style.cssText="position:fixed;top:0;left:0;opacity:0"; document.body.append(ta); ta.select(); let ok=false; try{ ok=document.execCommand("copy"); }catch(e){} ta.remove(); toast(ok?"Ficha copiada":"Não foi possível copiar aqui"); };
+  try{ navigator.clipboard.writeText(text).then(()=>toast("Ficha copiada"),fallback); }catch(e){ fallback(); }
+}
+addEventListener("keydown",e=>{ const v=$("#viewer"); if(v.hidden) return;
+  if(e.key==="Escape") closeViewer();
+  else if(e.key==="ArrowRight"&&V.list.length>1&&$("#v-stage")){ V.i=(V.i+1)%V.list.length; showViewer(); }
+  else if(e.key==="ArrowLeft"&&V.list.length>1&&$("#v-stage")){ V.i=(V.i-1+V.list.length)%V.list.length; showViewer(); }
+});
+$("#btn-another").addEventListener("click",()=>{ const w=POOL[Math.floor(Math.random()*POOL.length)]; openViewer(w.id,"sorteio"); });
+
+/* ============ parallax e navegação ativa ============ */
+function onScroll(){
+  if(heroFrame&&motionOK){ const y=Math.min(scrollY,900); heroFrame.style.setProperty("--py",(y*.07).toFixed(1)+"px"); }
+  const secs=["hoje","salas","artistas","acervo","favoritas"]; let cur="hoje";
+  for(const id of secs){ const s=document.getElementById(id); if(s&&s.getBoundingClientRect().top<innerHeight*.35) cur=id; }
+  document.querySelectorAll(".nav a").forEach(a=>a.setAttribute("aria-current",a.getAttribute("href")==="#"+cur));
+}
+let ticking=false; addEventListener("scroll",()=>{ if(ticking) return; ticking=true; requestAnimationFrame(()=>{ onScroll(); ticking=false; }); },{passive:true});
+
+/* ============ início ============ */
+if(motionOK&&"IntersectionObserver" in window) document.documentElement.classList.add("motion");
+renderToday(); renderQuiz(); renderStrip(); renderRuler(); renderRooms(); renderRoom(false); renderArtists(); renderFilters(); renderGrid(); renderFavs();
+observeReveal(document);
+dragScroll($("#rooms"),magnify); dragScroll($("#ruler-scroll"));
+$("#rooms").addEventListener("scroll",()=>requestAnimationFrame(magnify),{passive:true});
+addEventListener("resize",magnify);
+const cur=$("#curtain");
+if(motionOK){ setTimeout(()=>cur.classList.add("open"),280); setTimeout(()=>{ cur.hidden=true; },1700); } else cur.hidden=true;
+onScroll();
+const h=(location.hash||"").slice(1);
+if(h.startsWith("obra-")&&W[h.slice(5)]) openViewer(h.slice(5),"acervo");
+else if(PER[h]){ ROOM=h; renderRoom(true); }
+window.GALERIA={WORKS,PERIODS,ARTISTS,todayWork,imageFor,workForDay,TODAY};
+})();
+</script>
+</body></html>
