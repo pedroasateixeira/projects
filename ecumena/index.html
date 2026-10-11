@@ -176,6 +176,14 @@ canvas#globe.dragging{cursor:grabbing}
 .fl b{display:block;font:600 17.5px/1.15 var(--f-tit);margin-top:2px}
 .fl em{display:block;font:italic 500 14px var(--f-tit);color:var(--tinta-3)}
 .fl span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.3;color:var(--tinta-2);margin-top:3px}
+.fl.ctx{border-left-style:dashed;background:transparent}
+.fl.ctx small{color:var(--tinta-3)}
+.seq{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:4px 0 2px;font:italic 14px var(--f-tit);color:var(--tinta-3)}
+.seq button{font:500 14.5px var(--f-tit);color:var(--tinta-2);border-bottom:1px dotted var(--linha);padding:1px 0}
+.seq button:hover{color:var(--tinta);border-bottom-color:var(--ouro)}
+.seq i{font-style:normal;color:var(--ouro)}
+.sec.echo .links{opacity:.92}
+.sec.echo .hint{margin:-2px 0 8px;font:italic 14px var(--f-tit);color:var(--tinta-3)}
 .deep .dg{margin-top:10px}
 .deep h6{margin:0 0 6px;font:600 11px var(--f-ins);letter-spacing:.12em;text-transform:uppercase;color:var(--tinta-3)}
 .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
@@ -206,6 +214,10 @@ canvas#globe.dragging{cursor:grabbing}
 #tr-list button:hover{background:var(--papiro-2)}
 #tr-list button[aria-current="true"]{background:var(--tinta);color:var(--folha)}
 #tr-list i{font-style:normal;color:var(--tinta-3);opacity:.7}
+#tr-list i.tv-leva,#tr-list i.tv-vem{color:var(--ouro);opacity:1;font-weight:600}
+#tr-list .tgap{display:inline-block;width:1px;height:18px;background:var(--linha);margin:0 7px}
+#tr-list .tbr{font:600 9px var(--f-ins);letter-spacing:.12em;color:var(--tinta-3);margin-right:2px}
+#tr-list button.off{opacity:.55}
 #tr-clear{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none;color:var(--tinta-3)}
 #tr-clear:hover{background:var(--papiro-2);color:var(--tinta)}
 #tr-clear svg{width:12px;height:12px}
@@ -310,7 +322,7 @@ canvas#globe.dragging{cursor:grabbing}
   </aside>
 
   <nav id="trail" hidden aria-label="Por onde você passou">
-    <span class="tr-l">TRILHA</span><div id="tr-list"></div>
+    <span class="tr-l">SEU CAMINHO</span><div id="tr-list"></div>
     <button id="tr-clear" aria-label="Começar uma trilha nova" title="Começar uma trilha nova"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </nav>
 
@@ -1007,7 +1019,7 @@ const EXT = {
 const LINKS = [
  ["republica","clistenes","eco","amplo","No mesmo ano, Roma e Atenas abandonam governos de um só homem e criam formas de governo com participação dos cidadãos, sem contato entre elas."],
  ["ciro-persia","salamina","causa","amplo","A expansão persa até a Anatólia levou ao conflito com as cidades gregas da Jônia, e daí às Guerras Médicas."],
- ["babilonia-ciro","exilio-babilonia","reacao","amplo","Ciro permitiu que os judeus exilados voltassem a Jerusalém e reconstruíssem o Templo."],
+ ["babilonia-ciro","exilio-babilonia","fim","amplo","Ciro permitiu que os judeus exilados voltassem a Jerusalém e reconstruíssem o Templo."],
  ["ninive-queda","babilonico","causa","amplo","A destruição de Nínive abriu espaço para o novo império babilônico."],
  ["salamina","partenon","causa","amplo","O dinheiro da liga contra a Pérsia financiou as obras de Péricles em Atenas."],
  ["peloponeso","macedonia","causa","amplo","A guerra entre Atenas e Esparta enfraqueceu as cidades gregas e facilitou o domínio de Filipe II."],
@@ -2019,10 +2031,8 @@ for(let i=LINKS.length-1;i>=0;i--){ if(LINKS[i][1]==='primeira-missa') LINKS.spl
 /* ---------- novos territórios ---------- */
 Object.assign(POL,{
   hispania_rom:{name:"Hispânia romana",lane:"roma",end:409,own:true,s:[[-218,["hispania_leste"]],[-133,["hispania_133"]],[-19,["hispania_toda"]]]},
-  portugal:{name:"Portugal",lane:"roma",end:2026,own:true,s:[[1139,["c:PRT"]]]},
   franca_rev:{name:"França revolucionária",lane:"roma",end:1799,own:true,s:[[1789,["c:FRA"]]]},
-  industrial:{name:"Revolução Industrial",lane:"roma",end:1914,own:true,s:[[1760,["c:GBR"]],[1815,["c:GBR","c:BEL"]],[1850,["c:GBR","c:BEL","c:FRA","c:DEU","c:USA"]],[1890,["c:GBR","c:BEL","c:FRA","c:DEU","c:USA","c:ITA","c:JPN","c:RUS"]]]},
-  brasil_indigena:{name:"Povos originários",lane:"americas",end:1500,own:true,s:[[-820,["c:BRA"]]]}
+  industrial:{name:"Revolução Industrial",lane:"roma",end:1914,own:true,s:[[1760,["c:GBR"]],[1815,["c:GBR","c:BEL"]],[1850,["c:GBR","c:BEL","c:FRA","c:DEU","c:USA"]],[1890,["c:GBR","c:BEL","c:FRA","c:DEU","c:USA","c:ITA","c:JPN","c:RUS"]]]}
 });
 
 /* ---------- novos períodos ---------- */
@@ -2033,18 +2043,6 @@ PERIODS.push(
  life:"As cidades tinham fórum, termas, teatro e circo. A economia exportava azeite, vinho, peixe salgado e metais das minas. Muitos habitantes ganharam a cidadania romana e adotaram o latim, e o cristianismo se espalhou a partir do século III.",
  people:[["Viriato","m. 139 a.C.","Líder lusitano que enfrentou os exércitos romanos por anos."],["Sertório","c. 126–72 a.C.","General romano que se revoltou e governou a Hispânia por conta própria."],["Trajano","53–117","Imperador nascido em Itálica, na Bética."],["Sêneca","c. 4 a.C.–65","Filósofo nascido em Córdoba, conselheiro de Nero."]],
  say:"Roma chega à Península para vencer Cartago e fica por seis séculos, deixando o latim, que viraria português e espanhol."},
-{id:"portugal",lane:"roma",pol:"portugal",name:"Portugal",from:1139,to:2026,
- sum:"Portugal nasce no extremo oeste da Península Ibérica, depois de séculos de domínio romano, visigodo e muçulmano. Em 1139, Afonso Henriques se proclama rei; com a conquista do Algarve, em 1249, o território continental fica quase como é hoje. Nos séculos XV e XVI, navegadores portugueses contornam a África, chegam à Índia e ao Brasil e criam o primeiro império de alcance mundial. Depois vêm a perda do Brasil, a república em 1910, a ditadura do Estado Novo, a Revolução dos Cravos em 1974 e a entrada na Comunidade Europeia em 1986.",
- gov:"Monarquia até 1910, com o poder do rei crescendo desde o século XV até o absolutismo. Depois, república. De 1933 a 1974, uma ditadura. Desde 1976, uma democracia parlamentar.",
- life:"Um país de agricultores, pescadores e marinheiros, com o mar como estrada. Do século XV ao XVIII, o comércio de especiarias, o açúcar e o ouro do Brasil e o tráfico de pessoas escravizadas enriqueceram a corte e as cidades do litoral. Muitos portugueses emigraram, sobretudo para o Brasil.",
- people:[["Afonso Henriques","1109–1185","Primeiro rei de Portugal."],["Infante Dom Henrique","1394–1460","Patrocinou as viagens ao longo da costa africana."],["Vasco da Gama","c. 1469–1524","Chegou à Índia por mar em 1498."],["Luís de Camões","c. 1524–1580","Poeta de Os Lusíadas."],["Marquês de Pombal","1699–1782","Ministro que reconstruiu Lisboa depois do terremoto de 1755."]],
- say:"Portugal nasce em 1139, aprende a navegar e liga a Europa à África, à Ásia e ao Brasil."},
-{id:"indigenas-brasil",lane:"americas",pol:"brasil_indigena",name:"Povos originários do Brasil",from:-820,to:1500,
- sum:"Muito antes de qualquer europeu, o território que hoje é o Brasil já era habitado havia mais de dez mil anos, por muitos povos de línguas tupi, jê, caribe, aruaque e dezenas de outras famílias. No litoral havia grandes aldeias tupis; na Amazônia, sociedades que transformaram a floresta, plantando e enriquecendo o solo, como mostram as terras pretas. Os sambaquis, enormes montes de conchas na costa, guardam vestígios de milênios de ocupação. A régua começa em 820 a.C., mas essa história é muito mais antiga.",
- gov:"Não havia um Estado único. Cada povo se organizava em aldeias, com chefes cuja autoridade dependia de prestígio e da persuasão, e com conselhos de homens mais velhos. Alianças e guerras entre povos eram frequentes.",
- life:"Plantavam mandioca, milho e feijão, caçavam, pescavam e coletavam; manejavam a floresta com fogo e cultivo. As casas coletivas abrigavam várias famílias. Cantos, rituais e pintura corporal organizavam a vida e a memória.",
- people:[],
- say:"Muito antes de Cabral, milhões de pessoas de dezenas de povos já viviam onde hoje é o Brasil."},
 {id:"brasil-colonia",lane:"americas",pol:"brasil",name:"Brasil Colônia",from:1500,to:1822,
  sum:"Depois da chegada de Cabral, em 1500, Portugal demora a ocupar a terra e, no início, só explora o pau-brasil. Em 1534 divide a costa em capitanias hereditárias e, em 1549, instala um governo-geral em Salvador. O açúcar do Nordeste, produzido por africanos escravizados, sustenta a colônia por dois séculos; no século XVIII, o ouro de Minas Gerais desloca o centro econômico para o Sudeste. Em 1808 a corte portuguesa foge de Napoleão e se instala no Rio de Janeiro, e em 1822 o Brasil se torna independente.",
  gov:"Uma colônia de Portugal, governada por capitães donatários, depois por governadores-gerais e vice-reis que respondiam à Coroa. As câmaras municipais, dominadas pelos grandes proprietários, tinham muito poder local. O comércio só podia ser feito com a metrópole.",
@@ -2334,9 +2332,6 @@ LINKS.push(
 ["roma-republica","rev-francesa","inspirou","amplo","Os revolucionários franceses liam Plutarco e Tito Lívio e se viam como romanos: falavam em cônsules, tribunos e cidadãos, e honravam Bruto."],
 // Hispânia, Portugal, Brasil
 ["roma-republica","hispania-romana","causa","amplo","Para cortar o reforço de Cartago, Roma desembarcou na Península em 218 a.C.; a conquista durou quase dois séculos."],
-["hispania-romana","portugal","legado","amplo","O latim da Lusitânia está na origem do português, e as cidades romanas deram base a muitas cidades portuguesas."],
-["portugal","brasil-colonia","causa","amplo","Buscando o caminho da Índia, a frota de Cabral tocou a costa do Brasil em 1500, e a Coroa passou a explorar a terra."],
-["indigenas-brasil","brasil-colonia","contato","amplo","A chegada dos europeus mudou para sempre a vida dos povos originários: guerra, escravização, doenças e missões."],
 ["brasil-colonia","brasil-imperio","causa","amplo","A vinda da corte em 1808 e a independência em 1822 transformaram a colônia em país."],
 // Revolução Industrial
 ["rev-industrial","imperialismo","causa","amplo","As fábricas precisavam de matéria-prima e de mercados, o que impulsionou a corrida colonial na África e na Ásia."],
@@ -2371,7 +2366,208 @@ LINKS.push(
 ["brumario","napoleao","causa","amplo","O golpe levou Napoleão ao poder e, cinco anos depois, ao trono."],
 ["declaracao","haiti","inspirou","amplo","Os escravizados de Saint-Domingue levaram a sério que “os homens nascem e permanecem livres e iguais em direitos”."],
 ["haiti","abolicao-1794","causa","amplo","A revolta em Saint-Domingue forçou a Convenção a abolir a escravidão em todas as colônias."],
-["olympe","declaracao","reacao","amplo","Olympe de Gouges respondeu à Declaração de 1789 com uma Declaração dos Direitos da Mulher e da Cidadã."]
+["declaracao","olympe","reacao","amplo","Olympe de Gouges respondeu à Declaração de 1789 com uma Declaração dos Direitos da Mulher e da Cidadã."]
+);
+
+/* Ligações diretas de causa e efeito.
+   Regra desta camada: só entra o que realmente levou a outra coisa, ou veio dela, em prazo curto
+   (em geral até um ou dois séculos). Influências remotas continuam em LINKS, mas o painel as mostra
+   à parte, como "ecos distantes", e não no "vem de / leva a". */
+LINKS.push(
+/* ---------- de período a período ---------- */
+// Roma e Ocidente
+["roma-reis","roma-republica","causa","amplo","A expulsão do último rei, Tarquínio, em 509 a.C., deu lugar a um governo de magistrados eleitos."],
+["roma-republica","roma-principado","causa","amplo","As guerras civis do século I a.C. destruíram a República e terminaram com o poder de um só homem, Augusto."],
+["roma-principado","roma-crise","causa","amplo","Sem regra clara de sucessão e com o exército decidindo quem governava, o império mergulhou na anarquia militar."],
+["roma-crise","roma-dominato","reacao","amplo","Diocleciano respondeu ao caos reorganizando o Estado, o exército e os impostos."],
+["roma-dominato","roma-ocidente","causa","amplo","Com a morte de Teodósio, em 395, o império foi repartido entre seus dois filhos."],
+["roma-dominato","roma-oriente","causa","amplo","A metade oriental, com capital em Constantinopla, seguiu como império por mais mil anos."],
+["roma-ocidente","reinos-germanicos","causa","amplo","No lugar do Império do Ocidente surgiram os reinos dos francos, visigodos, ostrogodos e outros povos germânicos."],
+["reinos-germanicos","carolingio","causa","amplo","O reino franco, o mais forte deles, chegou a unir boa parte da Europa ocidental sob Carlos Magno."],
+["carolingio","europa-feudal","causa","amplo","Dividido entre os netos de Carlos Magno e atacado por vikings, magiares e sarracenos, o império se fragmentou em senhorios locais."],
+["europa-feudal","baixa-idade-media","causa","amplo","O crescimento das cidades e do comércio e o fortalecimento dos reis transformaram o mundo feudal."],
+["baixa-idade-media","renascimento-reforma","causa","amplo","As cidades ricas da Itália, a crise da Igreja e a imprensa abriram caminho ao Renascimento e às Reformas."],
+["renascimento-reforma","absolutismo-iluminismo","causa","amplo","Depois das guerras de religião, os reis concentraram o poder, e a nova ciência preparou o Iluminismo."],
+["rev-francesa","revolucoes-europa","causa","amplo","A Revolução e as guerras de Napoleão espalharam pela Europa as ideias de nação, cidadania e direitos."],
+["absolutismo-iluminismo","rev-industrial","causa","debate","Na Grã-Bretanha, o comércio colonial, os bancos e a cultura científica e técnica do século XVIII criaram as condições para as fábricas."],
+["americas-coloniais","rev-industrial","causa","debate","O algodão das Américas, plantado por pessoas escravizadas, e os lucros do comércio atlântico alimentaram as primeiras fábricas inglesas."],
+["revolucoes-europa","imperialismo","causa","amplo","As unificações da Alemanha e da Itália, em 1870 e 1871, criaram novas potências que disputariam colônias."],
+["imperialismo","guerras-europa","causa","amplo","A rivalidade entre as potências industriais, a corrida armamentista e as alianças levaram à Primeira Guerra Mundial."],
+["guerras-europa","europa-dividida","causa","amplo","A vitória sobre o nazismo dividiu a Europa entre a área dos Estados Unidos e a da União Soviética."],
+["europa-dividida","uniao-europeia","causa","amplo","Com o fim da Guerra Fria, a integração começada em 1957 se aprofundou e se estendeu ao Leste."],
+["roma-republica","africa-romana","causa","amplo","Com a destruição de Cartago, em 146 a.C., Roma criou a província da África."],
+["roma-republica","cartago","fim","amplo","Roma destruiu Cartago em 146 a.C., ao fim da Terceira Guerra Púnica."],
+["roma-oriente","vandalos","fim","amplo","Em 533 e 534, o general Belisário, a mando de Justiniano, reconquistou a África dos vândalos."],
+["hispania-romana","reinos-germanicos","causa","amplo","Em 409, suevos, vândalos e alanos cruzaram os Pireneus; depois, os visigodos fizeram da Hispânia o seu reino."],
+// Grécia, Bizâncio e Europa Oriental
+["grecia-arcaica","grecia-classica","causa","amplo","A vitória das cidades gregas sobre a Pérsia, em 480 a.C., abriu a época de ouro de Atenas."],
+["grecia-classica","macedonia","causa","amplo","Exaustas por décadas de guerras entre si, as cidades gregas não resistiram a Filipe II da Macedônia."],
+["macedonia","helenistico","causa","amplo","Com a morte de Alexandre, seu império foi dividido entre os generais, que fundaram os reinos helenísticos."],
+["helenistico","roma-republica","contato","amplo","Roma conquistou os reinos helenísticos e absorveu sua cultura: a elite romana passou a falar grego e a copiar sua arte."],
+["roma-oriente","rus-kiev","inspirou","amplo","A Rus adotou o cristianismo de Constantinopla em 988, com seu alfabeto, sua arte e sua Igreja."],
+["mongois","rus-kiev","fim","amplo","A invasão mongol destruiu Kiev em 1240 e pôs fim à Rus como Estado unido."],
+["mongois","russia-czarista","causa","amplo","Sob o domínio da Horda de Ouro, Moscou cresceu como cobradora de tributos e acabou liderando a libertação."],
+["roma-oriente","russia-czarista","legado","amplo","Depois da queda de Constantinopla, Moscou se apresentou como herdeira de Bizâncio, a “terceira Roma”."],
+["russia-czarista","urss","causa","amplo","A derrota na Primeira Guerra Mundial e a fome derrubaram o czar, e os bolcheviques tomaram o poder."],
+["urss","pos-sovietico","causa","amplo","Com a dissolução da União Soviética, em 1991, quinze repúblicas se tornaram países independentes."],
+// África
+["cartago","africa-romana","causa","amplo","Destruída Cartago, seu território virou a província romana da África."],
+["egito-tardio","ptolomaico","causa","amplo","Alexandre conquistou o Egito em 332 a.C., e seu general Ptolomeu fundou ali uma dinastia."],
+["helenistico","ptolomaico","causa","amplo","O Egito ptolomaico foi um dos reinos nascidos da partilha do império de Alexandre."],
+["ptolomaico","africa-romana","causa","amplo","Depois de Áccio, em 30 a.C., o Egito virou província de Roma."],
+["africa-romana","vandalos","causa","amplo","Os vândalos atravessaram o estreito de Gibraltar e tomaram a rica África romana."],
+["islam-califado","gana","contato","amplo","Os mercadores muçulmanos que cruzavam o Saara levaram o ouro de Gana ao Mediterrâneo e o islã à corte."],
+["gana","mali","causa","amplo","Com o declínio de Gana, o reino mandinga de Sundiata Keita assumiu o controle das minas e das rotas do ouro."],
+["mali","songhai-congo","causa","amplo","Gao, cidade do Mali, se libertou e criou o Império Songhai, que tomou Tombuctu e as rotas do Saara."],
+["songhai-congo","africa-colonial","causa","amplo","Séculos de tráfico enfraqueceram reinos africanos e deram aos europeus feitorias na costa, de onde partiu a conquista do interior."],
+["imperialismo","africa-colonial","causa","amplo","As potências industriais dividiram a África entre si na Conferência de Berlim e nas décadas seguintes."],
+["africa-colonial","africa-independente","reacao","amplo","Movimentos de libertação, enfraquecidos os impérios pela Segunda Guerra, conquistaram a independência."],
+// Oriente Médio e Pérsia
+["assirio","babilonico","causa","amplo","Com a queda da Assíria, Babilônia herdou boa parte de seu império."],
+["aquemenida","babilonico","fim","amplo","Ciro tomou a Babilônia em 539 a.C., quase sem combate."],
+["macedonia","aquemenida","fim","amplo","Alexandre derrotou Dario III e conquistou todo o Império Persa."],
+["aquemenida","grecia-classica","causa","amplo","A expansão persa provocou as Guerras Médicas, cuja vitória grega abriu a época clássica."],
+["aquemenida","macedonia","reacao","amplo","Alexandre apresentou sua campanha como vingança pelas invasões persas da Grécia e conquistou o império inteiro."],
+["macedonia","seleucida","causa","amplo","Seleuco, general de Alexandre, ficou com a maior parte das terras asiáticas do império."],
+["seleucida","parta","causa","amplo","Os partas se libertaram dos selêucidas no nordeste do Irã e, aos poucos, tomaram suas terras até a Mesopotâmia."],
+["parta","sassanida","causa","amplo","Em 224, Ardashir derrotou o último rei parta e fundou uma nova dinastia persa."],
+["islam-califado","sassanida","fim","amplo","Os exércitos árabes derrotaram a Pérsia sassânida, exausta por décadas de guerra contra Bizâncio."],
+["islam-califado","al-andalus","causa","amplo","A expansão do califado omíada chegou à Península Ibérica em 711."],
+["mongois","islam-califado","fim","amplo","Os mongóis destruíram Bagdá em 1258 e acabaram com o califado abássida."],
+["mongois","otomano","causa","debate","A queda dos seljúcidas diante dos mongóis deixou a Anatólia dividida em principados, entre eles o de Osman."],
+["otomano","roma-oriente","fim","amplo","Os otomanos cresceram às custas de Bizâncio até tomar Constantinopla, em 1453."],
+["otomano","oriente-moderno","causa","amplo","A derrota otomana na Primeira Guerra levou à criação da Turquia e de novos países sob mandato britânico e francês."],
+["safavida","oriente-moderno","legado","amplo","Os safávidas fizeram do xiismo a religião do Irã, o que define o país até hoje."],
+// Índia
+["vedico","mahajanapadas","causa","amplo","As tribos védicas se fixaram no vale do Ganges e formaram reinos e repúblicas, os mahajanapadas."],
+["mahajanapadas","maurya","causa","amplo","Magadha, o mais forte dos mahajanapadas, venceu os outros e virou o centro do Império Maurya."],
+["macedonia","maurya","contato","debate","A retirada de Alexandre deixou o noroeste da Índia sem governo, e Chandragupta aproveitou o vazio."],
+["maurya","pos-maurya","causa","amplo","Depois de Ashoka, o império se enfraqueceu, e o último imperador maurya foi assassinado por seu general Shunga."],
+["pos-maurya","gupta","causa","amplo","Com o fim dos kushan no norte, os Gupta unificaram de novo o vale do Ganges."],
+["gupta","india-medieval","causa","amplo","Os ataques dos hunas e a fragmentação do império deram lugar a muitos reinos regionais."],
+["india-medieval","sultanato-delhi","causa","amplo","Os sultões vindos do Afeganistão venceram os reis rajputs e fundaram um Estado muçulmano em Délhi."],
+["sultanato-delhi","mogol","causa","amplo","Babur derrotou o último sultão de Délhi em Panipat, em 1526."],
+["mogol","raj","causa","amplo","O enfraquecimento mogol deixou espaço para a Companhia Britânica das Índias Orientais, que acabou dominando o subcontinente."],
+["raj","india-independente","reacao","amplo","Décadas de luta pela independência, lideradas por Gandhi e Nehru, terminaram em 1947."],
+// China e Japão
+["primaveras","reinos-combatentes","causa","amplo","Os Estados que antes juravam lealdade aos Zhou passaram a lutar abertamente pelo poder."],
+["reinos-combatentes","qin","causa","amplo","O Estado de Qin venceu um a um os rivais e unificou a China em 221 a.C."],
+["qin","han","causa","amplo","Após a morte do Primeiro Imperador, revoltas derrubaram os Qin, e Liu Bang fundou os Han sobre o Estado já unificado."],
+["han","tres-reinos","causa","amplo","Os generais que esmagaram as revoltas no fim dos Han dividiram o império em três reinos."],
+["tres-reinos","jin-nanbei","causa","amplo","Os Jin reunificaram a China em 280, mas a perderam no norte para povos da estepe pouco depois."],
+["jin-nanbei","sui-tang","causa","amplo","Os Sui reunificaram norte e sul em 589, e os Tang herdaram e ampliaram seu Estado."],
+["sui-tang","song","causa","amplo","Depois da queda dos Tang e de meio século de divisão, os Song reunificaram a maior parte da China."],
+["mongois","song","fim","amplo","Os mongóis conquistaram o norte da China e, em 1279, o último bastião dos Song, no sul."],
+["mongois","ming","reacao","amplo","Uma revolta camponesa expulsou os mongóis e fundou a dinastia Ming."],
+["ming","qing","causa","amplo","Enfraquecidos por revoltas, os Ming caíram, e os manchus do nordeste tomaram Pequim."],
+["qing","china-republica","causa","amplo","Derrotas para potências estrangeiras e revoltas internas levaram à queda do último imperador, em 1912."],
+["japao","china-republica","causa","amplo","O Japão modernizado tomou Taiwan, a Manchúria e invadiu a China, marcando toda a era republicana."],
+["china-republica","china-popular","causa","amplo","Os comunistas venceram a guerra civil contra os nacionalistas e proclamaram a República Popular."],
+// Américas e Brasil
+["olmecas","mesoamerica-classica","inspirou","debate","Muitos traços dos maias e de Teotihuacan, como o jogo de bola e o calendário, aparecem antes entre os olmecas."],
+["americas-coloniais","astecas-incas","fim","amplo","Espanhóis e seus aliados indígenas derrubaram os astecas em 1521 e os incas a partir de 1532."],
+["americas-coloniais","eua","causa","amplo","As treze colônias britânicas da América do Norte se revoltaram e se tornaram os Estados Unidos."],
+["brasil-imperio","brasil-republica","causa","amplo","A abolição, a força do exército depois da Guerra do Paraguai e o movimento republicano derrubaram a monarquia em 1889."],
+
+/* ---------- de acontecimento a acontecimento ---------- */
+["ninive-capital","ninive-queda","causa","debate","O império, grande demais e odiado pelos povos submetidos, foi derrubado por uma aliança de babilônios e medos."],
+["maratona","salamina","causa","amplo","Derrotado em Maratona, o Império Persa voltou dez anos depois, agora com Xerxes e um exército enorme."],
+["salamina","peloponeso","causa","amplo","O império marítimo que Atenas criou depois da vitória sobre a Pérsia assustou Esparta, segundo Tucídides a verdadeira causa da guerra."],
+["peloponeso","socrates","causa","debate","Depois da derrota para Esparta e da tirania dos Trinta, Atenas desconfiava dos críticos da democracia, e Sócrates foi julgado."],
+["issos","alexandria","causa","amplo","Depois de Isso, Alexandre tomou o Egito e fundou ali sua cidade."],
+["chandragupta","kalinga","causa","amplo","Ashoka, neto de Chandragupta, herdou o império e quis completá-lo conquistando Kalinga."],
+["anibal","zama","causa","amplo","Para tirar Aníbal da Itália, Roma levou a guerra à África, e ele teve de voltar para defender Cartago."],
+["zama","cartago-corinto","causa","amplo","Derrotada em Zama, Cartago perdeu o império e o exército; meio século depois, Roma decidiu destruí-la."],
+["triunvirato1","carras","causa","amplo","Crasso buscou glória militar no Oriente para igualar César e Pompeu e morreu em Carras."],
+["carras","rubicao","causa","debate","A morte de Crasso desfez o equilíbrio do triunvirato e deixou César e Pompeu frente a frente."],
+["guerra-gaulesa","alesia","causa","amplo","Alésia foi a batalha decisiva da conquista da Gália por César."],
+["augusto","teutoburgo","causa","amplo","Augusto quis levar a fronteira até o rio Elba; a derrota de Varo a fixou no Reno."],
+["ardashir","valeriano","causa","amplo","A nova dinastia sassânida desafiou Roma; o filho de Ardashir, Shapur I, capturou o imperador Valeriano."],
+["divisao","romulo-augustulo","causa","debate","Separado do Oriente, mais rico, o Ocidente teve de enfrentar sozinho as invasões."],
+["atila","romulo-augustulo","causa","debate","As campanhas de Átila esgotaram o que restava do exército e das finanças do Ocidente."],
+["romulo-augustulo","clovis","causa","amplo","No vazio deixado por Roma, reis germânicos criaram reinos próprios; Clóvis buscou o apoio da Igreja ao se batizar."],
+["sui","tang","causa","amplo","As guerras na Coreia e obras gigantescas, como o Grande Canal, esgotaram os Sui, derrubados por um de seus generais, fundador dos Tang."],
+["hegira","egito-arabe","causa","amplo","Menos de vinte anos depois da Hégira, os exércitos do califado conquistaram o Egito bizantino."],
+["hegira","fim-sassanida","causa","amplo","Em três décadas, a comunidade de Medina venceu e incorporou a Pérsia sassânida."],
+["bagda","traducoes-arabes","causa","amplo","A nova capital abássida reuniu sábios de várias línguas, e a corte pagou pelas traduções do grego, do persa e do sânscrito."],
+["roma-oriente","vladimir","inspirou","amplo","Vladimir escolheu o cristianismo de Constantinopla e se casou com uma princesa bizantina."],
+["cisma","cruzada","contato","debate","Mesmo depois do cisma, o imperador bizantino pediu ajuda ao papa contra os turcos, e Urbano II convocou a Cruzada."],
+["hastings","magna-carta","causa","debate","Os reis vindos da conquista normanda governavam com mão forte; as derrotas e os impostos de João Sem Terra levaram os barões a impor limites."],
+["genghis","marco-polo","causa","amplo","A paz mongol nas rotas da Ásia permitiu que mercadores europeus, como os Polo, chegassem à China."],
+["kiev-mongois","ivan-iii","reacao","amplo","Depois de mais de dois séculos de tributo à Horda de Ouro, Ivan III deixou de pagar e libertou Moscou."],
+["bagda-1258","osman","causa","debate","Com seljúcidas e abássidas destruídos pelos mongóis, a Anatólia se dividiu em principados, entre eles o de Osman."],
+["osman","constantinopla-1453","causa","amplo","O pequeno principado de Osman cresceu até cercar e tomar Constantinopla."],
+["ming-fundacao","zheng-he","causa","amplo","O imperador Yongle enviou as frotas para mostrar ao mundo o poder da nova dinastia Ming."],
+["constantinopla-1453","solimao","causa","amplo","Com Constantinopla como capital, os otomanos avançaram pelos Bálcãs até as portas de Viena."],
+["constantinopla-1453","renascimento","inspirou","debate","Sábios gregos que fugiram para a Itália levaram manuscritos e o ensino do grego, mas o Renascimento já estava em curso."],
+["constantinopla-1453","ivan-iii","inspirou","amplo","Ivan III se casou com a sobrinha do último imperador bizantino e adotou a águia de duas cabeças."],
+["ceuta","congo-portugal","causa","amplo","Desde Ceuta, as viagens portuguesas desceram a costa africana até a foz do rio Congo."],
+["granada","colombo","causa","amplo","Terminada a guerra contra Granada, os Reis Católicos aceitaram financiar a viagem de Colombo, no mesmo ano."],
+["gutenberg","renascimento","causa","amplo","A imprensa multiplicou os textos clássicos e as obras humanistas por toda a Europa."],
+["renascimento","copernico","inspirou","amplo","Copérnico estudou na Itália do Renascimento, onde leu autores antigos que já tinham imaginado a Terra em movimento."],
+["renascimento","lutero","inspirou","debate","O humanismo, com o estudo da Bíblia em grego e hebraico e as críticas de Erasmo à Igreja, preparou o terreno de Lutero."],
+["tenochtitlan-queda","potosi","causa","amplo","Depois do México, os espanhóis conquistaram os incas e descobriram a prata de Potosí."],
+["cabral","salvador","causa","amplo","Para defender e ocupar a terra, a Coroa criou o governo-geral, com sede na nova cidade de Salvador."],
+["copernico","newton","inspirou","amplo","Newton explicou com uma só lei, a gravidade, o sistema de Copérnico, aperfeiçoado por Kepler e Galileu."],
+["babur","taj-mahal","legado","amplo","O Taj Mahal foi construído pelo trineto de Babur, Shah Jahan, no auge da dinastia que ele fundou."],
+["ouro-minas","trafico","causa","amplo","A corrida do ouro aumentou muito a compra de africanos escravizados para o Brasil."],
+["ouro-minas","revolucao-industrial","causa","debate","Muito do ouro de Minas foi parar na Inglaterra pelo comércio com Portugal, o que alguns historiadores ligam ao arranque industrial."],
+["trafico","revolucao-industrial","causa","debate","Os lucros do comércio de pessoas escravizadas e do açúcar ajudaram a financiar a indústria britânica, uma tese ainda discutida."],
+["plassey","sipaios","causa","amplo","Um século de domínio crescente da Companhia Britânica, desde Plassey, levou à grande revolta de 1857."],
+["sipaios","raj","causa","amplo","Depois da revolta, a Coroa britânica tirou o poder da Companhia e passou a governar a Índia diretamente."],
+["revolucao-francesa","napoleao","causa","amplo","As guerras da Revolução fizeram de Napoleão um general famoso, e o caos político o levou ao poder."],
+["napoleao","moscou-1812","causa","amplo","Para obrigar a Rússia a respeitar o bloqueio contra a Grã-Bretanha, Napoleão a invadiu em 1812."],
+["moscou-1812","waterloo","causa","amplo","A retirada da Rússia destruiu o Grande Exército, e Napoleão nunca se recuperou."],
+["napoleao","ayacucho","causa","amplo","A invasão da Espanha por Napoleão, em 1808, deixou as colônias sem rei e abriu caminho às independências."],
+["waterloo","primavera-povos","reacao","amplo","As monarquias restauradas depois de Napoleão enfrentaram, em 1848, uma onda de revoluções liberais e nacionais."],
+["opio","meiji","causa","debate","A derrota da China para os britânicos e a chegada dos navios americanos convenceram os japoneses a se modernizar rápido."],
+["opio","xinhai","causa","amplo","As derrotas para potências estrangeiras e revoltas como a dos Taiping minaram a dinastia Qing."],
+["servidao","revolucao-russa","causa","debate","Os camponeses libertados ficaram com pouca terra e muitas dívidas, o que alimentou a revolta no campo em 1917."],
+["independencia-eua","guerra-civil-eua","causa","debate","A Constituição de 1787 deixou a escravidão intocada; a disputa sobre ela nos novos estados acabou em guerra."],
+["guerra-civil-eua","lei-aurea","causa","amplo","Com a abolição nos Estados Unidos, o Brasil ficou isolado como o último grande país escravista das Américas."],
+["guerra-paraguai","republica-brasil","causa","amplo","A guerra fortaleceu o exército, que acabaria derrubando a monarquia."],
+["suez","berlim-1884","causa","debate","O canal aumentou o valor estratégico da África e levou à ocupação britânica do Egito em 1882, acelerando a corrida colonial."],
+["berlim-1884","adwa","reacao","amplo","A Etiópia derrotou a Itália e foi um dos poucos países africanos a escapar da partilha."],
+["berlim-1884","primeira-guerra","causa","debate","A disputa por colônias aumentou a rivalidade entre as potências europeias."],
+["revolucao-russa","rpc","inspirou","amplo","O modelo soviético inspirou o Partido Comunista Chinês, fundado em 1921 com ajuda de Moscou."],
+["primeira-guerra","turquia","causa","amplo","A derrota otomana levou à partilha do império e à guerra de independência turca."],
+["segunda-guerra","stalingrado","causa","amplo","A invasão alemã da União Soviética, em 1941, levou os exércitos até o Volga."],
+["segunda-guerra","dia-d","causa","amplo","Para abrir uma segunda frente contra a Alemanha, os Aliados desembarcaram na Normandia."],
+["segunda-guerra","hiroshima","causa","amplo","Para forçar a rendição do Japão, os Estados Unidos lançaram as bombas atômicas."],
+["segunda-guerra","israel-1948","causa","amplo","O Holocausto tornou urgente para muitos judeus um Estado próprio, e a ONU propôs a partilha da Palestina em 1947."],
+["segunda-guerra","independencia-india","causa","debate","A guerra esgotou a Grã-Bretanha, que já não tinha como manter a Índia."],
+["segunda-guerra","coreia","causa","amplo","Em 1945, a península foi dividida entre soviéticos, no norte, e americanos, no sul."],
+["segunda-guerra","tratado-roma","causa","amplo","Depois de duas guerras mundiais, França e Alemanha quiseram unir suas economias para tornar outra guerra impossível."],
+["onu","israel-1948","causa","amplo","A partilha da Palestina foi votada pela Assembleia Geral da ONU em 1947."],
+["rpc","coreia","causa","amplo","A vitória comunista na China encorajou o ataque do norte, e Pequim enviou centenas de milhares de soldados."],
+["rpc","deng","reacao","amplo","Depois das catástrofes do Grande Salto e da Revolução Cultural, Deng abriu a economia chinesa."],
+["tratado-roma","maastricht","causa","amplo","A comunidade econômica de 1957 cresceu até virar a União Europeia."],
+["muro-berlim","maastricht","causa","amplo","A reunificação alemã acelerou a união mais estreita da Europa."],
+["chernobyl","fim-urss","causa","debate","Gorbachev disse que o acidente expôs as mentiras do sistema e acelerou a abertura que o levaria ao fim."],
+["cuba","golpe-1964","causa","debate","O medo de uma “nova Cuba” levou os Estados Unidos e parte dos militares brasileiros a apoiar o golpe."]
+);
+LINKS.push(
+["ciro-persia","babilonia-ciro","causa","amplo","Depois de vencer os medos e a Lídia, Ciro voltou-se para o último grande rival: a Babilônia."]
+);
+/* ramificações: Roma */
+LINKS.push(
+["romulo","sabinas","causa","amplo","Segundo a lenda, a cidade nova de Rômulo tinha quase só homens, e ele planejou o rapto das mulheres sabinas."],
+["samnitas","pirro","causa","amplo","Vencidos os samnitas, Roma chegou às cidades gregas do sul; Tarento, ameaçada, chamou Pirro em seu socorro."],
+["anibal-barca","canas","causa","amplo","Aníbal destruiu um exército romano inteiro em Canas, com uma manobra de cerco estudada até hoje."],
+["guerra-social","sula","causa","amplo","Sula ganhou fama e o consulado comandando tropas na Guerra Social."],
+["sula","pompeu","causa","amplo","Pompeu começou a carreira como jovem general de Sula, que o apelidou de “o Grande”."],
+["pompeu","triunvirato1","causa","amplo","Pompeu, sem conseguir do Senado terras para seus veteranos, fez um acordo secreto com César e Crasso."],
+["segundo-triunvirato","cicero","fim","amplo","Antônio pôs Cícero na lista das proscrições; ele foi morto em dezembro de 43 a.C."]
+);
+/* ramificações: Revolução Francesa */
+LINKS.push(
+["independencia-eua","ancien-regime","causa","amplo","A ajuda francesa à independência americana afundou as finanças do rei e abriu a crise de 1788."],
+["declaracao","constituicao-1791","causa","amplo","A Declaração de 1789 abriu a primeira Constituição, que fez da França uma monarquia constitucional."],
+["guerra-1792","valmy","causa","amplo","Os exércitos da Prússia e da Áustria marcharam sobre Paris e foram detidos em Valmy."],
+["valmy","republica-1792","causa","debate","A vitória deu confiança à nova Convenção, que aboliu a monarquia no dia seguinte."],
+["execucao-luis","vendeia","causa","debate","A execução do rei ampliou a guerra contra a Europa; o recrutamento em massa que se seguiu e a indignação católica fizeram explodir a Vendeia."],
+["jacobinos","robespierre","causa","amplo","Robespierre ganhou projeção como a voz mais influente do clube jacobino."],
+["luis16","fuga-varennes","causa","amplo","Luís XVI, desconfiado da Revolução, tentou fugir com a família para a fronteira, disfarçado."]
 );
 
 </script>
@@ -2414,7 +2610,7 @@ const KIDS={}; SUBS.forEach(s=>{ (KIDS[s.parent]=KIDS[s.parent]||[]).push(s); })
 const NODE=id=>EV[id]?{kind:'event',id,o:EV[id]}:PER[id]?{kind:'period',id,o:PER[id]}:SUB[id]?{kind:'sub',id,o:SUB[id]}:EXT[id]?{kind:'ext',id,o:EXT[id]}:ERAS.find(e=>e.id===id)?{kind:'era',id,o:ERAS.find(e=>e.id===id)}:null;
 SUBS.forEach(s=>{ let n=NODE(s.parent), k=0; while(n&&n.kind==='sub'&&k++<8) n=NODE(n.o.parent); s.lane=n&&n.o.lane||'roma'; });
 const polsOf=p=>Array.isArray(p.pol)?p.pol:(p.pol?[p.pol]:[]);
-function periodOfEvent(e){ return PERIODS.find(p=>p.lane===e.lane&&e.y>=p.from&&e.y<=p.to)||null; }
+function periodOfEvent(e){ return contextPeriod(e); }
 function periodAt(lane,t){ const ps=PERIODS.filter(p=>p.lane===lane&&t>=p.from&&t<=p.to); return ps.sort((a,b)=>(a.to-a.from)-(b.to-b.from))[0]||null; }
 
 // regiões como features esféricas (com o lado pequeno como interior)
@@ -2620,6 +2816,7 @@ function drawGlobe(now){
   // costa em tinta
   g.beginPath(); path(COAST||LAND); g.strokeStyle='rgba(80,64,42,.78)'; g.lineWidth=flat?.7:.8; g.stroke();
   // rótulos dos estados
+  drawThread(now);
   const boxes=[]; drawEvents(now,boxes); drawSubs(now,boxes);
   drawPolLabels(act,spids,boxes);
   drawEventLabels(boxes);
@@ -2965,10 +3162,21 @@ function go(ref,opt={}){
   else if(n.kind==='sub'){ S.lane=n.o.lane; if(!opt.noTime){ S.t=clamp(n.o.y,RANGE[0],RANGE[1]); } }
   else if(n.kind==='period'){ S.lane=n.o.lane; if(!opt.noTime&&!(S.t>=n.o.from&&S.t<=n.o.to)) S.t=clamp(n.o.from+Math.min(25,(n.o.to-n.o.from)*.15),RANGE[0],RANGE[1]); }
   else if(n.kind==='era'){ if(!opt.noTime&&!(S.t>=n.o.from&&S.t<n.o.to)) S.t=n.o.from+1; }
-  if(!opt.noFly&&n.kind!=='era'){ const h=hintFor(n,S.t); if(h) flyTo(h.ll,opt.fast?800:1500,h.z); }
+  if(!opt.noFly&&n.kind!=='era'){ const h=hintFor(n,S.t);
+    // seguindo uma ligação: enquadra o ponto de onde se veio e o novo, para o fio aparecer inteiro
+    const prev=S.trail[S.ti], pn=prev&&!opt.back&&/^(leva|vem|lado)$/.test(opt.via||'')?NODE(prev.id):null, pl=pn?placeOf(pn):null;
+    if(h&&pl&&S.view==='mapa'&&d3.geoDistance(pl,h.ll)>.02){ const dx=Math.abs(wrapLon(h.ll[0]-pl[0])), dy=Math.abs(h.ll[1]-pl[1]);
+      const z=clamp(Math.min(330/(dx*1.5+10),150/(dy*1.5+8)),1,h.z); flyTo(z<h.z?d3.geoInterpolate(pl,h.ll)(.5):h.ll,opt.fast?900:1600,z); }
+    else if(h) flyTo(h.ll,opt.fast?800:1500,h.z); }
   onTimeChange(true);
   // trilha
-  if(!opt.back){ S.trail=S.trail.slice(0,S.ti+1); const last=S.trail[S.ti]; if(!last||last.id!==n.id){ S.trail.push({kind:n.kind,id:n.id}); if(S.trail.length>40) S.trail.shift(); S.ti=S.trail.length-1; } }
+  if(!opt.back){ const via=opt.via||'jump', cur=S.trail[S.ti], nx=S.trail[S.ti+1];
+    if(nx&&nx.id===n.id&&nx.via!=='branch'){ S.ti++; }
+    else if(!cur||cur.id!==n.id){
+      // voltar e seguir por outro caminho abre um ramo novo, sem apagar o anterior
+      if(cur&&S.ti<S.trail.length-1&&via!=='jump') S.trail.push({kind:cur.kind,id:cur.id,via:'branch'});
+      S.trail.push({kind:n.kind,id:n.id,via}); while(S.trail.length>60) S.trail.shift(); S.ti=S.trail.length-1; }
+    S.threadT0=performance.now(); }
   S.sel={kind:n.kind,id:n.id};
   S.branch=branchOf();
   renderPanel(); openPanel();
@@ -2987,7 +3195,7 @@ function setSheet(s){ S.sheet=s; const f=sheetFrac(); const H=innerHeight; const
 $('#p-close').onclick=()=>{ uiSound('tick'); closePanel(); };
 $('#p-back').onclick=()=>{ if(S.ti>0){ S.ti--; uiSound('tick'); go(S.trail[S.ti],{back:true}); } };
 $('#p-fwd').onclick=()=>{ if(S.ti<S.trail.length-1){ S.ti++; uiSound('tick'); go(S.trail[S.ti],{back:true}); } };
-$('#tr-clear').onclick=()=>{ const cur=S.trail[S.ti]; S.trail=cur?[cur]:[]; S.ti=cur?0:-1; renderCrumbs(); uiSound('tick'); };
+$('#tr-clear').onclick=()=>{ const cur=S.trail[S.ti]; S.trail=cur?[{...cur,via:'jump'}]:[]; S.ti=cur?0:-1; renderCrumbs(); S.dirty=true; uiSound('tick'); };
 // arrastar a folha no celular
 (function sheetDrag(){ const gb=$('#grab'); let st=null;
   gb.addEventListener('pointerdown',e=>{ gb.setPointerCapture(e.pointerId); const p=$('#panel'); st={y:e.clientY,sy:parseFloat(getComputedStyle(p).getPropertyValue('--sy'))||0}; p.classList.add('drag'); });
@@ -2996,8 +3204,8 @@ $('#tr-clear').onclick=()=>{ const cur=S.trail[S.ti]; S.trail=cur?[cur]:[]; S.ti
     if(Math.abs(dy)<6){ setSheet(S.sheet==='full'?'half':'full'); } else { const frac=1-(st.sy+dy+(H-p.getBoundingClientRect().height))/H; if(frac<.18) closePanel(); else setSheet(frac>.7?'full':frac>.42?'half':'peek'); } st=null; });
 })();
 
-const TYPE_LBL={causa:['Ajudou a causar','Teve entre as causas'],inspirou:['Inspirou','Inspirado por'],reacao:['Foi uma resposta a','Recebeu uma resposta em'],eco:['Ecoa em','Ecoa'],contato:['Ligado a','Ligado a'],legado:['Deixou como legado','Herança de'],sequencia:['Em seguida','Antes disso']};
-const TYPE_COL={causa:'#9a3b28',inspirou:'#33607f',reacao:'#2e6f66',eco:'#8f7d60',contato:'#4d6d3b',legado:'#9a7322',sequencia:'#a8946c'};
+const TYPE_LBL={causa:['Ajudou a causar','Teve entre as causas'],inspirou:['Inspirou','Inspirado por'],reacao:['Provocou como resposta','Foi uma resposta a'],eco:['Ecoa em','Ecoa'],contato:['Ligado a','Ligado a'],legado:['Deixou como legado','Herança de'],sequencia:['Em seguida','Antes disso'],contexto:['','No contexto de'],fim:['Pôs fim a','Chegou ao fim com']};
+const TYPE_COL={causa:'#9a3b28',inspirou:'#33607f',reacao:'#2e6f66',eco:'#8f7d60',contato:'#4d6d3b',legado:'#9a7322',sequencia:'#a8946c',contexto:'#a8946c',fim:'#5a4a3a'};
 function linksFor(ids){
   const set=new Set(ids); const out=[];
   for(const l of LINKS){ if(set.has(l[0])&&!set.has(l[1])) out.push({dir:0,other:l[1],l}); else if(set.has(l[1])&&!set.has(l[0])) out.push({dir:1,other:l[0],l}); }
@@ -3009,39 +3217,126 @@ function linkHTML(x){
   const n=NODE(x.other); if(!n) return ''; const [, ,type,conf,txt]=x.l;
   const title=n.o.t||n.o.name; const yy=whenOf(n);
   const out=n.kind==='ext'?' · fora deste recorte':'';
-  return `<button class="link" data-go="${esc(x.other)}" style="--c:${TYPE_COL[type]}"><span class="t">${TYPE_LBL[type][x.dir]}<span class="conf">${conf==='amplo'?'consenso amplo':'interpretação debatida'}${out}</span></span><b>${esc(title)}<small>${esc(yy)}</small></b><p>${esc(txt)}</p></button>`;
+  return `<button class="link" data-go="${esc(x.other)}" data-via="${x.dir?'vem':'leva'}" style="--c:${TYPE_COL[type]}"><span class="t">${TYPE_LBL[type][x.dir]}<span class="conf">${conf==='amplo'?'consenso amplo':'interpretação debatida'}${out}</span></span><b>${esc(title)}<small>${esc(yy)}</small></b><p>${esc(txt)}</p></button>`;
 }
-/* "vem de" e "leva a": as conexões de causa e efeito, logo abaixo do título */
+/* ---------------------------------------------------------------------------
+   "Vem de" e "leva a": só causa e efeito direto.
+   1. Cada ligação recebe uma nota: peso do tipo (causa > resposta > inspiração > herança > contato),
+      confiança (consenso amplo ou debate) e proximidade no tempo (quanto mais perto, mais forte).
+   2. Ligações longas demais para serem causa direta (ou do tipo "eco") saem do "vem de / leva a"
+      e vão para "Ecos distantes", mais abaixo.
+   3. Um período herda as causas do acontecimento que o abre e as consequências do que o fecha
+      (ex.: "Nasce a República" abre a República Romana), mas não as de tudo o que houve dentro dele.
+   4. Sem causa direta, um acontecimento mostra o contexto (o período em que aconteceu).
+      "Antes / depois" na mesma região fica só como comentário, em linha discreta.
+--------------------------------------------------------------------------- */
+const DIRECT_H={causa:250,reacao:250,fim:250,inspirou:150,legado:150,contato:150,eco:0};
+const TYPE_W={causa:1,reacao:.92,fim:.9,inspirou:.8,legado:.7,contato:.6,eco:0};
+function spanOf(n){ if(n.kind==='period'||n.kind==='era') return [n.o.from,n.o.to]; const y=n.o.y; return [y,n.kind==='sub'&&n.o.to!=null?n.o.to:y]; }
+function gapOf(a,b){ const A=spanOf(a),B=spanOf(b); return Math.max(0,B[0]-A[1],A[0]-B[1]); }
+function isDirect(l,gap){ const h=DIRECT_H[l[2]]||0; return h>0&&gap<=h*(l[3]==='debate'?.67:1); }
+function edgeWin(p){ return Math.max(2,Math.min(12,(p.to-p.from)*.04)); }
+// o acontecimento fica dentro do território do período? (true, false, ou null quando o mapa ainda não carregou)
+function inTerritory(e,p){
+  if(!e.ll) return null; let known=false;
+  for(const pid of polsOf(p)){ const P=POL[pid]; if(!P) continue; const regs=polRegions(P,clamp(e.y,Math.max(p.from,P.s[0][0]),Math.min(p.to,P.end))); if(!regs) continue;
+    for(const r of regs){ const R=RG(r); if(!R) continue; known=true; if(d3.geoContains(R.f,e.ll)) return true; } }
+  return known?false:null;
+}
+function nearTerritory(e,p,km){ let best=1e9;
+  for(const pid of polsOf(p)){ const P=POL[pid]; if(!P) continue; const regs=polRegions(P,clamp(e.y,Math.max(p.from,P.s[0][0]),Math.min(p.to,P.end)))||P.s.find(x=>x[1])?.[1]||[];
+    for(const r of regs){ const R=RG(r); if(R) best=Math.min(best,d3.geoDistance(e.ll,R.c)*6371); } }
+  return best<=km; }
+// acontecimentos (e ramificações) que abrem e fecham um período: mesma região do mundo e dentro do território
+let EDGE=null;
+function edgesAll(){
+  if(EDGE&&EDGE.geo) return EDGE;
+  const geo=!!LAND, E={geo,of:{},OPENS:{},CLOSES:{}};
+  for(const p of PERIODS){ const w=edgeWin(p);
+    const evs=EVS.filter(e=>(e.y>=p.from&&e.y-p.from<=w)||(e.y<=p.to&&p.to-e.y<=w)).filter(e=>{ const g=inTerritory(e,p); return e.lane===p.lane?(g!==false||nearTerritory(e,p,1300)):g===true; });
+    const subs=(KIDS[p.id]||[]).filter(s=>s.k!=='pessoa'&&s.k!=='instituicao');
+    const pool=[...evs,...subs];
+    const open=pool.filter(x=>x.y>=p.from&&x.y-p.from<=w).map(x=>x.id), close=pool.filter(x=>{ const z=x.to!=null?x.to:x.y; return z<=p.to&&p.to-z<=w; }).map(x=>x.id);
+    E.of[p.id]={open,close}; open.forEach(id=>(E.OPENS[id]=E.OPENS[id]||[]).push(p.id)); close.forEach(id=>(E.CLOSES[id]=E.CLOSES[id]||[]).push(p.id)); }
+  return EDGE=E;
+}
+const opensOf=id=>edgesAll().OPENS[id]||[], closesOf=id=>edgesAll().CLOSES[id]||[];
+// está dentro de? (hierarquia não é causa)
+function insideOf(x,n){ const X=NODE(x); if(!X) return false;
+  if(n.kind==='period'){ if(X.kind==='sub'){ let c=X,g=0; while(c&&c.kind==='sub'&&g++<6){ if(c.o.parent===n.id) return true; c=NODE(c.o.parent); } return false; }
+    const w=edgeWin(n.o); return X.kind==='event'&&X.o.lane===n.o.lane&&X.o.y>n.o.from+w&&X.o.y<n.o.to-w; }
+  if(n.kind==='event'){ if(X.kind==='period'){ const e=n.o; return e.lane===X.o.lane&&e.y>X.o.from&&e.y<X.o.to&&!opensOf(n.id).includes(X.id)&&!closesOf(n.id).includes(X.id); } }
+  if(n.kind==='sub'){ let c=n,g=0; while(c&&c.kind==='sub'&&g++<6){ if(c.o.parent===x) return true; c=NODE(c.o.parent); } }
+  return false; }
+function scoreLink(l,gap,via){ return TYPE_W[l[2]]*(l[3]==='amplo'?1:.78)/(1+gap/80)*(via?.82:1); }
+function flowOf(n){
+  const own=[n.id]; let inM=[], outM=[];
+  if(n.kind==='period'){ const e=edgesAll().of[n.id]||{open:[],close:[]};
+    inM=e.open;
+    // o que vem depois de um acontecimento-dobradiça pertence ao período que ele abre, não ao que fecha
+    outM=e.close.filter(id=>!opensOf(id).some(p=>p!==n.id)); }
+  const cand=[], echo=[], side=[], seen=new Set();
+  const add=(x,via)=>{ const o=NODE(x.other); if(!o) return; if(o.id===n.id) return;
+    if(insideOf(x.other,n)) return; const gap=gapOf(o,n), k=x.other+(x.dir?'<':'>')+x.l[2];
+    if(seen.has(k)) return; seen.add(k); const t=x.l[2];
+    if(via&&!(t==='causa'||t==='fim'||((t==='inspirou'||t==='reacao')&&x.dir===1))) return;
+    if(t==='eco'||!isDirect(x.l,gap)){ if(!via) echo.push({...x,gap}); return; }
+    if(t==='contato'&&gap===0){ if(!via) side.push(x); return; }
+    // "pôs fim a" sempre aponta para o que vem depois
+    const col=t==='fim'?0:x.dir;
+    cand.push({...x,col,gap,via,score:scoreLink(x.l,gap,via)}); };
+  linksFor(own).forEach(x=>add(x,false));
+  linksFor(inM).filter(x=>x.dir===1).forEach(x=>add(x,true));
+  linksFor(outM).filter(x=>x.dir===0).forEach(x=>add(x,true));
+  const pc=dir=>new Set(cand.filter(x=>x.col===dir&&NODE(x.other).kind==='period').map(x=>x.other));
+  const P={0:pc(0),1:pc(1)};
+  const red=x=>{ const o=NODE(x.other); if(!o||o.kind==='period') return false;
+    // o acontecimento que abre (ou fecha) um período que já está na lista é o mesmo passo
+    const ps=x.col?closesOf(x.other):opensOf(x.other); if(ps.some(p=>P[x.col].has(p)&&p!==n.id)) return true;
+    // num período, um acontecimento de dentro de outro período já listado é detalhe dele
+    if(n.kind==='period'&&o.kind==='event'){ for(const pid of P[x.col]){ const q=PER[pid]; if(q&&o.o.lane===q.lane&&o.o.y>=q.from&&o.o.y<=q.to) return true; } }
+    return false; };
+  const best=dir=>{ const m=new Map(); cand.filter(x=>x.col===dir&&!red(x)).forEach(x=>{ const c=m.get(x.other); if(!c||x.score>c.score) m.set(x.other,x); });
+    return [...m.values()].sort((a,b)=>b.score-a.score); };
+  const from=best(1), to=best(0);
+  // sem causa direta: o contexto em que aconteceu
+  if(!from.length&&n.kind==='event'){ const p=contextPeriod(n.o); const opener=p&&opensOf(n.id).includes(p.id);
+    const pred=opener?PERIODS.filter(q=>q.lane===p.lane&&q.to>=p.from-30&&q.to<=p.from+5&&q.id!==p.id&&nearOnMap(NODE(q.id),n,2600)).sort((a,b)=>b.to-a.to)[0]:null;
+    const ctx=pred||p;
+    if(ctx) from.push({dir:1,col:1,other:ctx.id,ctx:true,l:[ctx.id,n.id,'contexto','amplo',pred?'O período que veio antes e preparou este momento.':'O período em que isso aconteceu.']}); }
+  echo.sort((a,b)=>a.gap-b.gap);
+  return {from,to,echo,side,nb:neighbours(n)};
+}
+// o período em que um acontecimento se passa: mesma região do mundo, de preferência o território que o contém, e o mais recente
+function contextPeriod(e){ const c=PERIODS.filter(p=>p.lane===e.lane&&e.y>=p.from&&e.y<=p.to); if(!c.length) return null;
+  const inT=c.filter(p=>inTerritory(e,p)===true); const pool=inT.length?inT:c.filter(p=>!e.ll||nearTerritory(e,p,2600));
+  return pool.sort((a,b)=>b.from-a.from)[0]||null; }
+// "na ordem do tempo": vizinho na mesma região do mundo e não muito longe no mapa
+function placeOf(n){ if(n.kind==='event'||n.kind==='sub'){ if(n.o.ll) return n.o.ll; if(n.kind==='sub'){ const p=NODE(n.o.parent); return p?placeOf(p):null; } return null; }
+  if(n.kind==='period'){ const h=hintFor(n,clamp((n.o.from+n.o.to)/2,RANGE[0],RANGE[1])); return h?h.ll:null; } return null; }
+function nearOnMap(a,b,km){ const A=placeOf(a),B=placeOf(b); if(!A||!B) return true; return d3.geoDistance(A,B)*6371<=km; }
 function neighbours(n){
-  // vizinhos na sequência cronológica da mesma história, quando faltam ligações explícitas
   const o=n.o; let prev=null,next=null;
-  if(n.kind==='period'){ const same=PERIODS.filter(p=>p.lane===o.lane&&p.id!==o.id);
-    prev=same.filter(p=>p.to<=o.from+1&&p.to>=o.from-60).sort((a,b)=>b.to-a.to)[0]; next=same.filter(p=>p.from>=o.to-1&&p.from<=o.to+60).sort((a,b)=>a.from-b.from)[0]; }
-  else if(n.kind==='event'){ const same=EVS.filter(e=>e.lane===o.lane&&e.id!==o.id); prev=same.filter(e=>e.y<=o.y).slice(-1)[0]; next=same.find(e=>e.y>o.y); }
+  if(n.kind==='period'){ const same=PERIODS.filter(p=>p.lane===o.lane&&p.id!==o.id&&(gapOf(n,NODE(p.id))<=3||nearOnMap(n,NODE(p.id),2600)));
+    prev=same.filter(p=>p.to<=o.from+1&&p.to>=o.from-80).sort((a,b)=>b.to-a.to)[0]; next=same.filter(p=>p.from>=o.to-1&&p.from<=o.to+80).sort((a,b)=>a.from-b.from)[0]; }
+  else if(n.kind==='event'){ const same=EVS.filter(e=>e.lane===o.lane&&e.id!==o.id&&nearOnMap(n,NODE(e.id),2200)); prev=same.filter(e=>e.y<=o.y).slice(-1)[0]; next=same.find(e=>e.y>o.y); }
   else if(n.kind==='sub'){ const same=(KIDS[o.parent]||[]).filter(s=>s.id!==o.id&&s.k===o.k); prev=same.filter(s=>s.y<=o.y).slice(-1)[0]; next=same.find(s=>s.y>o.y); }
   return {prev,next};
-}
-function flowOf(n,ids){
-  const raw=linksFor(ids); const rank=x=>(x.l[3]==='amplo'?0:1)*1000+Math.abs(yearOf(NODE(x.other)||n)-yearOf(n));
-  const from=raw.filter(x=>x.dir===1&&NODE(x.other)).sort((a,b)=>rank(a)-rank(b)), to=raw.filter(x=>x.dir===0&&NODE(x.other)).sort((a,b)=>rank(a)-rank(b));
-  const nb=neighbours(n);
-  const imp=(o,dir,txt)=>({dir,other:o.id,imp:true,l:[dir?o.id:n.id,dir?n.id:o.id,'sequencia','amplo',txt]});
-  const dedupe=a=>a.filter((x,i)=>a.findIndex(y=>y.other===x.other)===i);
-  from.splice(0,from.length,...dedupe(from)); to.splice(0,to.length,...dedupe(to));
-  if(from.length<2&&nb.prev&&!from.some(x=>x.other===nb.prev.id)) from.push(imp(nb.prev,1,n.kind==='sub'?'Na ordem desta ramificação.':'O que veio antes, na mesma região do mundo.'));
-  if(to.length<2&&nb.next&&!to.some(x=>x.other===nb.next.id)) to.push(imp(nb.next,0,n.kind==='sub'?'Na ordem desta ramificação.':'O que veio em seguida, na mesma região do mundo.'));
-  return {from,to,all:raw};
 }
 function flowCard(x){
   const n=NODE(x.other); if(!n) return ''; const type=x.l[2];
   const title=n.o.t||n.o.name; const lane=LANE[n.o.lane];
-  return `<button class="fl" data-go="${esc(x.other)}" style="--c:${TYPE_COL[type]}"><small>${TYPE_LBL[type][x.dir]}${x.imp?'':(x.l[3]==='debate'?' · interpretação debatida':'')}</small><b>${esc(title)}</b><em>${esc(whenOf(n))}${lane?' · '+esc(lane.short):''}</em><span>${esc(x.l[4])}</span></button>`;
+  return `<button class="fl${x.ctx?' ctx':''}" data-go="${esc(x.other)}" data-via="${x.ctx?'up':x.col===0?'leva':'vem'}" style="--c:${TYPE_COL[type]}"><small>${TYPE_LBL[type][x.dir]}${x.l[3]==='debate'?' · interpretação debatida':''}</small><b>${esc(title)}</b><em>${esc(whenOf(n))}${lane?' · '+esc(lane.short):''}</em><span>${esc(x.l[4])}</span></button>`;
 }
-function flowHTML(f){
-  if(!f.from.length&&!f.to.length) return '';
+function flowHTML(f,n){
   const ar=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="${d}"/></svg>`;
-  const col=(t,icon,list)=>`<div class="col"><h5>${icon}${t}</h5>${list.length?list.slice(0,3).map(flowCard).join(''):'<p class="none">Nenhuma ligação registrada.</p>'}</div>`;
-  return `<div class="flow">${col('VEM DE',ar('M19 12H5M11 6l-6 6 6 6'),f.from)}${col('LEVA A',ar('M5 12h14M13 6l6 6-6 6'),f.to)}</div>`;
+  const col=(t,icon,list,none)=>`<div class="col"><h5>${icon}${t}</h5>${list.length?list.slice(0,3).map(flowCard).join(''):`<p class="none">${none}</p>`}</div>`;
+  let h='';
+  if(f.from.length||f.to.length) h+=`<div class="flow">${col('VEM DE',ar('M19 12H5M11 6l-6 6 6 6'),f.from,'Nenhuma causa direta registrada.')}${col('LEVA A',ar('M5 12h14M13 6l6 6-6 6'),f.to,'Nenhuma consequência direta registrada.')}</div>`;
+  const shown=new Set([...f.from.slice(0,3),...f.to.slice(0,3)].map(x=>x.other)); const nb={prev:f.nb.prev&&!shown.has(f.nb.prev.id)?f.nb.prev:null,next:f.nb.next&&!shown.has(f.nb.next.id)?f.nb.next:null}, nm=x=>x.t||x.name;
+  if(nb.prev||nb.next){ const where=n.kind==='sub'?'nesta ramificação':'na mesma região';
+    h+=`<div class="seq"><span>Na ordem do tempo, ${where}:</span>${nb.prev?`<button data-go="${esc(nb.prev.id)}" data-via="vem"><i>←</i> ${esc(nm(nb.prev))}</button>`:''}${nb.next?`<button data-go="${esc(nb.next.id)}" data-via="leva">${esc(nm(nb.next))} <i>→</i></button>`:''}</div>`; }
+  return h;
 }
 /* "aprofundar": ramificações de dentro de um tema */
 const K_LBL={fase:['Fases','FASE'],pessoa:['Pessoas','PESSOA'],evento:['Acontecimentos','FATO'],instituicao:['Instituições e ideias','IDEIA']};
@@ -3049,7 +3344,7 @@ function firstSentence(t,max=130){ const m=t.match(/^.+?[.!?](\s|$)/); let s=m?m
 function deepHTML(id){
   const kids=KIDS[id]; if(!kids||!kids.length) return '';
   const groups=['fase','evento','pessoa','instituicao'].map(k=>[k,kids.filter(s=>s.k===k)]).filter(x=>x[1].length);
-  const card=s=>`<button class="dc" data-go="${s.id}"><small>${K_LBL[s.k][1]}</small><b>${esc(s.t)}</b><em>${esc(s.w||fmtY(s.y))}${s.role?' · '+esc(s.role):''}</em><span>${esc(firstSentence(s.sum))}</span></button>`;
+  const card=s=>`<button class="dc" data-go="${s.id}" data-via="deep"><small>${K_LBL[s.k][1]}</small><b>${esc(s.t)}</b><em>${esc(s.w||fmtY(s.y))}${s.role?' · '+esc(s.role):''}</em><span>${esc(firstSentence(s.sum))}</span></button>`;
   return `<div class="sec deep"><h4>Aprofundar · ${kids.length}</h4>${groups.map(([k,list])=>`<div class="dg"><h6>${K_LBL[k][0]}</h6><div class="dgrid">${list.map(card).join('')}</div></div>`).join('')}</div>`;
 }
 function artHTML(ids,refY){
@@ -3061,12 +3356,13 @@ function artHTML(ids,refY){
 function sameTimeHTML(t,lane){
   const ps=PERIODS.filter(p=>p.lane!==lane&&t>=p.from&&t<=p.to);
   if(!ps.length) return '';
-  return `<div class="sec"><h4>Ao mesmo tempo · ${esc(fmtY(t))}</h4><div class="chips">${ps.map(p=>`<button class="chip" data-go="${p.id}"><i style="background:${LANE[p.lane].color}"></i>${esc(p.name)} <small>${esc(LANE[p.lane].short.toUpperCase())}</small></button>`).join('')}</div></div>`;
+  return `<div class="sec"><h4>Ao mesmo tempo · ${esc(fmtY(t))}</h4><div class="chips">${ps.map(p=>`<button class="chip" data-go="${p.id}" data-via="lado"><i style="background:${LANE[p.lane].color}"></i>${esc(p.name)} <small>${esc(LANE[p.lane].short.toUpperCase())}</small></button>`).join('')}</div></div>`;
 }
-function restLinks(f,shown){
-  const used=new Set(); f.from.slice(0,3).forEach(x=>used.add(x.other+'<')); f.to.slice(0,3).forEach(x=>used.add(x.other+'>'));
-  const rest=f.all.filter(x=>!used.has(x.other+(x.dir?'<':'>'))); if(!rest.length) return '';
-  return `<div class="sec"><h4>Outras conexões</h4><div class="links">${rest.slice(0,8).map(linkHTML).join('')}</div></div>`;
+function restLinks(f){
+  let h=''; const more=[...f.from.slice(3).filter(x=>!x.ctx),...f.to.slice(3),...f.side];
+  if(more.length) h+=`<div class="sec"><h4>Outras conexões</h4><div class="links">${more.slice(0,8).map(linkHTML).join('')}</div></div>`;
+  if(f.echo.length) h+=`<div class="sec echo"><h4>Ecos distantes</h4><p class="hint">Influências de longo prazo, separadas por séculos. Não são causas diretas.</p><div class="links">${f.echo.slice(0,6).map(linkHTML).join('')}</div></div>`;
+  return h;
 }
 function hierPath(n){
   const out=[]; let cur=n, guard=0;
@@ -3081,43 +3377,43 @@ function renderPanel(){
   if(n.kind==='period'){ const p=n.o, l=LANE[p.lane]; const era=ERA_AT(clamp(S.t,p.from,p.to));
     const evs=EVS.filter(e=>e.lane===p.lane&&e.y>=p.from&&e.y<=p.to);
     const arts=[...evs.flatMap(e=>e.art||[])];
-    const f=flowOf(n,[p.id,...evs.map(e=>e.id)].filter(x=>true));
+    const f=flowOf(n);
     h+=`<div class="kick"><span class="lane-dot" style="background:${l.color}"></span>${esc(l.name)}</div><h2>${esc(p.name)}</h2><div class="dates">${esc(fmtRange(p.from,p.to))}</div>`;
-    h+=flowHTML(f);
+    h+=flowHTML(f,n);
     h+=listenBtn();
     h+=`<p class="lead">${esc(p.sum)}</p>`;
     h+=deepHTML(p.id);
     h+=`<div class="sec"><h4>Como se governava</h4><p>${esc(p.gov)}</p></div>`;
     if(p.life) h+=`<div class="sec"><h4>A vida na época</h4><p>${esc(p.life)}</p></div>`;
     if(p.people&&p.people.length) h+=`<div class="sec"><h4>Pessoas</h4><ul class="people">${p.people.map(x=>`<li><b>${esc(x[0])}<small>${esc(x[1])}</small></b><span>${esc(x[2])}</span></li>`).join('')}</ul></div>`;
-    if(evs.length) h+=`<div class="sec"><h4>Acontecimentos</h4><div class="chips">${evs.map(e=>`<button class="chip" data-go="${e.id}"><small>${esc(fmtY(e.y))}</small> ${esc(e.t)}</button>`).join('')}</div></div>`;
+    if(evs.length) h+=`<div class="sec"><h4>Acontecimentos</h4><div class="chips">${evs.map(e=>`<button class="chip" data-go="${e.id}" data-via="deep"><small>${esc(fmtY(e.y))}</small> ${esc(e.t)}</button>`).join('')}</div></div>`;
     h+=artHTML(arts,clamp(S.t,p.from,p.to));
     h+=sameTimeHTML(clamp(S.t,p.from,p.to),p.lane);
     h+=restLinks(f);
     h+=`<div class="note"><b>ERA · ${esc(era.name.toUpperCase())}</b><br>${esc(era.sum)}${era.note?`<br><i>${esc(era.note)}</i>`:''}</div>`;
   } else if(n.kind==='event'){ const e=n.o, l=LANE[e.lane]; const p=periodOfEvent(e);
-    const f=flowOf(n,[e.id]);
+    const f=flowOf(n);
     h+=`<div class="kick"><span class="lane-dot" style="background:${l.color}"></span>${esc(l.name)}</div><h2>${esc(e.t)}</h2><div class="dates">${esc(fmtY(e.y,true))}</div>`;
-    h+=flowHTML(f);
+    h+=flowHTML(f,n);
     h+=listenBtn();
     h+=`<p class="lead">${esc(e.sum)}</p>`;
     h+=deepHTML(e.id);
-    if(p) h+=`<div class="sec"><h4>Parte de</h4><div class="chips"><button class="chip" data-go="${p.id}"><i style="background:${l.color}"></i>${esc(p.name)} <small>${esc(fmtRange(p.from,p.to))}</small></button></div></div>`;
+    if(p) h+=`<div class="sec"><h4>Parte de</h4><div class="chips"><button class="chip" data-go="${p.id}" data-via="up"><i style="background:${l.color}"></i>${esc(p.name)} <small>${esc(fmtRange(p.from,p.to))}</small></button></div></div>`;
     h+=artHTML(e.art||[],e.y);
     h+=restLinks(f);
     const near=EVS.filter(x=>x.lane!==e.lane&&Math.abs(x.y-e.y)<=30);
-    if(near.length) h+=`<div class="sec"><h4>Perto dessa data, em outros lugares</h4><div class="chips">${near.map(x=>`<button class="chip" data-go="${x.id}"><i style="background:${LANE[x.lane].color}"></i><small>${esc(fmtY(x.y))}</small> ${esc(x.t)}</button>`).join('')}</div></div>`;
+    if(near.length) h+=`<div class="sec"><h4>Perto dessa data, em outros lugares</h4><div class="chips">${near.map(x=>`<button class="chip" data-go="${x.id}" data-via="lado"><i style="background:${LANE[x.lane].color}"></i><small>${esc(fmtY(x.y))}</small> ${esc(x.t)}</button>`).join('')}</div></div>`;
     h+=sameTimeHTML(e.y,e.lane);
   } else if(n.kind==='sub'){ const s=n.o, l=LANE[s.lane]; const par=NODE(s.parent);
-    const f=flowOf(n,[s.id]);
+    const f=flowOf(n);
     h+=`<div class="kick"><span class="lane-dot" style="background:${l.color}"></span>Aprofundamento · ${esc(K_LBL[s.k][1].toLowerCase().replace(/^./,c=>c.toUpperCase()))}</div><h2>${esc(s.t)}</h2><div class="dates">${esc(s.w||fmtY(s.y,true))}${s.role?` · <span>${esc(s.role)}</span>`:''}</div>`;
-    h+=flowHTML(f);
+    h+=flowHTML(f,n);
     h+=listenBtn();
     h+=`<p class="lead">${esc(s.sum)}</p>`;
     h+=deepHTML(s.id);
     if(par){ const sib=(KIDS[s.parent]||[]).filter(x=>x.id!==s.id);
-      h+=`<div class="sec"><h4>Dentro de</h4><div class="chips"><button class="chip" data-go="${par.id}"><i style="background:${l.color}"></i>${esc(par.o.t||par.o.name)} <small>${esc(whenOf(par))}</small></button></div></div>`;
-      if(sib.length) h+=`<div class="sec"><h4>Também em ${esc(par.o.t||par.o.name)}</h4><div class="chips">${sib.map(x=>`<button class="chip" data-go="${x.id}"><small>${esc(x.w?x.w.replace(/ \(.*/,''):fmtY(x.y))}</small> ${esc(x.t)}</button>`).join('')}</div></div>`; }
+      h+=`<div class="sec"><h4>Dentro de</h4><div class="chips"><button class="chip" data-go="${par.id}" data-via="up"><i style="background:${l.color}"></i>${esc(par.o.t||par.o.name)} <small>${esc(whenOf(par))}</small></button></div></div>`;
+      if(sib.length) h+=`<div class="sec"><h4>Também em ${esc(par.o.t||par.o.name)}</h4><div class="chips">${sib.map(x=>`<button class="chip" data-go="${x.id}" data-via="lado"><small>${esc(x.w?x.w.replace(/ \(.*/,''):fmtY(x.y))}</small> ${esc(x.t)}</button>`).join('')}</div></div>`; }
     h+=artHTML(s.art||[],s.y);
     h+=sameTimeHTML(s.y,s.lane);
     h+=restLinks(f);
@@ -3137,21 +3433,53 @@ function renderPanel(){
   }
   b.innerHTML=h; b.scrollTop=0;
   [...b.children].forEach((el,i)=>el.style.setProperty('--i',Math.min(i,9)));
-  b.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>{ uiSound('tick'); go({id:el.dataset.go}); }));
+  b.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>{ uiSound('tick'); go({id:el.dataset.go},{via:el.dataset.via||'jump'}); }));
   const lb=b.querySelector('.listen'); if(lb) lb.onclick=()=>{ if(speaking){ stopVoice(); } else narrate(textFor(n),null,true,keyFor(n)); };
   b.querySelectorAll('[data-img]').forEach(el=>loadArt(el));
   renderCrumbs(n);
 }
 function listenBtn(){ return `<button class="listen" aria-label="Ouvir o texto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg><span>OUVIR</span></button>`; }
+/* duas trilhas: onde estou na hierarquia (no painel) e por onde passei (sobre o mapa).
+   O caminho é uma sequência de fios: seguir "leva a", "vem de" ou "aprofundar" continua o fio;
+   buscar ou tocar no mapa começa outro; voltar e seguir por outra ligação abre um ramo. */
+const VIA_S={leva:'→',vem:'←',deep:'↘',up:'↖',lado:'≈'};
+const VIA_T={leva:'leva a',vem:'vem de',deep:'aprofundar',up:'dentro de',lado:'ao mesmo tempo'};
+function threadAt(i){ let a=i,b=i; const T=S.trail; if(!T.length) return [0,-1];
+  while(a>0&&T[a].via!=='jump'&&T[a].via!=='branch') a--; while(b<T.length-1&&T[b+1].via!=='jump'&&T[b+1].via!=='branch') b++; return [a,b]; }
+function threadPts(){
+  if(S.thread) return S.thread; const [a,b]=threadAt(S.ti); const out=[];
+  for(let i=a;i<=b;i++){ const n=NODE(S.trail[i].id); const ll=n?placeOf(n):null; out.push({i,ll,via:S.trail[i].via}); }
+  return S.thread=out; }
+// o fio no mapa: liga os pontos por onde a pessoa passou, na ordem, com uma seta
+function drawThread(now){
+  if(!S.panel||S.trail.length<2) return; const T=threadPts(); if(T.length<2) return;
+  const k=reduceMotion?1:Math.min(1,(now-(S.threadT0||0))/900), ease3=1-Math.pow(1-k,3); if(k<1) S.dirty=true;
+  g.save(); g.lineCap='round'; g.lineJoin='round';
+  for(let j=1;j<T.length;j++){ const A=T[j-1],B=T[j]; if(!A.ll||!B.ll) continue; if(d3.geoDistance(A.ll,B.ll)<.004) continue;
+    const past=B.i<=S.ti, last=B.i===S.ti, f=last?ease3:1; const m=d3.geoInterpolate(A.ll,B.ll);
+    const pts=[]; for(let q=0;q<=24;q++) pts.push(m(q/24*f));
+    g.setLineDash(past?[]:[3,5]); g.lineWidth=past?(last?2.6:1.8):1.3;
+    g.strokeStyle=past?(last?'rgba(154,115,34,.95)':'rgba(154,115,34,.62)'):'rgba(154,115,34,.35)';
+    g.beginPath(); path({type:'LineString',coordinates:pts}); g.stroke();
+    const p1=screenOf(m(Math.min(.56,f))), p0=screenOf(m(Math.max(0,Math.min(.56,f)-.06)));
+    if(p0&&p1&&p0.vis&&p1.vis&&f>.5){ const an=Math.atan2(p1.y-p0.y,p1.x-p0.x), L=past?7:5; g.setLineDash([]);
+      g.beginPath(); g.moveTo(p1.x+Math.cos(an)*L*.6,p1.y+Math.sin(an)*L*.6); g.lineTo(p1.x+Math.cos(an+2.5)*L,p1.y+Math.sin(an+2.5)*L); g.lineTo(p1.x+Math.cos(an-2.5)*L,p1.y+Math.sin(an-2.5)*L); g.closePath(); g.fillStyle=g.strokeStyle; g.fill(); } }
+  g.setLineDash([]);
+  for(const P of T){ if(!P.ll) continue; const p=screenOf(P.ll); if(!p||!p.vis) continue; const on=P.i===S.ti;
+    g.beginPath(); g.arc(p.x,p.y,on?4.2:3,0,7); g.fillStyle='#f7f1e3'; g.fill(); g.lineWidth=1.6; g.strokeStyle=P.i<=S.ti?'rgba(154,115,34,.95)':'rgba(154,115,34,.45)'; g.stroke(); }
+  g.restore();
+}
 /* duas trilhas: onde estou na hierarquia (no painel) e por onde passei (sobre o mapa) */
 function renderCrumbs(n){
   n=n||(S.sel&&NODE(S.sel.id));
   const hp=$('#hier'); if(n){ const lane=LANE[n.o.lane];
     const path=hierPath(n); hp.innerHTML=(lane?`<span class="hl">${esc(lane.short)}</span>`:'')+path.map(x=>`<i>›</i><button data-go="${esc(x.id)}" aria-current="${x.here}">${esc(x.label.length>26?x.label.slice(0,25)+'…':x.label)}</button>`).join('');
-    hp.querySelectorAll('[data-go]').forEach(bt=>bt.onclick=()=>{ if(bt.getAttribute('aria-current')!=='true'){ uiSound('tick'); go({id:bt.dataset.go}); } }); }
+    hp.querySelectorAll('[data-go]').forEach(bt=>bt.onclick=()=>{ if(bt.getAttribute('aria-current')!=='true'){ uiSound('tick'); go({id:bt.dataset.go},{via:'up'}); } }); }
   const tr=$('#trail'); tr.hidden=!(S.panel&&S.trail.length>1);
-  const c=$('#tr-list'); c.innerHTML=S.trail.map((r,i)=>{ const nn=NODE(r.id); const nm=(nn.o.t||nn.o.name); const short=nm.length>28?nm.slice(0,27)+'…':nm;
-    return (i?'<i>›</i>':'')+`<button data-i="${i}" aria-current="${i===S.ti}">${esc(short)}</button>`; }).join('');
+  const th=threadAt(S.ti); const c=$('#tr-list'); c.innerHTML=S.trail.map((r,i)=>{ const nn=NODE(r.id); const nm=(nn.o.t||nn.o.name); const short=nm.length>28?nm.slice(0,27)+'…':nm;
+    let pre=''; if(i){ if(r.via==='jump') pre='<span class="tgap"></span>'; else if(r.via==='branch') pre='<span class="tgap"></span><span class="tbr">RAMO</span>'; else pre=`<i class="tv-${r.via}" title="${VIA_T[r.via]||''}">${VIA_S[r.via]||'›'}</i>`; }
+    return pre+`<button data-i="${i}" aria-current="${i===S.ti}" class="${i<th[0]||i>th[1]?'off':''}" title="${esc(nm)}">${esc(short)}</button>`; }).join('');
+  S.thread=null;
   c.querySelectorAll('button').forEach(bt=>bt.onclick=()=>{ const i=+bt.dataset.i; if(i!==S.ti){ S.ti=i; uiSound('tick'); go(S.trail[i],{back:true}); } });
   const cur=c.querySelector('[aria-current="true"]'); if(cur) cur.scrollIntoView({inline:'center',block:'nearest'});
   $('#p-back').disabled=S.ti<=0; $('#p-fwd').disabled=S.ti>=S.trail.length-1;
@@ -3390,7 +3718,7 @@ const SEARCH=[];
   SUBS.forEach(s=>SEARCH.push({id:s.id,kind:s.k==='pessoa'?'person':'sub',title:s.t,n:norm(s.t+' '+(s.alias||'')),tx:norm(s.sum),when:(s.w||fmtY(s.y))+' · em '+(NODE(s.parent).o.t||NODE(s.parent).o.name),lane:s.lane,y:s.y,w:1.8}));
   ERAS.forEach(e=>SEARCH.push({id:e.id,kind:'era',title:e.name,n:norm(e.name),tx:norm(e.sum),when:fmtRange(e.from,Math.min(e.to,2026)),lane:null,y:e.from,w:1.5}));
 })();
-const SUGGEST=['roma-reis','roma-republica','rev-francesa','rev-industrial','portugal','brasil-colonia','brasil-imperio','hispania-romana','absolutismo-iluminismo','han'].filter(id=>NODE(id));
+const SUGGEST=['roma-reis','roma-republica','rev-francesa','rev-industrial','brasil-colonia','brasil-imperio','hispania-romana','absolutismo-iluminismo','han'].filter(id=>NODE(id));
 function runSearch(q){
   const out=[]; const nq=norm(q).trim(); if(!nq) return out;
   const ym=nq.match(/^(\d{1,4})\s*(a\.?\s*c\.?|ac|d\.?\s*c\.?|dc)?$/);
