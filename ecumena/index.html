@@ -1,0 +1,1644 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}</style></head><body><title>Ecúmena</title>
+<meta name="description" content="Atlas vivo da Antiguidade: globo, linha do tempo e conexões entre Roma, Grécia, Pérsia, Índia, China e África.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+/* Atlas antigo vivo: papiro claro, tinta sépia, folha de ouro; globo no centro, régua do tempo embaixo, painel como página de atlas. Tema único claro, por escolha. */
+:root{
+  --papiro:#ede3cc; --papiro-2:#e4d7ba; --folha:#f7f1e3; --tinta:#2c2317; --tinta-2:#6a5940; --tinta-3:#8f7d60;
+  --linha:#c5b28c; --linha-2:#a8946c; --ouro:#9a7322; --ouro-2:#c49a3a; --mar:#d9d5c2; --terra:#f1e8d3; --costa:#5f4e36;
+  --f-ins:"Cinzel","Trajan Pro",Georgia,serif; --f-tit:"Cormorant Garamond",Georgia,"Times New Roman",serif; --f-txt:"EB Garamond",Georgia,"Times New Roman",serif;
+  --top-h:56px; --dock-h:252px; --panel-w:410px; --gut:16px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--papiro);color:var(--tinta);font:400 17px/1.5 var(--f-txt);overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+a{color:var(--ouro)}
+#app{position:fixed;inset:0;background:radial-gradient(120% 90% at 50% 38%,#f3ead6 0%,var(--papiro) 55%,#e2d4b4 100%)}
+#app::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .26 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+canvas#globe{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+canvas#globe.dragging{cursor:grabbing}
+
+/* barra superior */
+#top{position:absolute;left:0;right:0;top:0;z-index:20;height:calc(var(--top-h) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) var(--gut) 0;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;pointer-events:none}
+#top>*{pointer-events:auto}
+.brand{font:600 15px/1 var(--f-ins);letter-spacing:.32em;color:var(--tinta);white-space:nowrap}
+.brand small{display:block;font:400 9.5px/1.2 var(--f-ins);letter-spacing:.2em;color:var(--tinta-3);margin-top:4px}
+#year{justify-self:center;text-align:center;line-height:1}
+#year b{display:block;font:600 26px/1 var(--f-ins);letter-spacing:.06em;font-variant-numeric:tabular-nums;white-space:nowrap}
+#year span{display:block;font:italic 500 13px/1.2 var(--f-tit);color:var(--tinta-2);margin-top:3px;white-space:nowrap}
+.tools{justify-self:end;display:flex;gap:6px}
+.ibtn{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--linha);background:rgba(247,241,227,.75);color:var(--tinta);transition:background .2s,border-color .2s}
+.ibtn:hover{border-color:var(--ouro)}
+.ibtn[aria-pressed="true"]{background:var(--tinta);color:var(--folha);border-color:var(--tinta)}
+.ibtn svg{width:18px;height:18px}
+
+/* doca: controles + régua */
+#dock{position:absolute;left:0;right:0;bottom:0;z-index:15;height:calc(var(--dock-h) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
+  background:linear-gradient(180deg,rgba(237,227,204,0) 0,rgba(237,227,204,.94) 22px,var(--papiro) 44px);display:flex;flex-direction:column}
+.ctrl{display:flex;align-items:center;gap:8px;padding:14px var(--gut) 6px;height:58px}
+.ctrl .play{width:42px;height:42px;border-radius:50%;background:var(--tinta);color:var(--folha);display:grid;place-items:center;flex:none;box-shadow:0 2px 0 rgba(0,0,0,.08)}
+.ctrl .play svg{width:18px;height:18px}
+.ctrl .sm{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--linha);color:var(--tinta);flex:none}
+.ctrl .sm svg{width:16px;height:16px}
+.ctrl .speed{height:30px;padding:0 10px;border-radius:15px;border:1px solid var(--linha);font:600 12px var(--f-ins);letter-spacing:.06em;flex:none}
+.ctrl .era{margin-left:auto;text-align:right;min-width:0;font:italic 500 15px/1.15 var(--f-tit);color:var(--tinta-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctrl .era button{text-decoration:underline;text-decoration-color:var(--linha);text-underline-offset:3px}
+#tl{flex:1;position:relative;min-height:0}
+#tl canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:ew-resize}
+
+/* legenda em modo assistir */
+#caption{position:absolute;z-index:16;left:50%;transform:translateX(-50%);bottom:calc(var(--dock-h) + env(safe-area-inset-bottom,0px) + 8px);
+  width:min(560px,calc(100% - 2*var(--gut)));background:var(--folha);border:1px solid var(--linha);border-radius:3px;padding:14px 16px 12px;
+  box-shadow:0 10px 30px -18px rgba(60,40,10,.6);transition:opacity .4s,transform .4s}
+#caption.off{opacity:0;transform:translate(-50%,8px);pointer-events:none}
+#caption .k{font:600 11px var(--f-ins);letter-spacing:.14em;color:var(--ouro);text-transform:uppercase}
+#caption h3{margin:4px 0 4px;font:600 22px/1.15 var(--f-tit);text-wrap:balance}
+#caption p{margin:0;font-size:16px;line-height:1.45;color:var(--tinta)}
+#caption .row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px}
+#caption .row button{font:600 11.5px var(--f-ins);letter-spacing:.1em;color:var(--tinta);border-bottom:1px solid var(--ouro);padding:4px 0}
+#caption .row small{font:italic 14px var(--f-tit);color:var(--tinta-3)}
+
+/* painel */
+#panel{position:absolute;z-index:18;background:var(--folha);border:1px solid var(--linha);display:flex;flex-direction:column;
+  box-shadow:0 18px 40px -22px rgba(60,40,10,.55);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+#panel[hidden]{display:flex!important;pointer-events:none}
+.p-head{display:flex;align-items:center;gap:8px;padding:10px 12px 8px 12px;border-bottom:1px solid var(--papiro-2);flex:none}
+.p-head .back{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--linha);flex:none}
+.p-head .back[disabled]{opacity:.35;cursor:default}
+.p-head .back svg,.p-head .x svg{width:15px;height:15px}
+.crumbs{flex:1;min-width:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;font:500 12px var(--f-ins);letter-spacing:.06em;color:var(--tinta-3);white-space:nowrap;mask-image:linear-gradient(90deg,transparent,#000 10px,#000 calc(100% - 10px),transparent)}
+.crumbs::-webkit-scrollbar{display:none}
+.crumbs button{padding:2px 2px;color:var(--tinta-3)}
+.crumbs button[aria-current="true"]{color:var(--tinta)}
+.crumbs i{font-style:normal;opacity:.6}
+.p-head .x{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex:none}
+.grab{display:none}
+#pbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:18px 20px 28px;touch-action:pan-y}
+.kick{font:600 11.5px var(--f-ins);letter-spacing:.14em;text-transform:uppercase;color:var(--ouro)}
+.kick .lane-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:0}
+#pbody h2{margin:6px 0 2px;font:600 32px/1.05 var(--f-tit);text-wrap:balance}
+#pbody .dates{font:italic 500 17px var(--f-tit);color:var(--tinta-2)}
+.listen{display:inline-flex;align-items:center;gap:6px;margin:12px 0 4px;font:600 11.5px var(--f-ins);letter-spacing:.1em;padding:6px 12px;border:1px solid var(--linha);border-radius:16px}
+.listen svg{width:14px;height:14px}
+.lead{font-size:18.5px;line-height:1.5;margin:12px 0 0}
+.lead::first-letter{font:600 2.9em/0.85 var(--f-tit);float:left;margin:6px 8px 0 0;color:var(--ouro)}
+.sec{margin-top:22px}
+.sec h4{margin:0 0 8px;font:600 12px var(--f-ins);letter-spacing:.16em;text-transform:uppercase;color:var(--tinta-2);display:flex;align-items:center;gap:10px}
+.sec h4::after{content:"";flex:1;height:1px;background:var(--papiro-2)}
+.sec p{margin:0;font-size:17px}
+.people{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.people li{display:grid;grid-template-columns:1fr;gap:1px}
+.people b{font:600 18px/1.2 var(--f-tit)}
+.people b small{font:italic 500 14.5px var(--f-tit);color:var(--tinta-3);margin-left:6px}
+.people span{font-size:15.5px;color:var(--tinta-2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--linha);border-radius:14px;font-size:15px;line-height:1.2;text-align:left;background:var(--folha)}
+.chip:hover{border-color:var(--ouro)}
+.chip small{font:600 10.5px var(--f-ins);letter-spacing:.06em;color:var(--tinta-3)}
+.chip i{width:8px;height:8px;border-radius:50%;flex:none}
+.gal{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory;touch-action:pan-x pan-y}
+.art{flex:0 0 min(240px,72%);scroll-snap-align:start;border:1px solid var(--papiro-2);background:#fff9ec}
+.art .ph{aspect-ratio:4/3;background:var(--papiro-2);display:grid;place-items:center;overflow:hidden;position:relative}
+.art .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.art .ph .none{padding:12px;text-align:center;font:italic 14px var(--f-tit);color:var(--tinta-3)}
+.art .cap{padding:8px 10px 10px}
+.art .cap b{display:block;font:600 16.5px/1.15 var(--f-tit)}
+.art .cap span{display:block;font-size:13.5px;color:var(--tinta-2);margin-top:2px}
+.art .cap p{margin:6px 0 0;font-size:14px;line-height:1.35}
+.badge{display:inline-block;margin-top:6px;font:600 10px var(--f-ins);letter-spacing:.08em;padding:3px 7px;border-radius:10px;border:1px solid}
+.badge.epoca{color:#4d6d3b;border-color:#9fb48f;background:#eef2e4}
+.badge.depois{color:#8a5a1f;border-color:#d7b98a;background:#f7ecd8}
+.links{display:grid;gap:8px}
+.link{display:block;width:100%;text-align:left;border:1px solid var(--papiro-2);border-left:3px solid var(--c,var(--ouro));padding:9px 12px 10px;background:#fffaf0}
+.link:hover{border-color:var(--linha)}
+.link .t{font:600 10.5px var(--f-ins);letter-spacing:.1em;text-transform:uppercase;color:var(--tinta-3);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.link .t .conf{font:italic 13px var(--f-tit);text-transform:none;letter-spacing:0}
+.link b{display:block;font:600 18.5px/1.2 var(--f-tit);margin-top:3px}
+.link b small{font:italic 500 14.5px var(--f-tit);color:var(--tinta-3);margin-left:6px}
+.link p{margin:3px 0 0;font-size:15px;line-height:1.38;color:var(--tinta-2)}
+.note{margin-top:22px;padding:10px 12px;border:1px dashed var(--linha);font-size:15px;color:var(--tinta-2)}
+.note b{font:600 11px var(--f-ins);letter-spacing:.1em;color:var(--tinta)}
+
+/* som e voz */
+#sheet{position:absolute;z-index:40;right:var(--gut);top:calc(var(--top-h) + env(safe-area-inset-top,0px) + 4px);width:min(320px,calc(100% - 2*var(--gut)));background:var(--folha);border:1px solid var(--linha);padding:14px 16px 16px;box-shadow:0 18px 40px -20px rgba(60,40,10,.6)}
+#sheet h5{margin:0 0 10px;font:600 12px var(--f-ins);letter-spacing:.16em;text-transform:uppercase;color:var(--tinta-2)}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--papiro-2);font-size:16px}
+.opt:first-of-type{border-top:0}
+.opt select,.opt input[type=range]{max-width:160px;font:inherit;font-size:14px}
+.sw{width:44px;height:26px;border-radius:13px;background:var(--linha);position:relative;transition:background .2s;flex:none}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--folha);transition:transform .2s}
+.sw[aria-checked="true"]{background:var(--tinta)}
+.sw[aria-checked="true"]::after{transform:translateX(18px)}
+#sheet .hint{font-size:13.5px;color:var(--tinta-3);margin:8px 0 0;line-height:1.35}
+
+/* abertura */
+#intro{position:absolute;inset:0;z-index:50;display:grid;place-items:center;padding:24px var(--gut);background:radial-gradient(120% 90% at 50% 40%,rgba(247,241,227,.92),rgba(237,227,204,.97));transition:opacity .7s}
+#intro.off{opacity:0;pointer-events:none}
+.in-box{max-width:520px;text-align:center}
+.in-box .orn{font:400 13px var(--f-ins);letter-spacing:.5em;color:var(--ouro)}
+.in-box h1{margin:14px 0 6px;font:600 clamp(44px,12vw,72px)/1 var(--f-ins);letter-spacing:.14em;margin-right:-.14em}
+.in-box .sub{font:italic 500 21px/1.3 var(--f-tit);color:var(--tinta-2);margin:0 0 20px}
+.in-box p{font-size:17px;margin:0 auto 22px;max-width:42ch;text-wrap:pretty}
+.in-btns{display:flex;flex-direction:column;gap:10px;align-items:center}
+.in-btns button{min-width:250px;padding:13px 20px;font:600 13px var(--f-ins);letter-spacing:.16em;border:1px solid var(--tinta)}
+.in-btns .main{background:var(--tinta);color:var(--folha)}
+.in-checks{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.in-check{display:flex;gap:8px;align-items:center;font-size:16px;color:var(--tinta-2)}
+.in-check input,#rate{accent-color:var(--tinta)}
+.opt select{background:var(--folha);border:1px solid var(--linha);border-radius:4px;padding:4px 6px;color:var(--tinta)}
+.in-foot{margin-top:22px;font:italic 14px var(--f-tit);color:var(--tinta-3)}
+
+#toast{position:absolute;z-index:45;left:50%;top:calc(var(--top-h) + env(safe-area-inset-top,0px) + 8px);transform:translate(-50%,-6px);opacity:0;pointer-events:none;
+  background:var(--tinta);color:var(--folha);padding:8px 14px;font:italic 500 16px var(--f-tit);transition:.35s;max-width:calc(100% - 32px);text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#loading{position:absolute;inset:0;display:grid;place-items:center;font:italic 18px var(--f-tit);color:var(--tinta-3);z-index:1}
+
+/* desktop: painel à direita */
+@media (min-width:860px){
+  #panel{top:calc(var(--top-h) + env(safe-area-inset-top,0px) + 6px);right:var(--gut);bottom:calc(var(--dock-h) + env(safe-area-inset-bottom,0px) + 6px);width:var(--panel-w);border-radius:2px}
+  #panel[hidden]{transform:translateX(calc(100% + 30px))}
+  #caption{left:var(--gut);transform:none;width:min(440px,34%)}
+  #caption.off{transform:translateY(8px)}
+}
+/* celular: painel como folha que sobe */
+@media (max-width:859px){
+  :root{--top-h:58px;--dock-h:226px;--gut:12px}
+  .brand small{display:none}
+  .brand{font-size:13px;letter-spacing:.24em}
+  #year b{font-size:23px}
+  #panel{left:0;right:0;bottom:0;height:calc(100% - var(--top-h) - env(safe-area-inset-top,0px) - 10px);border-radius:14px 14px 0 0;border-bottom:0;
+    transform:translateY(var(--sy,100%));transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+  #panel.drag{transition:none}
+  #panel[hidden]{transform:translateY(105%)}
+  .grab{display:block;position:absolute;left:0;right:0;top:0;height:22px;touch-action:none;cursor:grab}
+  .grab::before{content:"";position:absolute;left:50%;top:7px;width:42px;height:4px;margin-left:-21px;border-radius:2px;background:var(--linha)}
+  .p-head{padding-top:20px}
+  #pbody{padding:14px 16px calc(28px + env(safe-area-inset-bottom,0px))}
+  #pbody h2{font-size:29px}
+  #caption{padding:12px 14px 10px}
+  #caption h3{font-size:20px}
+  #caption p{font-size:15px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .ctrl .era{font-size:14px}
+}
+@media (max-width:380px){ .ctrl .speed{display:none} }
+@media (prefers-reduced-motion:reduce){ *{transition-duration:.01ms!important;animation-duration:.01ms!important} }
+</style>
+
+<div id="app">
+  <div id="loading">Desenrolando o mapa…</div>
+  <canvas id="globe" aria-label="Globo com os territórios aproximados no ano escolhido" role="img"></canvas>
+
+  <header id="top">
+    <div class="brand">ECÚMENA<small>ATLAS VIVO · ANTIGUIDADE</small></div>
+    <div id="year" aria-live="polite"><b id="y-num">—</b><span id="y-era">&nbsp;</span></div>
+    <div class="tools">
+      <button class="ibtn" id="b-narr" aria-pressed="false" aria-label="Narrador"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button>
+      <button class="ibtn" id="b-sound" aria-expanded="false" aria-label="Som e voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 14v-4M8 17V7M12 20V4M16 16V8M20 13v-2"/></svg></button>
+    </div>
+  </header>
+
+  <aside id="panel" hidden aria-label="Detalhes">
+    <div class="grab" id="grab"></div>
+    <div class="p-head">
+      <button class="back" id="p-back" aria-label="Voltar" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <nav class="crumbs" id="crumbs" aria-label="Trilha de investigação"></nav>
+      <button class="x" id="p-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="pbody"></div>
+  </aside>
+
+  <div id="caption" class="off" aria-live="polite">
+    <div class="k" id="c-k"></div>
+    <h3 id="c-t"></h3>
+    <p id="c-p"></p>
+    <div class="row"><small id="c-hint">Toque em pausar para explorar</small><button id="c-more">VER DETALHES</button></div>
+  </div>
+
+  <section id="dock" aria-label="Linha do tempo">
+    <div class="ctrl">
+      <button class="sm" id="b-prev" aria-label="Marco anterior"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+      <button class="play" id="b-play" aria-label="Assistir"><svg id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg></button>
+      <button class="sm" id="b-next" aria-label="Próximo marco"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+      <button class="speed" id="b-speed" aria-label="Velocidade">1×</button>
+      <div class="era" id="era-line"></div>
+    </div>
+    <div id="tl"><canvas id="tlc" aria-label="Régua do tempo com períodos por região. Arraste para mudar o ano; toque em um período para abri-lo."></canvas></div>
+  </section>
+
+  <div id="sheet" hidden>
+    <h5>Som e voz</h5>
+    <div class="opt"><span>Ambiente e música</span><button class="sw" id="sw-amb" role="switch" aria-checked="false" aria-label="Ambiente e música"></button></div>
+    <div class="opt"><span>Sons de interface</span><button class="sw" id="sw-ui" role="switch" aria-checked="true" aria-label="Sons de interface"></button></div>
+    <div class="opt"><span>Narrador</span><button class="sw" id="sw-narr" role="switch" aria-checked="false" aria-label="Narrador"></button></div>
+    <div class="opt"><label for="voice">Voz</label><select id="voice"></select></div>
+    <div class="opt"><label for="rate">Velocidade da voz</label><input id="rate" type="range" min="0.75" max="1.3" step="0.05" value="1"></div>
+    <p class="hint" id="voice-hint">A voz usa o sintetizador do seu aparelho. A qualidade muda de um celular para outro.</p>
+  </div>
+
+  <div id="intro">
+    <div class="in-box">
+      <div class="orn">· 820 a.C. — 476 d.C. ·</div>
+      <h1>ECÚMENA</h1>
+      <p class="sub">o mundo habitado, como os gregos o chamavam</p>
+      <p>Assista à história do mundo antigo acontecer ao mesmo tempo, de Roma à China. Pause quando quiser para ler sobre a época, ver obras e documentos e seguir as conexões entre os acontecimentos.</p>
+      <div class="in-btns">
+        <button class="main" id="go-watch">ASSISTIR</button>
+        <button id="go-explore">EXPLORAR POR CONTA PRÓPRIA</button>
+      </div>
+      <div class="in-checks"><label class="in-check"><input type="checkbox" id="in-amb" checked> Som ambiente</label><label class="in-check"><input type="checkbox" id="in-narr" checked> Narrador com voz</label></div>
+      <div class="in-foot">Fronteiras aproximadas. Textos de divulgação, sujeitos a revisão.</div>
+    </div>
+  </div>
+  <div id="toast" role="status"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+/* Regiões aproximadas (máscaras [lng,lat]). O mapa recorta cada máscara pela terra firme,
+   então o contorno no mar é livre: só as fronteiras em terra importam. Tudo é aproximado. */
+const REG = {
+  lazio_peq:[[12.2,42.05],[12.85,42.05],[12.85,41.72],[12.2,41.72]],
+  lazio:[[11.9,42.3],[13.1,42.3],[13.7,41.3],[12.5,41.2],[11.6,42.0]],
+  italia_sul:[[9.8,44.1],[12.4,44.2],[14.5,43.0],[19.5,40.7],[17.6,38.4],[16.1,37.7],[15.75,38.2],[15.3,38.7],[12.0,41.0],[11.0,42.0],[10.1,43.0]],
+  italia_norte:[[6.6,44.1],[7.0,45.9],[8.5,46.4],[10.5,46.6],[12.4,46.6],[13.8,45.6],[12.4,44.2],[9.8,44.1]],
+  magna_grecia:[[14.8,40.7],[17.3,40.7],[19.5,40.4],[17.6,38.4],[16.1,37.7],[15.75,38.2],[15.3,38.7],[15.6,39.8]],
+  sicilia:[[12.0,38.3],[15.3,38.7],[15.75,38.2],[15.8,36.5],[12.0,37.3]],
+  sicilia_oeste:[[12.0,38.3],[13.5,38.4],[13.6,36.8],[12.0,37.3]],
+  sicilia_leste:[[13.5,38.4],[15.3,38.7],[15.75,38.2],[15.8,36.5],[13.6,36.8]],
+  sardenha_corsega:[[8.0,43.2],[9.9,43.2],[10.0,38.7],[8.0,38.7]],
+  sardenha:[[8.0,41.3],[10.0,41.3],[10.0,38.7],[8.0,38.7]],
+  costa_iberica_sul:[[-6.6,36.9],[-4.0,36.9],[-1.0,37.7],[1.8,39.3],[1.8,38.5],[-0.5,36.6],[-5.6,35.9]],
+  hispania_cartago:[[-0.2,39.6],[-3.0,39.2],[-6.6,37.9],[-6.6,36.6],[-5.6,35.9],[0.5,37.0],[1.8,38.5],[1.8,39.3]],
+  hispania_leste:[[3.5,42.6],[1.0,42.5],[-0.8,41.0],[-2.0,39.5],[-3.0,38.6],[-6.6,37.6],[-6.6,36.6],[-5.6,35.9],[-1.0,36.5],[1.0,38.5],[1.5,40.5],[4.0,41.6]],
+  hispania_133:[[3.5,42.6],[-1.5,42.8],[-4.5,42.0],[-6.5,41.0],[-9.8,39.0],[-9.8,36.6],[-5.6,35.9],[-1.0,36.5],[1.0,38.5],[1.5,40.5],[4.5,40.0],[4.5,41.8]],
+  hispania_toda:[[3.5,42.6],[-1.8,43.5],[-9.8,44.0],[-9.8,36.6],[-5.6,35.9],[-1.0,36.5],[1.0,38.5],[1.5,40.5],[4.5,40.0],[4.5,41.8]],
+  galia_narbonense:[[1.5,42.4],[3.2,42.3],[7.6,43.7],[6.8,45.0],[5.0,46.2],[3.0,44.5],[1.0,43.2]],
+  galia:[[-1.8,43.5],[3.2,42.4],[7.6,43.7],[6.8,46.0],[7.6,47.6],[8.2,49.0],[6.6,51.8],[4.3,52.2],[2.5,51.2],[-1.5,50.2],[-5.5,48.8],[-2.5,46.5]],
+  galia_norte:[[-1.5,50.2],[2.5,51.2],[4.6,50.4],[4.6,48.6],[2.5,47.8],[-1.5,48.2],[-4.8,48.6]],
+  britannia_sul:[[-6.5,49.8],[1.8,50.9],[2.0,52.9],[0.5,54.0],[-1.5,55.1],[-3.2,55.1],[-5.2,54.7],[-5.6,52.0],[-6.5,50.5]],
+  grecia_egeu:[[19.8,39.9],[22.5,40.0],[24.0,39.5],[26.5,40.0],[28.3,36.5],[26.0,35.0],[23.5,34.8],[21.0,36.4],[19.8,38.0]],
+  grecia_peninsula:[[19.8,39.9],[22.6,39.9],[24.5,40.6],[25.9,40.0],[25.9,35.0],[23.5,34.8],[21.0,36.4],[19.8,38.0]],
+  macedonia:[[19.3,42.3],[23.0,42.3],[24.5,41.6],[24.5,40.6],[22.6,39.9],[20.5,39.7],[19.3,40.5]],
+  tracia:[[24.5,41.6],[28.0,42.5],[29.0,41.3],[26.5,40.3],[24.5,40.6]],
+  iliria:[[13.6,45.7],[16.0,46.0],[19.3,44.5],[19.3,42.3],[19.3,40.5],[18.0,41.5],[15.0,44.0]],
+  danubio:[[8.7,47.7],[12.5,48.4],[16.9,48.2],[18.9,47.8],[19.1,45.8],[20.5,44.8],[22.6,44.6],[28.0,44.0],[29.7,45.2],[28.8,43.0],[24.5,42.6],[19.3,42.3],[16.0,46.0],[13.6,45.7],[12.4,46.6],[10.5,46.6]],
+  danubio_oeste:[[8.7,47.7],[12.5,48.4],[16.9,48.2],[18.9,47.8],[19.1,45.8],[17.0,45.0],[16.0,46.0],[13.6,45.7],[12.4,46.6],[10.5,46.6]],
+  danubio_leste:[[19.1,45.8],[20.5,44.8],[22.6,44.6],[28.0,44.0],[29.7,45.2],[28.8,43.0],[24.5,42.6],[19.3,42.3],[19.0,44.0]],
+  dacia:[[21.0,46.0],[22.0,47.5],[24.5,47.8],[25.5,46.5],[24.8,44.8],[22.6,44.6],[21.2,44.8]],
+  anatolia_oeste:[[26.0,40.8],[31.5,41.3],[31.5,39.0],[30.5,37.0],[28.5,36.5],[26.0,37.5]],
+  anatolia_toda:[[26.0,40.8],[31.5,41.3],[36.0,42.0],[41.5,41.4],[39.5,39.5],[38.5,37.0],[36.0,36.2],[33.0,36.0],[28.5,36.5],[26.0,37.5]],
+  anatolia_sudeste:[[33.0,36.0],[36.0,36.2],[38.5,37.0],[38.0,38.5],[33.5,38.5]],
+  armenia:[[41.5,41.4],[45.5,41.5],[47.0,39.5],[44.5,38.0],[39.5,39.5]],
+  levante:[[34.2,31.2],[34.9,33.2],[35.8,36.8],[38.5,37.0],[40.0,35.0],[38.0,32.0],[35.8,29.5],[34.5,29.5]],
+  levante_norte:[[35.8,34.5],[35.8,36.8],[38.5,37.0],[40.0,35.0],[37.5,33.5]],
+  levante_sul:[[34.2,31.2],[34.9,33.2],[35.8,34.5],[37.0,33.5],[35.8,29.5],[34.5,29.5]],
+  arabia_petraea:[[34.5,29.5],[35.8,29.5],[38.0,32.0],[38.5,30.0],[36.5,27.0],[35.0,27.5]],
+  egito:[[25.0,31.9],[34.3,31.6],[34.5,29.5],[33.5,27.5],[33.0,24.0],[31.5,23.5],[30.5,26.0],[29.5,28.5],[28.5,30.0],[25.0,30.5]],
+  cirenaica:[[19.5,30.2],[19.8,33.2],[25.0,32.5],[25.0,30.5]],
+  tripolitania:[[11.2,32.5],[11.5,33.6],[15.5,33.0],[19.6,30.8],[15.0,30.5],[11.5,31.0]],
+  cartago_nucleo:[[9.5,37.4],[11.2,37.2],[10.8,36.2],[9.6,36.5]],
+  africa_tunisia:[[8.3,37.3],[11.5,37.6],[11.5,34.0],[10.2,33.0],[8.3,34.5]],
+  numidia:[[1.0,36.8],[8.3,37.3],[8.3,34.5],[5.0,34.8],[1.0,35.0]],
+  mauretania:[[-6.5,35.9],[1.0,36.8],[1.0,35.0],[-2.0,34.5],[-6.8,33.8]],
+  axum:[[36.5,17.5],[39.5,16.5],[41.5,14.0],[39.5,12.5],[37.0,13.0],[36.0,15.0]],
+  assiria_norte:[[38.5,37.2],[42.5,37.4],[44.5,36.0],[45.0,34.5],[42.0,34.0],[39.0,35.0]],
+  babilonia:[[42.0,34.0],[45.0,34.5],[46.5,33.5],[48.5,30.2],[47.5,29.0],[45.5,30.0],[43.0,31.5]],
+  mesopotamia:[[38.5,37.2],[42.5,37.4],[44.5,36.0],[46.5,33.5],[48.5,30.2],[47.5,29.0],[45.5,30.0],[43.0,31.5],[40.0,34.0]],
+  iran:[[44.5,39.5],[48.0,38.5],[54.0,37.5],[61.0,37.0],[61.5,31.0],[62.0,25.3],[57.0,25.5],[51.0,27.5],[48.5,30.2],[46.5,33.5],[44.5,36.0]],
+  media:[[44.5,39.5],[48.0,38.5],[51.5,36.0],[51.5,33.5],[46.5,33.5],[44.5,36.0]],
+  persis:[[48.5,30.2],[51.0,27.5],[54.5,27.0],[55.0,31.0],[51.5,33.5],[46.5,33.5]],
+  parthia_ne:[[54.0,37.5],[58.0,38.5],[61.0,37.0],[60.0,34.5],[56.0,34.5]],
+  bactria:[[61.0,37.0],[63.0,39.5],[67.5,39.0],[71.5,37.0],[71.0,34.5],[66.0,33.0],[61.5,31.0]],
+  arachosia:[[61.5,31.0],[66.0,33.0],[69.5,33.0],[67.5,29.5],[62.0,29.0]],
+  indo:[[66.0,33.0],[71.0,34.5],[74.0,34.5],[74.5,31.0],[71.0,27.5],[69.0,24.0],[66.5,25.0],[67.5,29.5]],
+  ganges:[[74.5,31.0],[77.5,30.5],[80.0,28.8],[84.0,27.4],[88.0,26.6],[89.0,25.5],[88.5,22.0],[85.0,24.0],[82.0,24.5],[78.0,25.5],[74.0,27.0]],
+  ganges_oeste:[[74.5,31.0],[77.5,30.5],[80.0,28.8],[82.0,25.0],[78.0,25.5],[74.0,27.0]],
+  magadha:[[83.0,27.0],[88.0,26.6],[88.5,24.0],[85.0,24.0],[83.0,24.5]],
+  india_central:[[69.0,24.0],[71.0,27.5],[74.0,27.0],[78.0,25.5],[82.0,24.5],[85.0,24.0],[88.5,22.0],[87.0,21.0],[84.0,18.0],[80.0,15.5],[76.0,15.0],[73.0,16.0],[72.5,21.0],[68.5,22.5]],
+  china_norte:[[105.0,36.5],[107.0,38.0],[111.0,40.5],[116.0,40.5],[119.5,40.0],[122.5,37.5],[120.5,35.0],[117.0,32.8],[113.0,32.0],[108.5,32.5],[105.0,33.5]],
+  china_centro:[[103.5,32.0],[108.5,32.5],[113.0,32.0],[117.0,32.8],[120.5,35.0],[122.5,31.0],[121.0,28.0],[117.0,27.0],[112.0,26.0],[108.0,26.5],[103.0,27.5],[102.5,30.0]],
+  china_sul:[[103.0,27.5],[108.0,26.5],[112.0,26.0],[117.0,27.0],[121.0,28.0],[119.0,24.5],[114.5,22.0],[110.5,20.0],[107.0,18.5],[106.0,20.5],[103.5,22.5]],
+  hexi:[[105.0,33.5],[105.0,36.5],[103.0,38.5],[100.0,40.0],[95.0,41.0],[93.5,40.0],[96.0,38.5],[101.0,36.5],[103.5,34.0]],
+  coreia_norte:[[124.0,40.5],[127.5,40.5],[127.5,38.0],[125.5,37.5],[124.0,38.5]]
+};
+
+/* Estados e impérios com seus territórios aproximados no tempo.
+   s: [ano, [regiões]] — vale a partir daquele ano; null = sem território; end: ano final. */
+const POL = {
+  roma:{name:"Roma", lane:"roma", end:395, s:[
+    [-753,["lazio_peq"]],[-500,["lazio"]],[-264,["italia_sul"]],
+    [-238,["italia_sul","sicilia","sardenha_corsega"]],
+    [-201,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_leste"]],
+    [-146,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_133","grecia_peninsula","macedonia","iliria","africa_tunisia"]],
+    [-121,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_133","grecia_peninsula","macedonia","iliria","africa_tunisia","galia_narbonense","anatolia_oeste"]],
+    [-63,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_133","grecia_peninsula","macedonia","iliria","africa_tunisia","galia_narbonense","anatolia_toda","levante","cirenaica"]],
+    [-46,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_133","grecia_peninsula","macedonia","iliria","africa_tunisia","numidia","galia","anatolia_toda","levante","cirenaica"]],
+    [-30,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_133","grecia_peninsula","macedonia","iliria","africa_tunisia","numidia","galia","anatolia_toda","levante","cirenaica","egito"]],
+    [14,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_toda","grecia_peninsula","macedonia","iliria","danubio","africa_tunisia","numidia","tripolitania","galia","anatolia_toda","levante","cirenaica","egito"]],
+    [46,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_toda","grecia_peninsula","macedonia","tracia","iliria","danubio","africa_tunisia","numidia","mauretania","tripolitania","galia","britannia_sul","anatolia_toda","levante","cirenaica","egito"]],
+    [106,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_toda","grecia_peninsula","macedonia","tracia","iliria","danubio","dacia","africa_tunisia","numidia","mauretania","tripolitania","galia","britannia_sul","anatolia_toda","levante","arabia_petraea","cirenaica","egito"]],
+    [116,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_toda","grecia_peninsula","macedonia","tracia","iliria","danubio","dacia","africa_tunisia","numidia","mauretania","tripolitania","galia","britannia_sul","anatolia_toda","armenia","mesopotamia","levante","arabia_petraea","cirenaica","egito"]],
+    [118,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_toda","grecia_peninsula","macedonia","tracia","iliria","danubio","dacia","africa_tunisia","numidia","mauretania","tripolitania","galia","britannia_sul","anatolia_toda","levante","arabia_petraea","cirenaica","egito"]],
+    [271,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_toda","grecia_peninsula","macedonia","tracia","iliria","danubio","africa_tunisia","numidia","mauretania","tripolitania","galia","britannia_sul","anatolia_toda","levante","arabia_petraea","cirenaica","egito"]]
+  ]},
+  roma_ocidente:{name:"Império Romano do Ocidente", lane:"roma", end:476, s:[
+    [395,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_toda","galia","britannia_sul","africa_tunisia","numidia","mauretania","tripolitania","iliria","danubio_oeste"]],
+    [410,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_toda","galia","africa_tunisia","numidia","mauretania","tripolitania","iliria","danubio_oeste"]],
+    [439,["italia_sul","italia_norte","sicilia","sardenha_corsega","hispania_133","galia","iliria","danubio_oeste"]],
+    [460,["italia_sul","italia_norte","sicilia","iliria","galia_norte"]],
+    [468,["italia_sul","italia_norte","iliria"]]
+  ]},
+  roma_oriente:{name:"Império Romano do Oriente", lane:"grecia", end:1453, s:[
+    [395,["grecia_peninsula","macedonia","tracia","danubio_leste","anatolia_toda","levante","arabia_petraea","egito","cirenaica"]]
+  ]},
+  cartago:{name:"Cartago", lane:"africa", end:-146, s:[
+    [-814,["cartago_nucleo"]],
+    [-550,["africa_tunisia","tripolitania","sicilia_oeste","sardenha","costa_iberica_sul"]],
+    [-241,["africa_tunisia","tripolitania","sardenha","costa_iberica_sul"]],
+    [-237,["africa_tunisia","tripolitania","hispania_cartago"]],
+    [-201,["africa_tunisia"]]
+  ]},
+  polis:{name:"Pólis gregas", lane:"grecia", end:-338, s:[
+    [-820,["grecia_egeu"]],[-700,["grecia_egeu","magna_grecia","sicilia_leste"]]
+  ]},
+  macedonia:{name:"Macedônia de Filipe e Alexandre", lane:"grecia", end:-323, s:[
+    [-359,["macedonia"]],[-338,["macedonia","grecia_peninsula","tracia"]],
+    [-333,["macedonia","grecia_peninsula","tracia","anatolia_toda"]],
+    [-331,["macedonia","grecia_peninsula","tracia","anatolia_toda","levante","egito","mesopotamia"]],
+    [-327,["macedonia","grecia_peninsula","tracia","anatolia_toda","levante","egito","mesopotamia","iran","bactria","arachosia"]],
+    [-325,["macedonia","grecia_peninsula","tracia","anatolia_toda","levante","egito","mesopotamia","iran","bactria","arachosia","indo"]]
+  ]},
+  antigonida:{name:"Macedônia antigônida", lane:"grecia", end:-168, s:[[-306,["macedonia","grecia_peninsula"]]]},
+  egito:{name:"Egito faraônico", lane:"africa", end:-343, s:[[-820,["egito"]],[-525,null],[-404,["egito"]]]},
+  ptolomaico:{name:"Egito ptolomaico", lane:"africa", end:-30, s:[[-305,["egito","cirenaica","levante_sul"]],[-200,["egito","cirenaica"]],[-96,["egito"]]]},
+  axum:{name:"Reino de Axum", lane:"africa", end:940, s:[[100,["axum"]]]},
+  vandalos:{name:"Reino Vândalo", lane:"africa", end:534, s:[[439,["africa_tunisia","numidia","tripolitania"]],[455,["africa_tunisia","numidia","tripolitania","sardenha_corsega"]]]},
+  assirio:{name:"Império Neoassírio", lane:"persia", end:-609, s:[
+    [-820,["assiria_norte"]],[-730,["assiria_norte","babilonia","levante"]],
+    [-671,["assiria_norte","babilonia","levante","egito"]],[-655,["assiria_norte","babilonia","levante"]],[-626,["assiria_norte","levante"]]
+  ]},
+  babilonico:{name:"Império Neobabilônico", lane:"persia", end:-539, s:[[-626,["babilonia"]],[-605,["babilonia","assiria_norte","levante","arabia_petraea"]]]},
+  aquemenida:{name:"Império Aquemênida", lane:"persia", end:-330, s:[
+    [-550,["iran"]],[-546,["iran","anatolia_toda"]],[-539,["iran","anatolia_toda","mesopotamia","levante"]],
+    [-525,["iran","anatolia_toda","mesopotamia","levante","egito"]],
+    [-513,["iran","anatolia_toda","mesopotamia","levante","egito","bactria","arachosia","indo","tracia"]],
+    [-479,["iran","anatolia_toda","mesopotamia","levante","egito","bactria","arachosia","indo"]],
+    [-404,["iran","anatolia_toda","mesopotamia","levante","bactria","arachosia","indo"]],
+    [-343,["iran","anatolia_toda","mesopotamia","levante","egito","bactria","arachosia","indo"]]
+  ]},
+  seleucida:{name:"Império Selêucida", lane:"persia", end:-63, s:[
+    [-312,["mesopotamia","iran","bactria"]],[-301,["mesopotamia","iran","bactria","arachosia","levante_norte","anatolia_sudeste"]],
+    [-250,["mesopotamia","iran","levante_norte","anatolia_sudeste"]],[-200,["mesopotamia","iran","levante","anatolia_sudeste"]],
+    [-141,["levante","anatolia_sudeste"]],[-100,["levante_norte"]]
+  ]},
+  parta:{name:"Império Parta", lane:"persia", end:224, s:[[-247,["parthia_ne"]],[-141,["iran","mesopotamia"]],[-100,["iran","mesopotamia","arachosia"]]]},
+  sassanida:{name:"Império Sassânida", lane:"persia", end:651, s:[[224,["iran","mesopotamia","arachosia"]],[260,["iran","mesopotamia","arachosia","bactria","armenia"]]]},
+  vedico:{name:"Reinos védicos", lane:"india", end:-600, s:[[-820,["ganges"]]]},
+  mahajanapadas:{name:"Mahajanapadas", lane:"india", end:-322, s:[[-600,["ganges"]]]},
+  maurya:{name:"Império Maurya", lane:"india", end:-185, s:[[-322,["magadha"]],[-317,["ganges","indo"]],[-305,["ganges","indo","arachosia"]],[-260,["ganges","indo","arachosia","india_central"]]]},
+  kushan:{name:"Império Kushan", lane:"india", end:375, s:[[30,["bactria","indo"]],[100,["bactria","indo","ganges_oeste"]]]},
+  gupta:{name:"Império Gupta", lane:"india", end:550, s:[[320,["magadha"]],[350,["ganges"]],[400,["ganges","india_central"]]]},
+  zhou:{name:"Estados Zhou", lane:"china", end:-221, s:[[-820,["china_norte"]],[-600,["china_norte","china_centro"]]]},
+  qin:{name:"Dinastia Qin", lane:"china", end:-206, s:[[-221,["china_norte","china_centro"]],[-214,["china_norte","china_centro","china_sul"]]]},
+  han:{name:"Dinastia Han", lane:"china", end:220, s:[[-206,["china_norte","china_centro"]],[-111,["china_norte","china_centro","china_sul","hexi"]],[-108,["china_norte","china_centro","china_sul","hexi","coreia_norte"]]]},
+  tres_reinos:{name:"Três Reinos", lane:"china", end:280, s:[[220,["china_norte","china_centro","china_sul"]]]},
+  jin:{name:"Jin e Dinastias do Norte e do Sul", lane:"china", end:589, s:[[280,["china_norte","china_centro","china_sul"]],[317,["china_centro","china_sul"]]]}
+};
+
+const RANGE = [-820, 480];
+
+const LANES = [
+  {id:"roma",   name:"Roma e Ocidente",          short:"Roma",    color:"#9a3b28", mode:"dorico"},
+  {id:"grecia", name:"Grécia e Macedônia",       short:"Grécia",  color:"#33607f", mode:"dorico"},
+  {id:"africa", name:"Norte da África e Egito",  short:"África",  color:"#a7782a", mode:"africa"},
+  {id:"persia", name:"Oriente Próximo e Pérsia", short:"Pérsia",  color:"#2e6f66", mode:"persa"},
+  {id:"india",  name:"Índia",                    short:"Índia",   color:"#b5602a", mode:"india"},
+  {id:"china",  name:"China",                    short:"China",   color:"#4d6d3b", mode:"china"}
+];
+
+const ERAS = [
+  {id:"axial", name:"Idade do Ferro e Era Axial", from:-820, to:-500,
+   sum:"Cidades e reinos se multiplicam com o uso do ferro. Em lugares sem contato entre si, surgem tradições de pensamento que durariam milênios: os profetas hebreus, os primeiros filósofos gregos, as Upanishads na Índia, Confúcio e Laozi na China.",
+   note:"“Era Axial” é um termo criado pelo filósofo Karl Jaspers em 1949. Muitos historiadores o usam, mas outros acham a ideia ampla demais."},
+  {id:"classica", name:"Era Clássica", from:-500, to:-323,
+   sum:"A Pérsia forma o maior império que o mundo já tinha visto. A Grécia vive suas guerras contra a Pérsia, a democracia ateniense e a filosofia de Sócrates e Platão. Na Índia, o budismo se espalha; na China, os Reinos Combatentes disputam o poder."},
+  {id:"helenistica", name:"Era Helenística e expansão romana", from:-323, to:-31,
+   sum:"O império de Alexandre se parte em reinos gregos do Egito à Ásia Central. Roma derrota Cartago e passa a controlar o Mediterrâneo. Na Índia, os Maurya unem o subcontinente; na China, os Qin e depois os Han criam um Estado unificado."},
+  {id:"pax", name:"Pax Romana e Han", from:-31, to:180,
+   sum:"Dois grandes impérios, Roma e a China Han, governam juntos cerca de metade da população do planeta, sem nunca se encontrarem de fato. Entre eles, os Partas e os Kushan controlam as rotas da seda e das especiarias."},
+  {id:"tardia", name:"Antiguidade Tardia", from:180, to:480,
+   sum:"Crises, epidemias e pressões nas fronteiras transformam os grandes impérios. O cristianismo se torna a religião de Roma, os Han caem, os Sassânidas renovam a Pérsia e os Gupta vivem uma era de ouro na Índia. O Ocidente romano se fragmenta em reinos.",
+   note:"“Antiguidade Tardia” é um termo europeu. Fora do Mediterrâneo, esse período tem outros nomes e outros marcos."}
+];
+
+const PERIODS = [
+// ---------------- ROMA ----------------
+{id:"roma-reis", lane:"roma", pol:"roma", name:"Roma dos Reis", from:-753, to:-509,
+ sum:"Segundo a tradição, Roma foi fundada por Rômulo em 753 a.C. e governada por sete reis. O que se sabe ao certo é que, nesse período, aldeias nas colinas à beira do Tibre se tornaram uma cidade, sob forte influência dos etruscos, seus vizinhos ao norte.",
+ gov:"Um rei escolhido, não hereditário, aconselhado por um Senado de chefes de famílias importantes. O povo se reunia em assembleias.",
+ life:"Uma cidade de agricultores e pastores, com casas de madeira e barro, templos de estilo etrusco e um grande espaço comum: o Fórum, drenado de um pântano.",
+ people:[["Rômulo","lendário","Fundador mítico, criado por uma loba segundo a lenda."],["Numa Pompílio","lendário","Segundo rei, a quem se atribuía a criação dos cultos e do calendário."],["Tarquínio, o Soberbo","séc. VI a.C.","Último rei, de origem etrusca, expulso pelos romanos."]],
+ say:"Roma começa como uma pequena cidade de reis, entre colinas, à beira do rio Tibre."},
+{id:"roma-republica", lane:"roma", pol:"roma", name:"República Romana", from:-509, to:-27,
+ sum:"Depois de expulsar o último rei, Roma passa a ser governada por magistrados eleitos. Em quase cinco séculos, a cidade conquista a Itália, vence Cartago e domina todo o Mediterrâneo. Mas a riqueza das conquistas e o poder dos generais acabam por destruir a República por dentro.",
+ gov:"Dois cônsules eleitos por um ano, que dividiam o poder. O Senado, de ex-magistrados, dirigia a política externa e as finanças. Assembleias do povo votavam leis e elegiam magistrados. Em crises, um ditador podia governar por até seis meses.",
+ life:"Uma sociedade dividida entre patrícios e plebeus, que lutaram por direitos durante dois séculos. Com as conquistas, chegaram escravizados em massa, e os pequenos agricultores perderam suas terras.",
+ people:[["Cincinato","séc. V a.C.","Ditador que, segundo a tradição, largou o poder para voltar ao arado."],["Cipião Africano","236–183 a.C.","General que derrotou Aníbal em Zama."],["Tibério e Caio Graco","séc. II a.C.","Irmãos tribunos que tentaram uma reforma agrária e foram mortos."],["Júlio César","100–44 a.C.","General e ditador cujo assassinato abriu caminho para o Império."]],
+ say:"Sem reis, Roma inventa a República: magistrados eleitos, um Senado poderoso e um exército que conquista o Mediterrâneo."},
+{id:"roma-principado", lane:"roma", pol:"roma", name:"Alto Império (Principado)", from:-27, to:235,
+ sum:"Augusto mantém a fachada da República, mas concentra todo o poder em suas mãos. Começa a Pax Romana, dois séculos de relativa paz interna, com estradas, cidades e comércio por todo o império. Em 117, com Trajano, Roma atinge sua maior extensão.",
+ gov:"O imperador se apresentava como o “primeiro cidadão” (princeps). Ele comandava o exército, controlava as províncias mais importantes e indicava seus sucessores. O Senado continuava a existir, mas com cada vez menos poder.",
+ life:"Cerca de 60 milhões de habitantes, cidades com aquedutos, termas, anfiteatros e um mesmo direito. O latim no Ocidente e o grego no Oriente eram as línguas comuns.",
+ people:[["Augusto","63 a.C.–14 d.C.","Primeiro imperador, que reorganizou todo o Estado romano."],["Nero","37–68","Imperador lembrado pelo incêndio de Roma e pela perseguição aos cristãos."],["Trajano","53–117","Levou o império à sua maior extensão."],["Marco Aurélio","121–180","Imperador e filósofo estoico, autor das “Meditações”."]],
+ say:"Com Augusto, a República vira Império. Começam dois séculos de Pax Romana, da Britânia ao Egito."},
+{id:"roma-crise", lane:"roma", pol:"roma", name:"Crise do Século III", from:235, to:284,
+ sum:"Em cinquenta anos, mais de vinte imperadores sobem ao trono, quase todos generais aclamados por suas tropas e quase todos assassinados. Ao mesmo tempo, o império enfrenta invasões, epidemias, inflação e chega a se partir em três.",
+ gov:"O poder estava nas mãos do exército: quem tinha legiões leais podia ser imperador. A moeda perdeu quase toda a prata, e os preços dispararam.",
+ life:"Cidades constroem muralhas, o comércio de longa distância diminui e o império se torna mais militar e mais rural.",
+ people:[["Valeriano","c. 199–c. 264","Imperador capturado pelos persas em 260."],["Zenóbia","séc. III","Rainha de Palmira, que governou o Oriente romano por alguns anos."],["Aureliano","214–275","Reunificou o império e construiu as muralhas de Roma."]],
+ say:"No século III, o império quase se desfaz: vinte imperadores em cinquenta anos, guerras e crise econômica."},
+{id:"roma-dominato", lane:"roma", pol:"roma", name:"Baixo Império (Dominato)", from:284, to:395,
+ sum:"Diocleciano salva o império reorganizando tudo: divide o poder, cria novas províncias e reforma os impostos. Constantino se converte ao cristianismo e funda Constantinopla. Ao fim do século IV, o cristianismo se torna a religião oficial do Estado.",
+ gov:"O imperador passa a ser tratado como senhor (dominus), com cerimonial de corte inspirado na Pérsia. O poder é dividido entre vários imperadores, cada um cuidando de uma parte do império.",
+ life:"Uma burocracia muito maior, impostos pesados e camponeses cada vez mais presos à terra, o que lembra a futura servidão medieval.",
+ people:[["Diocleciano","c. 244–311","Criou a tetrarquia, governo de quatro imperadores."],["Constantino","c. 272–337","Primeiro imperador cristão e fundador de Constantinopla."],["Teodósio I","347–395","Último a governar o império inteiro; tornou o cristianismo oficial."]],
+ say:"Diocleciano reorganiza o império, e Constantino o torna cristão. O centro de gravidade se desloca para o Oriente."},
+{id:"roma-ocidente", lane:"roma", pol:"roma_ocidente", name:"Império Romano do Ocidente", from:395, to:476,
+ sum:"Após a morte de Teodósio, o império é dividido entre seus dois filhos. A metade ocidental, mais pobre e mais exposta, perde províncias para povos germânicos: visigodos, vândalos, francos e outros. Em 476, o último imperador do Ocidente é deposto.",
+ gov:"Imperadores muitas vezes fracos, dominados por generais de origem germânica, que eram quem realmente comandava o exército.",
+ life:"A vida romana continua em muitas cidades, agora sob reis germânicos que adotam o latim, o direito romano e o cristianismo.",
+ people:[["Estilicão","c. 359–408","General de origem vândala que defendeu o Ocidente."],["Gala Placídia","c. 390–450","Princesa e regente, figura central da corte de Ravena."],["Rômulo Augústulo","c. 461–depois de 476","Último imperador do Ocidente, ainda menino."]],
+ say:"Dividido, o Ocidente romano se desfaz em reinos germânicos, enquanto o Oriente segue firme."},
+// ---------------- GRÉCIA ----------------
+{id:"grecia-arcaica", lane:"grecia", pol:"polis", name:"Grécia Arcaica", from:-800, to:-480,
+ sum:"Depois de séculos de declínio, os gregos voltam a escrever, agora com um alfabeto adaptado dos fenícios. Surgem as pólis, cidades-Estado independentes, e os gregos fundam colônias da Espanha ao Mar Negro. Homero, os Jogos Olímpicos e os primeiros filósofos são deste período.",
+ gov:"Cada pólis tinha seu governo: reis, aristocracias, tiranos e, no fim do período, a primeira democracia em Atenas.",
+ life:"Um mundo de cidades pequenas, que competiam entre si, mas compartilhavam a língua, os deuses e os santuários, como Delfos e Olímpia.",
+ people:[["Homero","séc. VIII a.C.?","Poeta a quem se atribuem a Ilíada e a Odisseia."],["Sólon","c. 630–560 a.C.","Legislador de Atenas que aboliu a escravidão por dívidas."],["Tales de Mileto","c. 624–546 a.C.","Considerado o primeiro filósofo grego."],["Safo","c. 630–570 a.C.","Poeta de Lesbos, uma das grandes vozes líricas da Antiguidade."]],
+ say:"Na Grécia arcaica, nascem as pólis, o alfabeto grego, os Jogos Olímpicos e os primeiros filósofos."},
+{id:"grecia-classica", lane:"grecia", pol:"polis", name:"Grécia Clássica", from:-480, to:-323,
+ sum:"Depois de vencer os persas, Atenas vive seu auge: democracia, teatro, o Partenon, a história de Heródoto e a filosofia de Sócrates e Platão. A rivalidade com Esparta leva à Guerra do Peloponeso, que enfraquece todas as cidades e abre caminho para a Macedônia.",
+ gov:"Em Atenas, a democracia direta: cidadãos homens votavam na assembleia, e muitos cargos eram sorteados. Mulheres, estrangeiros e escravizados não votavam. Esparta tinha dois reis e um conselho de anciãos.",
+ life:"Em Atenas, a vida pública acontecia na ágora, no teatro e nos ginásios. Uma parte grande da população era escravizada.",
+ people:[["Péricles","c. 495–429 a.C.","Líder de Atenas no seu auge."],["Sócrates","c. 470–399 a.C.","Filósofo que questionava tudo e foi condenado à morte."],["Platão","c. 428–348 a.C.","Discípulo de Sócrates e fundador da Academia."],["Aristóteles","384–322 a.C.","Discípulo de Platão e professor de Alexandre."]],
+ say:"Na Grécia clássica, Atenas vence os persas e vive seu auge: democracia, teatro, filosofia."},
+{id:"macedonia", lane:"grecia", pol:"macedonia", name:"Macedônia de Filipe e Alexandre", from:-359, to:-323,
+ sum:"Filipe II transforma a Macedônia, um reino do norte considerado periférico, na maior potência da Grécia. Seu filho Alexandre conquista, em pouco mais de dez anos, o Império Persa, do Egito até o rio Indo.",
+ gov:"Uma monarquia militar, com o rei como chefe do exército e uma nobreza de cavaleiros, os “companheiros” do rei.",
+ life:"Os exércitos levam a língua e a cultura gregas a regiões muito distantes, e Alexandre funda dezenas de cidades com seu nome.",
+ people:[["Filipe II","382–336 a.C.","Reformou o exército e dominou a Grécia."],["Alexandre, o Grande","356–323 a.C.","Conquistou o Império Persa e morreu aos 32 anos."]],
+ say:"Filipe e seu filho Alexandre levam a Macedônia do norte da Grécia até a Índia em pouco mais de vinte anos."},
+{id:"helenistico", lane:"grecia", pol:"antigonida", name:"Mundo Helenístico", from:-323, to:-31,
+ sum:"Depois da morte de Alexandre, seus generais dividem o império em reinos: os Ptolomeus no Egito, os Selêucidas na Ásia e os Antigônidas na Macedônia. A cultura grega se mistura com a egípcia, a persa e a indiana, e cidades como Alexandria se tornam centros de ciência.",
+ gov:"Reis de origem macedônica, muitas vezes tratados como deuses, governando povos de outras culturas com uma elite grega.",
+ life:"A biblioteca de Alexandria, a geometria de Euclides, Arquimedes em Siracusa e a escultura cheia de movimento são deste período.",
+ people:[["Euclides","c. 300 a.C.","Matemático de Alexandria, autor dos “Elementos”."],["Arquimedes","c. 287–212 a.C.","Matemático e inventor de Siracusa."],["Eratóstenes","c. 276–194 a.C.","Calculou a circunferência da Terra com notável precisão."]],
+ say:"O império de Alexandre se divide em reinos gregos, e a cultura grega se espalha do Egito à Ásia Central."},
+{id:"roma-oriente", lane:"grecia", pol:"roma_oriente", name:"Império Romano do Oriente", from:395, to:480,
+ sum:"A metade oriental do império, com capital em Constantinopla, é mais rica, mais populosa e mais urbana. Ela resiste às crises que derrubam o Ocidente e durará ainda mil anos, até 1453. Mais tarde, os historiadores a chamariam de Império Bizantino.",
+ gov:"Um imperador com poder absoluto, uma corte cerimonial e uma burocracia eficiente. A Igreja ganha um papel político enorme.",
+ life:"O grego é a língua do dia a dia, e o latim, a do governo e do direito. Constantinopla se torna a maior cidade cristã do mundo.",
+ people:[["Arcádio","377–408","Primeiro imperador do Oriente após a divisão."],["Teodósio II","401–450","Construiu as grandes muralhas de Constantinopla."]],
+ say:"No Oriente, o império romano segue firme, com capital em Constantinopla."},
+// ---------------- ÁFRICA ----------------
+{id:"cartago", lane:"africa", pol:"cartago", name:"Cartago", from:-814, to:-146,
+ sum:"Fundada por colonos fenícios de Tiro, Cartago se torna a maior potência comercial do Mediterrâneo ocidental, com feitorias na Sicília, na Sardenha e na Espanha. Disputa o domínio do mar com os gregos e depois com Roma, em três guerras que terminam com sua destruição.",
+ gov:"Uma república oligárquica: dois magistrados eleitos por ano, os sufetas, e um conselho de famílias ricas. Aristóteles elogiou sua constituição.",
+ life:"Uma cidade de comerciantes e navegadores, com dois portos e um grande estaleiro militar. A língua era o púnico, derivado do fenício.",
+ people:[["Elissa (Dido)","lendária","Princesa de Tiro que, segundo a lenda, fundou Cartago."],["Amílcar Barca","c. 275–228 a.C.","General que conquistou o sul da Espanha."],["Aníbal","247–183 a.C.","General que atravessou os Alpes e quase derrotou Roma."]],
+ say:"Cartago, fundada por fenícios, domina o comércio do Mediterrâneo ocidental até ser destruída por Roma."},
+{id:"egito-tardio", lane:"africa", pol:"egito", name:"Egito do Período Tardio", from:-820, to:-332,
+ sum:"O Egito, já com mais de dois mil anos de história, é governado por dinastias de várias origens: líbias, núbias, saítas e até persas. Mesmo enfraquecido, continua sendo uma referência de saber e de religião para gregos e outros povos.",
+ gov:"Faraós de dinastias variadas, com períodos de domínio estrangeiro: os núbios de Kush (séc. VIII–VII a.C.) e os persas (525–404 e 343–332 a.C.).",
+ life:"Templos, sacerdotes e escribas continuam a tradição antiga. Comerciantes gregos se instalam no delta do Nilo.",
+ people:[["Taharqa","séc. VII a.C.","Faraó núbio que governou do Sudão até o delta."],["Psamético I","séc. VII a.C.","Reunificou o Egito e abriu o país aos gregos."]],
+ say:"O Egito, antigo de mais de dois mil anos, troca de mãos entre núbios, egípcios e persas."},
+{id:"ptolomaico", lane:"africa", pol:"ptolomaico", name:"Egito Ptolomaico", from:-305, to:-30,
+ sum:"Um general de Alexandre, Ptolomeu, funda uma dinastia grega que governa o Egito por três séculos. Alexandria, com sua biblioteca e seu farol, torna-se a maior cidade do Mediterrâneo. A dinastia termina com Cleópatra VII.",
+ gov:"Reis gregos que se apresentavam aos egípcios como faraós, com uma administração muito centralizada e eficiente na cobrança de impostos.",
+ life:"Uma sociedade em duas línguas: o grego da elite e o egípcio do povo. A Pedra de Roseta, escrita nas duas línguas, é desse período.",
+ people:[["Ptolomeu I","c. 367–282 a.C.","General de Alexandre e fundador da dinastia."],["Cleópatra VII","69–30 a.C.","Última rainha, a única da dinastia a falar egípcio."]],
+ say:"No Egito, uma dinastia grega governa como faraós, e Alexandria vira a capital do saber."},
+{id:"africa-romana", lane:"africa", pol:"roma", name:"África e Egito romanos", from:-146, to:439,
+ sum:"Depois de destruir Cartago, Roma transforma o norte da África em uma das regiões mais ricas do império, grande produtora de trigo e azeite. O Egito, anexado em 30 a.C., alimenta a cidade de Roma. A região dá ao império imperadores, escritores e santos.",
+ gov:"Províncias governadas por representantes do Senado ou do imperador. O Egito era propriedade pessoal do imperador.",
+ life:"Cidades romanas como Leptis Magna e Timgad, mosaicos, anfiteatros e uma Igreja cristã forte, com bispos influentes.",
+ people:[["Septímio Severo","145–211","Imperador nascido em Leptis Magna, na atual Líbia."],["Agostinho de Hipona","354–430","Bispo e pensador cristão, autor das “Confissões”."]],
+ say:"Sob Roma, o norte da África e o Egito se tornam o celeiro do império."},
+{id:"axum", lane:"africa", pol:"axum", name:"Reino de Axum", from:100, to:480,
+ sum:"No planalto da atual Etiópia e da Eritreia, Axum controla o comércio entre o Mediterrâneo, a Arábia e a Índia pelo mar Vermelho. Cunha moedas de ouro próprias e, no século IV, adota o cristianismo.",
+ gov:"Um rei dos reis que governava reinos vassalos, com capital em Axum.",
+ life:"Obeliscos gigantes de pedra, uma escrita própria, o ge'ez, e um porto internacional, Adulis.",
+ people:[["Ezana","séc. IV","Rei que converteu Axum ao cristianismo."]],
+ say:"Na África oriental, o reino de Axum enriquece com o comércio do mar Vermelho e se torna cristão."},
+// ---------------- PÉRSIA ----------------
+{id:"assirio", lane:"persia", pol:"assirio", name:"Império Neoassírio", from:-820, to:-609,
+ sum:"A partir do norte da Mesopotâmia, os assírios criam o primeiro grande império com um exército profissional, do Egito ao Irã. Eram temidos pela violência das campanhas, mas também construíram palácios e bibliotecas enormes.",
+ gov:"Um rei com poder absoluto, governadores de províncias e a deportação de povos inteiros para evitar revoltas.",
+ life:"Em Nínive, o rei Assurbanípal reuniu uma biblioteca de dezenas de milhares de tabuletas de argila, onde foi encontrada a Epopeia de Gilgamesh.",
+ people:[["Tiglate-Pileser III","séc. VIII a.C.","Reorganizou o exército e as províncias."],["Senaqueribe","séc. VII a.C.","Fez de Nínive sua capital."],["Assurbanípal","séc. VII a.C.","Último grande rei assírio, colecionador de textos."]],
+ say:"Os assírios criam, a partir de Nínive, um império temido que vai do Egito ao Irã."},
+{id:"babilonico", lane:"persia", pol:"babilonico", name:"Império Neobabilônico", from:-626, to:-539,
+ sum:"A Babilônia se liberta da Assíria e, com os medos, destrói Nínive. Sob Nabucodonosor II, torna-se a maior cidade do mundo, com a Porta de Ishtar. É nesse período que Jerusalém é destruída e os judeus são levados para o exílio.",
+ gov:"Um rei apoiado pelos sacerdotes do deus Marduk.",
+ life:"Astrônomos babilônios registram os movimentos do céu com uma precisão que influenciaria os gregos.",
+ people:[["Nabopolassar","séc. VII a.C.","Fundador da dinastia."],["Nabucodonosor II","c. 642–562 a.C.","Reconstruiu Babilônia e destruiu Jerusalém."]],
+ say:"A Babilônia renasce e se torna, por algumas décadas, a maior cidade do mundo."},
+{id:"aquemenida", lane:"persia", pol:"aquemenida", name:"Império Aquemênida", from:-550, to:-330,
+ sum:"Ciro, o Grande, une os persas e os medos e conquista, em poucas décadas, a Anatólia, a Babilônia e depois o Egito. É o maior império até então, com estradas reais, uma moeda comum e uma tolerância religiosa famosa.",
+ gov:"O “rei dos reis” governava por meio de sátrapas, governadores de províncias, que eram vigiados pelos “olhos e ouvidos do rei”. Os povos mantinham costumes e religiões.",
+ life:"Persépolis, a Estrada Real com estações de cavalos e o zoroastrismo, religião da corte.",
+ people:[["Ciro, o Grande","c. 600–530 a.C.","Fundador do império."],["Dario I","c. 550–486 a.C.","Organizou as satrapias e construiu Persépolis."],["Xerxes I","c. 518–465 a.C.","Invadiu a Grécia e foi derrotado em Salamina."]],
+ say:"Ciro funda o Império Persa, o maior do mundo até então, do Egito ao rio Indo."},
+{id:"seleucida", lane:"persia", pol:"seleucida", name:"Império Selêucida", from:-312, to:-63,
+ sum:"Seleuco, general de Alexandre, fica com a maior parte do antigo império persa. Seus sucessores fundam cidades gregas como Antioquia, mas perdem aos poucos o Oriente para os partas e, por fim, a Síria para Roma.",
+ gov:"Reis gregos governando uma imensa diversidade de povos, com colônias de veteranos macedônios.",
+ life:"Antioquia e Selêucia se tornam grandes cidades, e o grego se espalha como língua de comércio até a Ásia Central.",
+ people:[["Seleuco I","c. 358–281 a.C.","General de Alexandre e fundador da dinastia."],["Antíoco III","c. 241–187 a.C.","Recuperou territórios e foi derrotado por Roma."]],
+ say:"Os herdeiros de Alexandre na Ásia, os Selêucidas, perdem aos poucos seu território para os partas e para Roma."},
+{id:"parta", lane:"persia", pol:"parta", name:"Império Parta", from:-247, to:224,
+ sum:"Os partas, vindos do nordeste do Irã, expulsam os selêucidas e se tornam o grande rival de Roma no Oriente. Controlam a rota da seda entre Roma e a China e derrotam um exército romano em Carras.",
+ gov:"Um rei dos reis com uma nobreza poderosa e reinos vassalos, mais descentralizado que o império aquemênida.",
+ life:"Cavaleiros arqueiros, famosos pela “flecha parta”, disparada enquanto fingiam fugir.",
+ people:[["Mitrídates I","séc. II a.C.","Conquistou a Mesopotâmia."],["Surena","séc. I a.C.","General que derrotou Crasso em Carras."]],
+ say:"Os partas tomam o Irã e a Mesopotâmia e passam a controlar a rota entre Roma e a China."},
+{id:"sassanida", lane:"persia", pol:"sassanida", name:"Império Sassânida", from:224, to:480,
+ sum:"Ardashir derruba os partas e funda uma nova dinastia persa, que se via herdeira dos aquemênidas. Os sassânidas enfrentam Roma por quatro séculos e chegam a capturar um imperador romano.",
+ gov:"Um Estado centralizado, com o zoroastrismo como religião oficial e uma nobreza e um clero poderosos.",
+ life:"Arte em relevos de pedra, palácios com grandes abóbadas e uma corte que influenciaria Bizâncio e, mais tarde, o mundo islâmico.",
+ people:[["Ardashir I","séc. III","Fundador da dinastia."],["Shapur I","séc. III","Derrotou e capturou o imperador Valeriano."]],
+ say:"Os sassânidas renovam a Pérsia e enfrentam Roma de igual para igual."},
+// ---------------- ÍNDIA ----------------
+{id:"vedico", lane:"india", pol:"vedico", name:"Período Védico Tardio", from:-820, to:-600,
+ sum:"No vale do Ganges, reinos e clãs se organizam em torno de uma religião baseada nos Vedas, hinos transmitidos oralmente em sânscrito. É nesse período que surgem as primeiras Upanishads e se consolida a divisão da sociedade em varnas.",
+ gov:"Reis e assembleias de clãs, com os brâmanes como sacerdotes e guardiões dos rituais.",
+ life:"Uma sociedade agrícola, com o ferro abrindo as florestas do Ganges para o cultivo de arroz.",
+ people:[["Yajnavalkya","séc. VIII–VII a.C.?","Sábio associado às primeiras Upanishads."]],
+ say:"No vale do Ganges, a tradição védica dá origem às primeiras Upanishads."},
+{id:"mahajanapadas", lane:"india", pol:"mahajanapadas", name:"Mahajanapadas", from:-600, to:-322,
+ sum:"Dezesseis grandes reinos e repúblicas disputam o norte da Índia. É uma época de cidades, moedas e novos movimentos religiosos: o budismo, de Sidarta Gautama, e o jainismo, de Mahavira. O reino de Magadha acaba por se sobressair.",
+ gov:"Reinos e também repúblicas de clãs, chamadas gana-sangha, governadas por assembleias.",
+ life:"Mercadores, monges itinerantes e debates filosóficos nas cidades em crescimento.",
+ people:[["Sidarta Gautama, o Buda","séc. V a.C.","Fundador do budismo; suas datas são debatidas."],["Mahavira","séc. VI–V a.C.","Grande mestre do jainismo."],["Bimbisara","séc. V a.C.","Rei de Magadha, contemporâneo do Buda."]],
+ say:"No norte da Índia, reinos e repúblicas convivem com o nascimento do budismo e do jainismo."},
+{id:"maurya", lane:"india", pol:"maurya", name:"Império Maurya", from:-322, to:-185,
+ sum:"Chandragupta Maurya une o norte da Índia logo depois da passagem de Alexandre. Seu neto, Ashoka, depois de uma guerra sangrenta em Kalinga, adota o budismo e espalha mensagens de tolerância gravadas em pilares e rochas por todo o império.",
+ gov:"Um império centralizado, com capital em Pataliputra, espiões, burocracia e um tratado de governo atribuído ao ministro Kautilya, o Arthashastra.",
+ life:"Pataliputra era uma das maiores cidades do mundo, segundo o embaixador grego Megástenes.",
+ people:[["Chandragupta Maurya","c. 350–295 a.C.","Fundador do império."],["Kautilya","séc. IV a.C.","Ministro e estrategista, autor tradicional do Arthashastra."],["Ashoka","c. 304–232 a.C.","Imperador que se tornou budista e pregou a não violência."]],
+ say:"Os Maurya unem quase toda a Índia, e Ashoka, arrependido da guerra, adota o budismo."},
+{id:"pos-maurya", lane:"india", pol:"kushan", name:"Indo-gregos, Shunga e Kushan", from:-185, to:320,
+ sum:"Depois dos Maurya, a Índia se divide entre vários reinos. No noroeste, reinos indo-gregos e depois o Império Kushan unem a Ásia Central à Índia. Na arte de Gandhara, o Buda passa a ser representado com traços inspirados na escultura grega.",
+ gov:"Reinos diversos; os Kushan governavam um império que ia da Ásia Central ao vale do Ganges.",
+ life:"O budismo se espalha pela Rota da Seda até a China. O comércio por mar com Roma é intenso, e moedas romanas aparecem no sul da Índia.",
+ people:[["Menandro I","séc. II a.C.","Rei indo-grego lembrado em um diálogo budista."],["Kanishka","séc. II","Imperador Kushan protetor do budismo."]],
+ say:"Depois dos Maurya, a Índia se divide, e os Kushan ligam a Índia à Ásia Central e à Rota da Seda."},
+{id:"gupta", lane:"india", pol:"gupta", name:"Império Gupta", from:320, to:480,
+ sum:"Os Gupta reúnem o norte da Índia e criam um período de estabilidade que muitos chamam de “era de ouro”. A matemática, a astronomia, a literatura em sânscrito e a arte florescem.",
+ gov:"Um imperador no centro e reinos aliados nas bordas, com bastante autonomia local.",
+ life:"Poesia de Kalidasa, a universidade budista de Nalanda e avanços na matemática que levariam ao sistema decimal com o zero.",
+ people:[["Chandragupta I","séc. IV","Fundador da dinastia."],["Samudragupta","séc. IV","Expandiu o império com campanhas militares."],["Kalidasa","séc. IV–V","Grande poeta e dramaturgo em sânscrito."]],
+ say:"Na Índia, os Gupta abrem uma era de ouro de ciência, poesia e arte."},
+// ---------------- CHINA ----------------
+{id:"primaveras", lane:"china", pol:"zhou", name:"Primaveras e Outonos", from:-771, to:-476,
+ sum:"A dinastia Zhou perde o controle real, e centenas de Estados passam a agir com independência, embora reconheçam o rei Zhou como figura simbólica. É a época de Confúcio, que busca restaurar a ordem pela ética e pelos rituais.",
+ gov:"O rei Zhou tinha um poder religioso, mas os duques e marqueses dos Estados governavam de fato.",
+ life:"Uma aristocracia de guerreiros em carros de combate, rituais com vasos de bronze e escolas de pensamento nascentes.",
+ people:[["Confúcio","551–479 a.C.","Mestre que ensinou a ética, o respeito e o bom governo."],["Laozi","séc. VI a.C.?","Mestre lendário a quem se atribui o Tao Te Ching."]],
+ say:"Na China, o poder dos reis Zhou se desfaz, e Confúcio ensina como restaurar a ordem."},
+{id:"reinos-combatentes", lane:"china", pol:"zhou", name:"Reinos Combatentes", from:-475, to:-221,
+ sum:"Sete grandes Estados lutam pela supremacia em guerras cada vez maiores, com exércitos de centenas de milhares de soldados de infantaria. É também a época das Cem Escolas de pensamento: confucionismo, taoismo, legalismo e moísmo.",
+ gov:"Reis com burocracias centralizadas, que escolhiam funcionários pela capacidade e não só pela linhagem.",
+ life:"Uso do ferro na agricultura, canais de irrigação e a escrita de “A Arte da Guerra”, atribuída a Sun Tzu.",
+ people:[["Mêncio","c. 372–289 a.C.","Seguidor de Confúcio."],["Shang Yang","séc. IV a.C.","Reformador legalista do Estado de Qin."],["Sun Tzu","séc. V a.C.?","Estrategista a quem se atribui “A Arte da Guerra”."]],
+ say:"Sete reinos lutam pela China, enquanto as Cem Escolas debatem como governar."},
+{id:"qin", lane:"china", pol:"qin", name:"Dinastia Qin", from:-221, to:-206,
+ sum:"O rei de Qin conquista os outros seis reinos e se proclama o Primeiro Imperador. Em apenas quinze anos, unifica a escrita, as moedas, os pesos e as medidas, constrói estradas e as primeiras seções da Grande Muralha. A dinastia cai logo após sua morte.",
+ gov:"Um Estado legalista, com leis rígidas, províncias governadas por funcionários nomeados e trabalhos forçados em grandes obras.",
+ life:"O Exército de Terracota, com milhares de soldados de argila, guardava o túmulo do imperador.",
+ people:[["Qin Shi Huang","259–210 a.C.","O Primeiro Imperador da China unificada."],["Li Si","c. 280–208 a.C.","Chanceler que padronizou a escrita."]],
+ say:"Qin Shi Huang unifica a China, com uma só escrita, uma só moeda e uma só lei."},
+{id:"han", lane:"china", pol:"han", name:"Dinastia Han", from:-206, to:220,
+ sum:"Os Han mantêm o Estado unificado dos Qin, mas com o confucionismo como base do governo. Em quatro séculos, criam a identidade chinesa: até hoje, o maior grupo étnico da China se chama “han”. A Rota da Seda se abre para o Ocidente.",
+ gov:"Um imperador, uma burocracia de funcionários formados nos clássicos confucianos e, mais tarde, exames para escolher alguns deles.",
+ life:"O papel, a bússola primitiva, o sismógrafo de Zhang Heng e a história escrita por Sima Qian.",
+ people:[["Liu Bang","256–195 a.C.","Camponês que fundou a dinastia."],["Imperador Wu","156–87 a.C.","Expandiu o império e oficializou o confucionismo."],["Sima Qian","c. 145–86 a.C.","Grande historiador chinês."],["Ban Zhao","c. 45–117","Historiadora e escritora da corte."]],
+ say:"Os Han governam a China por quatro séculos, e a Rota da Seda liga o Oriente ao Ocidente."},
+{id:"tres-reinos", lane:"china", pol:"tres_reinos", name:"Três Reinos", from:220, to:280,
+ sum:"Com o fim dos Han, a China se divide em três reinos, Wei, Shu e Wu. É um período curto e violento, que mais tarde inspirou um dos romances mais famosos da literatura chinesa.",
+ gov:"Três Estados rivais, cada um com seu imperador.",
+ life:"Guerras, fome e grandes deslocamentos de população; a população registrada cai muito.",
+ people:[["Cao Cao","155–220","Senhor da guerra que preparou o reino de Wei."],["Zhuge Liang","181–234","Estrategista de Shu, símbolo de inteligência."]],
+ say:"Sem os Han, a China se parte em três reinos em guerra."},
+{id:"jin-nanbei", lane:"china", pol:"jin", name:"Jin e Dinastias do Norte e do Sul", from:280, to:480,
+ sum:"A dinastia Jin reunifica a China por pouco tempo. No início do século IV, povos das estepes tomam o norte, e a corte foge para o sul. A China fica dividida por quase três séculos, enquanto o budismo se espalha por todo o país.",
+ gov:"No norte, reinos fundados por povos das estepes; no sul, dinastias chinesas com capital em Jiankang, atual Nanquim.",
+ life:"Mosteiros e grutas budistas, a caligrafia de Wang Xizhi e a migração de milhões de pessoas para o sul.",
+ people:[["Wang Xizhi","303–361","O mais célebre calígrafo chinês."],["Faxian","c. 337–422","Monge que viajou à Índia em busca de textos budistas."]],
+ say:"Dividida entre norte e sul, a China vê o budismo se espalhar pelo país."}
+];
+
+const ART = {
+  "dido-cartago":{t:"Dido construindo Cartago", by:"J. M. W. Turner", y:1815, wiki:"Dido building Carthage", about:"Turner imagina a fundação de Cartago como um porto dourado ao nascer do sol."},
+  "cilindro-ciro":{t:"Cilindro de Ciro", by:"Escribas babilônios", y:-539, wiki:"Cyrus Cylinder", about:"Cilindro de argila em que Ciro anuncia a conquista da Babilônia e a volta de povos deportados aos seus templos."},
+  "portao-ishtar":{t:"Porta de Ishtar", by:"Construtores de Nabucodonosor II", y:-575, wiki:"Ishtar Gate", about:"Porta de tijolos esmaltados em azul, com dragões e touros, hoje reconstruída em Berlim."},
+  "caca-leoes":{t:"Caça aos leões de Assurbanípal", by:"Escultores assírios", y:-645, wiki:"Lion Hunt of Ashurbanipal", about:"Relevos de alabastro do palácio de Nínive, hoje no Museu Britânico."},
+  "partenon":{t:"Partenon", by:"Ictino, Calícrates e Fídias", y:-438, wiki:"Parthenon", about:"Templo de Atena na Acrópole de Atenas, símbolo da Grécia clássica."},
+  "morte-socrates":{t:"A Morte de Sócrates", by:"Jacques-Louis David", y:1787, wiki:"The Death of Socrates", about:"David mostra Sócrates calmo, ensinando, enquanto recebe a taça de cicuta."},
+  "leonidas":{t:"Leônidas nas Termópilas", by:"Jacques-Louis David", y:1814, wiki:"Leonidas at Thermopylae", about:"O rei espartano e seus soldados antes da batalha."},
+  "escola-atenas":{t:"A Escola de Atenas", by:"Rafael", y:1511, wiki:"The School of Athens", about:"Platão e Aristóteles no centro de um encontro imaginário de filósofos gregos."},
+  "mosaico-alexandre":{t:"Mosaico de Alexandre", by:"Mosaicista romano, a partir de pintura grega", y:-100, wiki:"Alexander Mosaic", about:"Encontrado em Pompeia, mostra Alexandre diante de Dario III na batalha."},
+  "batalha-isso":{t:"A Batalha de Alexandre em Isso", by:"Albrecht Altdorfer", y:1529, wiki:"The Battle of Alexander at Issus", about:"Uma batalha vista do alto, com milhares de soldados e um céu cósmico."},
+  "capitel-ashoka":{t:"Capitel dos Leões de Ashoka", by:"Escultores Maurya", y:-250, wiki:"Lion Capital of Ashoka", about:"Quatro leões de costas, do alto de um pilar de Sarnath. Hoje é o emblema nacional da Índia."},
+  "exercito-terracota":{t:"Exército de Terracota", by:"Artesãos Qin", y:-210, wiki:"Terracotta Army", about:"Milhares de soldados de argila em tamanho real, enterrados com o Primeiro Imperador."},
+  "anibal-alpes":{t:"Tempestade de neve: Aníbal e seu exército cruzando os Alpes", by:"J. M. W. Turner", y:1812, wiki:"Snow Storm: Hannibal and his Army Crossing the Alps", about:"Um redemoinho de neve engole o exército, e Aníbal mal aparece."},
+  "pedra-roseta":{t:"Pedra de Roseta", by:"Escribas ptolomaicos", y:-196, wiki:"Rosetta Stone", about:"Um decreto em hieróglifos, demótico e grego, que permitiu decifrar a escrita egípcia em 1822."},
+  "vercingetorix":{t:"Vercingetórix entrega as armas a César", by:"Lionel Royer", y:1899, wiki:"Vercingetorix Throws Down His Arms at the Feet of Julius Caesar", about:"O chefe gaulês se rende após o cerco de Alésia."},
+  "morte-cesar":{t:"A Morte de César", by:"Jean-Léon Gérôme", y:1867, wiki:"The Death of Caesar (Gérôme)", cq:"Gérôme Death of Caesar", about:"O corpo de César caído, enquanto os conspiradores saem em triunfo."},
+  "banquete-cleopatra":{t:"O Banquete de Cleópatra", by:"Giambattista Tiepolo", y:1744, wiki:"The Banquet of Cleopatra (Tiepolo)", cq:"Tiepolo Banquet of Cleopatra Melbourne", about:"Cleópatra dissolve uma pérola no vinagre diante de Marco Antônio."},
+  "augusto-prima-porta":{t:"Augusto de Prima Porta", by:"Escultor romano", y:15, wiki:"Augustus of Prima Porta", about:"Estátua do imperador como general, com a couraça cheia de símbolos de paz."},
+  "ara-pacis":{t:"Ara Pacis", by:"Escultores romanos", y:-9, wiki:"Ara Pacis", about:"Altar da Paz de Augusto, com a família imperial em procissão."},
+  "ultimo-dia-pompeia":{t:"O Último Dia de Pompeia", by:"Karl Briullov", y:1833, wiki:"The Last Day of Pompeii", about:"Moradores tentando fugir enquanto estátuas caem sob a erupção."},
+  "coliseu":{t:"Coliseu", by:"Dinastia Flávia", y:80, wiki:"Colosseum", about:"Anfiteatro para cerca de 50 mil pessoas, inaugurado no ano 80."},
+  "pollice-verso":{t:"Pollice Verso", by:"Jean-Léon Gérôme", y:1872, wiki:"Pollice Verso (Gérôme)", cq:"Gérôme Pollice Verso", about:"O público decide o destino de um gladiador vencido."},
+  "coluna-trajano":{t:"Coluna de Trajano", by:"Escultores romanos", y:113, wiki:"Trajan's Column", about:"Um relevo em espiral de 190 metros conta as guerras contra os dácios."},
+  "panteao":{t:"Panteão", by:"Arquitetos de Adriano", y:125, wiki:"Pantheon, Rome", about:"Templo com a maior cúpula de concreto não armado do mundo, até hoje."},
+  "fayum":{t:"Retratos de Faium", by:"Pintores do Egito romano", y:150, wiki:"Fayum mummy portraits", about:"Retratos pintados sobre madeira e colocados nas múmias, de um realismo impressionante."},
+  "gandhara":{t:"Buda de Gandhara", by:"Escultores Kushan", y:150, wiki:"Greco-Buddhist art", about:"Um dos primeiros retratos do Buda em forma humana, com mantos à maneira grega."},
+  "cavalo-gansu":{t:"Cavalo Voador de Gansu", by:"Artesão Han", y:180, wiki:"Flying Horse of Gansu", about:"Cavalo de bronze em pleno galope, apoiado em uma andorinha."},
+  "romanos-decadencia":{t:"Os Romanos da Decadência", by:"Thomas Couture", y:1847, wiki:"Romans during the Decadence", cq:"Couture Romans of the Decadence", about:"Uma orgia cansada diante das estátuas dos antepassados severos."},
+  "shapur-valeriano":{t:"Relevo de Shapur I e Valeriano", by:"Escultores sassânidas", y:260, wiki:"Naqsh-e Rostam", cq:"Shapur Valerian relief Naqsh-e Rostam", about:"Em Naqsh-e Rostam, o rei persa a cavalo diante de imperadores romanos."},
+  "ponte-milvia":{t:"A Batalha da Ponte Mílvia", by:"Giulio Romano", y:1524, wiki:"Battle of the Milvian Bridge (Giulio Romano)", cq:"Giulio Romano Battle of Milvian Bridge", about:"Afresco do Vaticano feito pela oficina de Rafael."},
+  "obelisco-axum":{t:"Obelisco de Axum", by:"Construtores axumitas", y:330, wiki:"Obelisk of Axum", about:"Estela de 24 metros esculpida como um prédio de vários andares."},
+  "saque-roma":{t:"O Saque de Roma pelos Bárbaros em 410", by:"Joseph-Noël Sylvestre", y:1890, wiki:"Sack of Rome (410)", cq:"Sylvestre Sack of Rome 410", about:"Guerreiros derrubando uma estátua romana, em uma visão do século XIX."},
+  "coroacao-napoleao":{t:"A Coroação de Napoleão", by:"Jacques-Louis David", y:1807, wiki:"The Coronation of Napoleon", about:"Napoleão se coroa imperador com louros à romana."}
+};
+
+const EVENTS = [
+{id:"cartago-fundacao", y:-814, ll:[10.32,36.85], lane:"africa", t:"Fundação de Cartago", art:["dido-cartago"], mark:true,
+ sum:"Colonos fenícios de Tiro fundam Cartago, “cidade nova” em fenício, na costa da atual Tunísia. A data vem de autores gregos e romanos, e a arqueologia indica ocupação pouco depois.",
+ say:"Fenícios de Tiro fundam Cartago, a cidade nova, no norte da África."},
+{id:"zhou-leste", y:-771, ll:[112.45,34.62], lane:"china", t:"Os Zhou fogem para o leste", mark:true,
+ sum:"Invasores saqueiam a capital Zhou, e a corte se muda para Luoyang. Começa o período das Primaveras e Outonos, em que o rei perde o poder real para os Estados.",
+ say:"Na China, a corte Zhou foge para Luoyang, e o poder real começa a se desfazer."},
+{id:"olimpiadas", y:-776, ll:[21.63,37.64], lane:"grecia", t:"Primeiros Jogos Olímpicos",
+ sum:"Segundo a tradição, os primeiros jogos em honra a Zeus acontecem em Olímpia. Os gregos passaram a contar os anos em olimpíadas, períodos de quatro anos.",
+ say:"Em Olímpia, começam os Jogos em honra a Zeus."},
+{id:"roma-fundacao", y:-753, ll:[12.48,41.89], lane:"roma", t:"Fundação lendária de Roma", mark:true,
+ sum:"Segundo a lenda, Rômulo funda Roma depois de matar o irmão, Remo. A data foi calculada séculos depois pelos romanos. A arqueologia mostra aldeias no Palatino desde antes.",
+ say:"Segundo a lenda, Rômulo funda Roma no monte Palatino."},
+{id:"ninive-capital", y:-700, ll:[43.15,36.36], lane:"persia", t:"Nínive, capital do mundo", art:["caca-leoes"], mark:true,
+ sum:"Senaqueribe faz de Nínive a capital assíria, com palácios e um sistema de canais. Décadas depois, Assurbanípal reúne ali sua grande biblioteca.",
+ say:"Nínive se torna a capital do Império Assírio, com palácios e uma grande biblioteca."},
+{id:"ninive-queda", y:-612, ll:[43.15,36.36], lane:"persia", t:"Queda de Nínive",
+ sum:"Babilônios e medos tomam e destroem Nínive. Em poucos anos, o Império Assírio desaparece.",
+ say:"Babilônios e medos destroem Nínive, e o Império Assírio desaparece."},
+{id:"exilio-babilonia", y:-587, ll:[35.23,31.78], lane:"persia", t:"Destruição de Jerusalém e exílio", art:["portao-ishtar"],
+ sum:"Nabucodonosor II destrói Jerusalém e o Primeiro Templo e leva parte da população para a Babilônia. O exílio foi decisivo para a formação dos textos da Bíblia hebraica.",
+ say:"Nabucodonosor destrói Jerusalém, e parte do povo judeu é levada para a Babilônia."},
+{id:"confucio", y:-551, ll:[116.99,35.6], lane:"china", t:"Nasce Confúcio",
+ sum:"Em Lu, nasce Kong Fuzi, Confúcio. Ele ensinou que a ordem da sociedade depende da virtude dos governantes, do respeito aos pais e dos rituais.",
+ say:"No Estado de Lu, nasce Confúcio, o mestre da ética e do bom governo."},
+{id:"ciro-persia", y:-550, ll:[53.17,30.2], lane:"persia", t:"Ciro funda o Império Persa", mark:true,
+ sum:"Ciro, rei de Anshan, derrota o rei dos medos e une os dois povos. Em vinte anos, conquista a Lídia de Creso e a Babilônia.",
+ say:"Ciro une persas e medos e começa a construir o maior império até então."},
+{id:"babilonia-ciro", y:-539, ll:[44.42,32.54], lane:"persia", t:"Ciro entra na Babilônia", art:["cilindro-ciro"],
+ sum:"Ciro toma a Babilônia quase sem luta e permite que povos deportados, como os judeus, voltem para suas terras.",
+ say:"Ciro entra na Babilônia e permite a volta dos povos exilados."},
+{id:"republica", y:-509, ll:[12.48,41.89], lane:"roma", t:"Nasce a República Romana", mark:true,
+ sum:"Os romanos expulsam o rei Tarquínio, o Soberbo, e passam a eleger dois cônsules por ano. A palavra “rei” se torna odiada em Roma.",
+ say:"Roma expulsa seu último rei e cria a República."},
+{id:"clistenes", y:-508, ll:[23.73,37.97], lane:"grecia", t:"Clístenes e a democracia ateniense", mark:true,
+ sum:"Clístenes reorganiza os cidadãos de Atenas em novas tribos e dá à assembleia o poder de decisão. É considerado o início da democracia ateniense.",
+ say:"No mesmo momento, em Atenas, Clístenes cria a democracia."},
+{id:"buda", y:-480, ll:[84.99,24.69], lane:"india", t:"O Buda ensina no vale do Ganges", mark:true,
+ sum:"Sidarta Gautama, depois de alcançar a iluminação em Bodh Gaya, ensina o caminho do meio entre o prazer e a renúncia. As datas de sua vida são debatidas: ele pode ter vivido no século VI ou no V a.C.",
+ say:"No vale do Ganges, Sidarta Gautama, o Buda, ensina o caminho do meio."},
+{id:"maratona", y:-490, ll:[23.97,38.12], lane:"grecia", t:"Batalha de Maratona",
+ sum:"Os atenienses derrotam o exército de Dario I. A vitória dá confiança à jovem democracia.",
+ say:"Em Maratona, Atenas derrota os persas."},
+{id:"salamina", y:-480, ll:[23.5,37.95], lane:"grecia", t:"Termópilas e Salamina", art:["leonidas"], mark:true,
+ sum:"Xerxes invade a Grécia. Trezentos espartanos e aliados resistem nas Termópilas, e a frota ateniense vence em Salamina. A Pérsia desiste de conquistar a Grécia.",
+ say:"Xerxes invade a Grécia, mas é derrotado no mar, em Salamina."},
+{id:"partenon", y:-447, ll:[23.726,37.9715], lane:"grecia", t:"Construção do Partenon", art:["partenon"],
+ sum:"Sob Péricles, Atenas constrói o Partenon na Acrópole, com dinheiro da liga de cidades aliadas contra a Pérsia.",
+ say:"Péricles constrói o Partenon na Acrópole."},
+{id:"peloponeso", y:-431, ll:[22.43,37.07], lane:"grecia", t:"Guerra do Peloponeso",
+ sum:"Atenas e Esparta, com seus aliados, entram em uma guerra de 27 anos. Atenas perde, e o mundo grego sai enfraquecido.",
+ say:"Atenas e Esparta entram em uma guerra de vinte e sete anos."},
+{id:"socrates", y:-399, ll:[23.72,37.97], lane:"grecia", t:"Morte de Sócrates", art:["morte-socrates","escola-atenas"], mark:true,
+ sum:"Acusado de corromper a juventude e de não respeitar os deuses, Sócrates é condenado pela democracia ateniense a beber cicuta. Seu discípulo Platão conta seus últimos dias.",
+ say:"Atenas condena Sócrates à morte. Seu discípulo Platão vai guardar suas ideias."},
+{id:"issos", y:-333, ll:[36.2,36.8], lane:"grecia", t:"Alexandre vence Dario em Isso", art:["mosaico-alexandre","batalha-isso"], mark:true,
+ sum:"Alexandre derrota o rei persa Dario III na batalha de Isso. Dois anos depois, em Gaugamela, a vitória definitiva abre a Pérsia aos macedônios.",
+ say:"Alexandre derrota o rei persa em Isso e avança sobre o império."},
+{id:"alexandria", y:-331, ll:[29.92,31.2], lane:"africa", t:"Fundação de Alexandria",
+ sum:"No delta do Nilo, Alexandre funda a cidade que levaria seu nome. Sob os Ptolomeus, ela terá a maior biblioteca e o maior farol da Antiguidade.",
+ say:"No Egito, Alexandre funda Alexandria."},
+{id:"alexandre-morte", y:-323, ll:[44.42,32.54], lane:"grecia", t:"Morte de Alexandre", mark:true,
+ sum:"Alexandre morre na Babilônia, aos 32 anos, sem deixar um sucessor adulto. Seus generais, os Diádocos, disputam o império por décadas.",
+ say:"Alexandre morre na Babilônia, aos trinta e dois anos, e seu império se divide."},
+{id:"chandragupta", y:-322, ll:[85.14,25.6], lane:"india", t:"Chandragupta funda o Império Maurya", mark:true,
+ sum:"Chandragupta Maurya toma o trono de Magadha e, em poucos anos, unifica o norte da Índia. Em 305 a.C., ele faz um acordo com Seleuco, general de Alexandre.",
+ say:"Na Índia, Chandragupta Maurya une o norte do subcontinente."},
+{id:"kalinga", y:-261, ll:[85.8,20.3], lane:"india", t:"Guerra de Kalinga e a conversão de Ashoka", art:["capitel-ashoka"], mark:true,
+ sum:"Ashoka conquista Kalinga com enorme violência. Arrependido, ele se volta para o budismo e manda gravar em pilares e rochas mensagens de tolerância e respeito à vida.",
+ say:"Depois de uma guerra sangrenta em Kalinga, o imperador Ashoka se volta para o budismo."},
+{id:"punica1", y:-264, ll:[14.0,37.5], lane:"roma", t:"Primeira Guerra Púnica",
+ sum:"Roma e Cartago disputam a Sicília. Para vencer, Roma constrói sua primeira grande frota. Em 241 a.C., a Sicília se torna a primeira província romana.",
+ say:"Roma e Cartago lutam pela Sicília."},
+{id:"qin-unifica", y:-221, ll:[108.7,34.33], lane:"china", t:"Qin Shi Huang unifica a China", art:["exercito-terracota"], mark:true,
+ sum:"O rei de Qin vence o último dos reinos rivais e se proclama Primeiro Imperador. Ele padroniza a escrita, as moedas e as medidas.",
+ say:"O rei de Qin conquista seus rivais e se proclama o Primeiro Imperador da China."},
+{id:"anibal", y:-218, ll:[6.9,45.2], lane:"africa", t:"Aníbal atravessa os Alpes", art:["anibal-alpes"], mark:true,
+ sum:"Aníbal parte da Espanha com dezenas de milhares de soldados e elefantes de guerra, atravessa os Alpes e vence os romanos na Itália, em Trébia, Trasimeno e Canas.",
+ say:"Aníbal, de Cartago, atravessa os Alpes com elefantes e invade a Itália."},
+{id:"han-fundacao", y:-206, ll:[108.94,34.27], lane:"china", t:"Começa a dinastia Han",
+ sum:"Depois da queda dos Qin e de uma guerra civil, Liu Bang funda a dinastia Han, com capital em Chang'an.",
+ say:"Liu Bang funda a dinastia Han."},
+{id:"zama", y:-202, ll:[9.27,36.3], lane:"roma", t:"Batalha de Zama",
+ sum:"Cipião, depois chamado Africano, derrota Aníbal no norte da África. Cartago perde sua frota e seu império.",
+ say:"Em Zama, Cipião derrota Aníbal."},
+{id:"roseta", y:-196, ll:[30.42,31.4], lane:"africa", t:"O decreto da Pedra de Roseta", art:["pedra-roseta"],
+ sum:"Sacerdotes egípcios gravam um decreto em honra de Ptolomeu V em três escritas. A pedra foi encontrada em 1799 e decifrada por Champollion em 1822.",
+ say:"No Egito, um decreto é gravado em três escritas: a futura Pedra de Roseta."},
+{id:"cartago-corinto", y:-146, ll:[10.32,36.85], lane:"roma", t:"Roma destrói Cartago e Corinto", mark:true,
+ sum:"No mesmo ano, Roma arrasa Cartago, após um cerco de três anos, e Corinto, na Grécia. O Mediterrâneo passa a ser um mar romano.",
+ say:"No mesmo ano, Roma destrói Cartago e Corinto. O Mediterrâneo se torna um mar romano."},
+{id:"zhang-qian", y:-126, ll:[67.0,37.0], lane:"china", t:"Zhang Qian e a Rota da Seda", art:["cavalo-gansu"], mark:true,
+ sum:"O enviado Zhang Qian volta à corte Han depois de mais de dez anos na Ásia Central. Seu relato sobre os povos do oeste e seus cavalos leva os Han a abrir as rotas comerciais que mais tarde seriam chamadas de Rota da Seda.",
+ say:"O enviado Zhang Qian volta da Ásia Central. Os Han abrem caminho para a Rota da Seda."},
+{id:"gracos", y:-133, ll:[12.48,41.89], lane:"roma", t:"Tibério Graco e a crise da República",
+ sum:"O tribuno Tibério Graco propõe dividir as terras públicas entre os pobres e é morto por senadores. A violência política entra na República.",
+ say:"Em Roma, o tribuno Tibério Graco é morto por senadores, e a violência entra na política."},
+{id:"espartaco", y:-73, ll:[14.43,40.82], lane:"roma", t:"Revolta de Espártaco",
+ sum:"O gladiador Espártaco lidera dezenas de milhares de escravizados contra Roma. A revolta é esmagada em 71 a.C.",
+ say:"O gladiador Espártaco lidera uma grande revolta de escravizados."},
+{id:"alesia", y:-52, ll:[4.5,47.54], lane:"roma", t:"Cerco de Alésia", art:["vercingetorix"],
+ sum:"César vence o chefe gaulês Vercingetórix. A Gália passa a ser romana, e César volta riquíssimo e com um exército fiel.",
+ say:"Em Alésia, César vence os gauleses de Vercingetórix."},
+{id:"carras", y:-53, ll:[39.0,36.87], lane:"persia", t:"Batalha de Carras",
+ sum:"Os partas derrotam o exército de Crasso, um dos homens mais ricos de Roma, que morre na batalha. O Eufrates se torna a fronteira entre Roma e a Pérsia.",
+ say:"Os partas derrotam os romanos em Carras."},
+{id:"rubicao", y:-49, ll:[12.4,44.1], lane:"roma", t:"César atravessa o Rubicão", mark:true,
+ sum:"Ao cruzar com seu exército o rio que separava a Gália da Itália, César desafia o Senado e começa a guerra civil. Diz a tradição que ele disse: “A sorte está lançada.”",
+ say:"César atravessa o rio Rubicão com seu exército e começa a guerra civil."},
+{id:"idos-marco", y:-44, ll:[12.48,41.89], lane:"roma", t:"Assassinato de César", art:["morte-cesar"], mark:true,
+ sum:"Nos Idos de Março, um grupo de senadores mata César, que tinha sido nomeado ditador vitalício. Eles queriam salvar a República, mas o assassinato leva a mais guerras civis.",
+ say:"Nos Idos de Março, senadores matam Júlio César."},
+{id:"accio", y:-31, ll:[20.73,38.95], lane:"roma", t:"Áccio e o fim do Egito ptolomaico", art:["banquete-cleopatra"], mark:true,
+ sum:"Otaviano vence Marco Antônio e Cleópatra na batalha naval de Áccio. Um ano depois, os dois se matam em Alexandria, e o Egito se torna romano.",
+ say:"Em Áccio, Otaviano vence Marco Antônio e Cleópatra. O Egito passa a Roma."},
+{id:"augusto", y:-27, ll:[12.48,41.89], lane:"roma", t:"Augusto, primeiro imperador", art:["augusto-prima-porta","ara-pacis","coroacao-napoleao"], mark:true,
+ sum:"O Senado dá a Otaviano o título de Augusto. Ele afirma ter restaurado a República, mas concentra todos os poderes. É o início do Império.",
+ say:"Otaviano recebe o título de Augusto e se torna, na prática, o primeiro imperador."},
+{id:"jesus", y:30, ll:[35.23,31.78], lane:"roma", t:"Crucificação de Jesus", mark:true,
+ sum:"Na Judeia, província romana, Jesus de Nazaré é crucificado sob o governador Pôncio Pilatos, por volta do ano 30. Seus seguidores espalham sua mensagem pelo império.",
+ say:"Na Judeia, por volta do ano trinta, Jesus de Nazaré é crucificado."},
+{id:"teutoburgo", y:9, ll:[8.1,52.4], lane:"roma", t:"Batalha da Floresta de Teutoburgo",
+ sum:"Tribos germânicas, lideradas por Armínio, destroem três legiões. Roma desiste de conquistar a Germânia, e o Reno vira fronteira.",
+ say:"Na Germânia, três legiões são destruídas, e o Reno vira fronteira."},
+{id:"jerusalem-70", y:70, ll:[35.23,31.78], lane:"roma", t:"Destruição do Templo de Jerusalém",
+ sum:"Depois de uma revolta judaica, o futuro imperador Tito toma Jerusalém e destrói o Segundo Templo.",
+ say:"Roma destrói o Templo de Jerusalém."},
+{id:"vesuvio", y:79, ll:[14.48,40.75], lane:"roma", t:"Erupção do Vesúvio", art:["ultimo-dia-pompeia","coliseu"], mark:true,
+ sum:"O Vesúvio soterra Pompeia e Herculano sob cinzas. As cidades, redescobertas no século XVIII, mostram o cotidiano romano congelado no tempo.",
+ say:"O Vesúvio entra em erupção e soterra Pompeia."},
+{id:"papel", y:105, ll:[112.45,34.62], lane:"china", t:"Cai Lun apresenta o papel", mark:true,
+ sum:"O oficial Cai Lun apresenta ao imperador um papel feito de cascas de árvore, trapos e redes de pesca. Papéis mais simples já existiam, mas ele aperfeiçoou e difundiu a técnica.",
+ say:"Na corte Han, Cai Lun apresenta um novo tipo de papel."},
+{id:"trajano", y:117, ll:[12.48,41.89], lane:"roma", t:"Roma no auge territorial", art:["coluna-trajano","panteao","fayum"], mark:true,
+ sum:"Com as conquistas de Trajano na Dácia e na Mesopotâmia, o Império Romano atinge sua maior extensão. Seu sucessor, Adriano, devolve parte das conquistas e fortifica as fronteiras.",
+ say:"Com Trajano, o Império Romano chega à sua maior extensão."},
+{id:"kanishka", y:127, ll:[71.6,34.0], lane:"india", t:"Kanishka e a arte de Gandhara", art:["gandhara"],
+ sum:"O imperador Kushan Kanishka protege o budismo. Em Gandhara, as primeiras imagens do Buda em forma humana misturam traços gregos e indianos.",
+ say:"No Império Kushan, Kanishka protege o budismo, e nasce a arte de Gandhara."},
+{id:"daqin", y:166, ll:[112.45,34.62], lane:"china", t:"Enviados romanos chegam à China", mark:true,
+ sum:"Os anais Han registram a chegada de enviados de “Daqin”, o império romano, em nome do rei “Andun”, provavelmente Marco Aurélio Antonino. Eram talvez mercadores, mas é o primeiro contato direto registrado.",
+ say:"Os anais chineses registram a chegada de enviados de Roma à corte Han."},
+{id:"turbantes", y:184, ll:[114.5,35.5], lane:"china", t:"Revolta dos Turbantes Amarelos",
+ sum:"Uma grande revolta camponesa, inspirada por um movimento taoista, abala a dinastia Han. Os generais que a reprimem acabam por dividir o império.",
+ say:"A revolta dos Turbantes Amarelos abala a dinastia Han."},
+{id:"caracala", y:212, ll:[12.48,41.89], lane:"roma", t:"Edito de Caracala",
+ sum:"O imperador Caracala concede a cidadania romana a quase todos os homens livres do império.",
+ say:"Caracala dá a cidadania romana a quase todos os homens livres do império."},
+{id:"han-fim", y:220, ll:[112.45,34.62], lane:"china", t:"Fim da dinastia Han", mark:true,
+ sum:"O último imperador Han abdica em favor de Cao Pi, filho de Cao Cao. A China se divide em Três Reinos.",
+ say:"O último imperador Han abdica, e a China se divide em três reinos."},
+{id:"ardashir", y:224, ll:[52.5,29.6], lane:"persia", t:"Ardashir funda o Império Sassânida", mark:true,
+ sum:"Ardashir derrota o último rei parta e funda uma nova dinastia persa, que duraria até a chegada dos árabes, no século VII.",
+ say:"Na Pérsia, Ardashir derruba os partas e funda a dinastia sassânida."},
+{id:"valeriano", y:260, ll:[38.79,37.16], lane:"persia", t:"Shapur captura o imperador Valeriano", art:["shapur-valeriano"], mark:true,
+ sum:"Em Edessa, o rei persa Shapur I derrota e captura o imperador Valeriano, que morre no cativeiro. Foi uma humilhação inédita para Roma.",
+ say:"O rei persa Shapur captura o imperador romano Valeriano."},
+{id:"milvia", y:312, ll:[12.47,41.94], lane:"roma", t:"Constantino na Ponte Mílvia", art:["ponte-milvia"],
+ sum:"Segundo a tradição cristã, Constantino viu um sinal no céu antes da batalha e mandou pintar um símbolo cristão nos escudos. Ele vence e se torna senhor do Ocidente.",
+ say:"Constantino vence na Ponte Mílvia sob um símbolo cristão."},
+{id:"milao", y:313, ll:[9.19,45.46], lane:"roma", t:"Edito de Milão", mark:true,
+ sum:"Constantino e Licínio garantem liberdade de culto a todos, incluindo os cristãos, perseguidos poucos anos antes.",
+ say:"Pelo Edito de Milão, os cristãos ganham liberdade de culto."},
+{id:"gupta-fundacao", y:320, ll:[85.14,25.6], lane:"india", t:"Começa o Império Gupta", mark:true,
+ sum:"Chandragupta I, que casou com uma princesa da poderosa família Licchavi, assume o título de “grande rei dos reis” em Pataliputra.",
+ say:"Em Pataliputra, Chandragupta primeiro funda o Império Gupta."},
+{id:"constantinopla", y:330, ll:[28.98,41.01], lane:"grecia", t:"Fundação de Constantinopla", mark:true,
+ sum:"Constantino inaugura a nova capital no lugar da antiga Bizâncio, entre a Europa e a Ásia. Ela será a capital do império do Oriente por mais de mil anos.",
+ say:"Constantino inaugura Constantinopla, a nova Roma, entre a Europa e a Ásia."},
+{id:"ezana", y:340, ll:[38.72,14.13], lane:"africa", t:"Axum se torna cristão", art:["obelisco-axum"], mark:true,
+ sum:"O rei Ezana se converte ao cristianismo, e suas moedas trocam a lua crescente pela cruz. A Etiópia tem uma das igrejas cristãs mais antigas do mundo.",
+ say:"Em Axum, o rei Ezana se converte ao cristianismo."},
+{id:"adrianopolis", y:378, ll:[26.56,41.68], lane:"roma", t:"Batalha de Adrianópolis", mark:true,
+ sum:"Os godos, que tinham entrado no império fugindo dos hunos, derrotam e matam o imperador Valente. A partir daí, povos germânicos se instalam dentro das fronteiras.",
+ say:"Os godos derrotam e matam o imperador romano em Adrianópolis."},
+{id:"tessalonica", y:380, ll:[22.94,40.64], lane:"roma", t:"Cristianismo, religião oficial",
+ sum:"Pelo Edito de Tessalônica, o imperador Teodósio torna o cristianismo de Niceia a religião oficial do império.",
+ say:"Teodósio torna o cristianismo a religião oficial do império."},
+{id:"divisao", y:395, ll:[18.0,42.0], lane:"roma", t:"O império se divide", mark:true,
+ sum:"Com a morte de Teodósio, o império é dividido entre seus filhos: Honório no Ocidente e Arcádio no Oriente. Não seria mais reunido.",
+ say:"Com a morte de Teodósio, o império se divide para sempre em Ocidente e Oriente."},
+{id:"faxian", y:399, ll:[85.4,25.1], lane:"india", t:"O monge Faxian viaja à Índia",
+ sum:"O monge chinês Faxian parte para a Índia em busca de textos budistas. Seu relato descreve a Índia Gupta como pacífica e próspera.",
+ say:"O monge chinês Faxian chega à Índia dos Gupta."},
+{id:"saque-410", y:410, ll:[12.48,41.89], lane:"roma", t:"Os visigodos saqueiam Roma", art:["saque-roma","romanos-decadencia"], mark:true,
+ sum:"Alarico e os visigodos saqueiam Roma por três dias. A cidade já não era a capital, mas o choque foi enorme em todo o império. Agostinho escreveu “A Cidade de Deus” em resposta.",
+ say:"Os visigodos saqueiam Roma. Pela primeira vez em oito séculos, a cidade cai."},
+{id:"vandalos-cartago", y:439, ll:[10.32,36.85], lane:"africa", t:"Vândalos tomam Cartago",
+ sum:"Os vândalos, que tinham atravessado da Espanha para a África, tomam Cartago. O Ocidente perde sua província mais rica.",
+ say:"Os vândalos tomam Cartago e a África romana."},
+{id:"atila", y:451, ll:[4.4,48.9], lane:"roma", t:"Átila nos Campos Cataláunicos",
+ sum:"Uma coalizão de romanos e visigodos detém Átila e os hunos na Gália. Átila morre dois anos depois.",
+ say:"Romanos e godos detêm Átila, o rei dos hunos, na Gália."},
+{id:"romulo-augustulo", y:476, ll:[12.2,44.42], lane:"roma", t:"Fim do Império do Ocidente", mark:true,
+ sum:"O chefe germânico Odoacro depõe o jovem imperador Rômulo Augústulo em Ravena e envia as insígnias imperiais a Constantinopla. Para muitos historiadores, termina aqui a Antiguidade no Ocidente; outros preferem falar em uma longa transformação.",
+ say:"Em Ravena, Odoacro depõe o último imperador do Ocidente. Para muitos, termina aqui a Antiguidade."}
+];
+
+/* Acontecimentos fora deste recorte, alcançáveis pelas conexões */
+const EXT = {
+  "renascimento":{t:"Renascimento italiano", y:1500, sum:"Artistas e pensadores italianos dos séculos XV e XVI estudam e imitam os textos, as ruínas e as estátuas da Antiguidade greco-romana.", art:["escola-atenas"]},
+  "traducoes-arabes":{t:"As traduções de Bagdá", y:830, sum:"Nos séculos VIII a X, eruditos do mundo islâmico traduzem para o árabe a filosofia, a medicina e a matemática gregas, persas e indianas, e preservam muito do que se perderia."},
+  "revolucao-francesa":{t:"Revolução Francesa", y:1789, sum:"Os revolucionários franceses se inspiram na República Romana e em Esparta: falam em virtude, cidadania e tiranicídio, e o pintor David leva esses temas para a tela.", art:["morte-socrates"]},
+  "napoleao":{t:"Napoleão imperador", y:1804, sum:"Napoleão se faz coroar imperador com uma coroa de louros dourados, à maneira dos césares, e usa símbolos romanos como a águia.", art:["coroacao-napoleao"]},
+  "imperio-brasil":{t:"Império do Brasil", y:1822, sum:"Dom Pedro I adota o título de imperador, e não o de rei, em 1822. O termo, herdado de Roma via Napoleão, sugeria um poder vindo da aclamação do povo."},
+  "constantinopla-1453":{t:"Queda de Constantinopla", y:1453, sum:"Os otomanos tomam Constantinopla, e termina o último Estado que se dizia herdeiro direto de Roma. Os sultões passam a usar também o título de “César de Roma”."},
+  "numeros-indianos":{t:"Algarismos indo-arábicos", y:1202, sum:"O sistema decimal com o zero, criado na Índia, chega à Europa pelos árabes. Leonardo Fibonacci o divulga em 1202, e ele substitui aos poucos os algarismos romanos."},
+  "papel-europa":{t:"O papel chega à Europa", y:1150, sum:"O papel passa da China ao mundo islâmico no século VIII e chega à Europa pela Espanha no século XII. Sem ele, a imprensa de Gutenberg não teria sido possível."},
+  "direito-civil":{t:"O direito romano no Brasil", y:1916, sum:"O Código Civil brasileiro de 1916, como os de muitos países, vem da tradição do direito romano, compilado por Justiniano no século VI."},
+  "calendario":{t:"O calendário que usamos", y:1582, sum:"O calendário juliano, criado por Júlio César em 46 a.C., foi ajustado pelo papa Gregório XIII em 1582. É o calendário que usamos até hoje."}
+};
+
+/* Conexões: [de, para, tipo, confiança, explicação]
+   tipos: causa · inspirou · reacao · eco · contato · legado.  confiança: amplo · debate */
+const LINKS = [
+ ["republica","clistenes","eco","amplo","No mesmo ano, Roma e Atenas abandonam governos de um só homem e criam formas de governo com participação dos cidadãos, sem contato entre elas."],
+ ["ciro-persia","salamina","causa","amplo","A expansão persa até a Anatólia levou ao conflito com as cidades gregas da Jônia, e daí às Guerras Médicas."],
+ ["babilonia-ciro","exilio-babilonia","reacao","amplo","Ciro permitiu que os judeus exilados voltassem a Jerusalém e reconstruíssem o Templo."],
+ ["ninive-queda","babilonico","causa","amplo","A destruição de Nínive abriu espaço para o novo império babilônico."],
+ ["salamina","partenon","causa","amplo","O dinheiro da liga contra a Pérsia financiou as obras de Péricles em Atenas."],
+ ["peloponeso","macedonia","causa","amplo","A guerra entre Atenas e Esparta enfraqueceu as cidades gregas e facilitou o domínio de Filipe II."],
+ ["socrates","renascimento","inspirou","amplo","Platão, discípulo de Sócrates, foi redescoberto e estudado com paixão na Florença do século XV."],
+ ["socrates","revolucao-francesa","inspirou","amplo","David pintou a morte de Sócrates em 1787 como exemplo de virtude cívica, dois anos antes da Revolução."],
+ ["issos","alexandre-morte","causa","amplo","A vitória sobre Dario abriu o caminho para a conquista do Império Persa, até a Babilônia, onde Alexandre morreria."],
+ ["alexandre-morte","chandragupta","contato","debate","Fontes gregas dizem que o jovem Chandragupta conheceu Alexandre; a retirada macedônia deixou o noroeste da Índia aberto."],
+ ["alexandre-morte","helenistico","causa","amplo","Sem herdeiro, o império foi repartido entre os generais, criando os reinos helenísticos."],
+ ["alexandria","traducoes-arabes","legado","amplo","Muito do saber reunido em Alexandria chegou ao mundo islâmico e foi traduzido em Bagdá."],
+ ["kalinga","kanishka","causa","amplo","Ashoka enviou missionários budistas para o noroeste e além, o que ajudou o budismo a chegar a Gandhara e à Ásia Central."],
+ ["punica1","anibal","causa","amplo","A derrota de Cartago na Primeira Guerra Púnica e a perda da Sicília e da Sardenha alimentaram o desejo de revanche da família Barca."],
+ ["anibal","cartago-corinto","causa","amplo","O trauma da invasão de Aníbal fez muitos romanos defenderem a destruição total de Cartago."],
+ ["cartago-corinto","gracos","causa","debate","A riqueza e os escravizados das conquistas aumentaram a desigualdade na Itália, base da crise social que os Gracos tentaram enfrentar."],
+ ["gracos","rubicao","causa","debate","A violência política iniciada com os Gracos foi crescendo até as guerras civis do século I a.C."],
+ ["alesia","rubicao","causa","amplo","A conquista da Gália deu a César riqueza e um exército leal, que ele usou contra o Senado."],
+ ["idos-marco","augusto","causa","amplo","O assassinato de César não salvou a República: levou a mais guerras e ao poder de seu herdeiro, Otaviano."],
+ ["idos-marco","calendario","legado","amplo","César criou o calendário juliano, base do calendário que usamos hoje."],
+ ["accio","augusto","causa","amplo","A vitória sobre Antônio e Cleópatra deixou Otaviano sem rivais."],
+ ["augusto","napoleao","inspirou","amplo","Napoleão se coroou com louros e adotou a águia, imitando os imperadores romanos."],
+ ["augusto","imperio-brasil","legado","debate","O título de “imperador”, que vem do latim imperator, passou de Roma a Napoleão e depois a Dom Pedro I."],
+ ["jesus","milao","causa","amplo","O cristianismo cresceu por três séculos, apesar das perseguições, até ganhar liberdade de culto."],
+ ["zhang-qian","daqin","causa","amplo","A abertura das rotas para o oeste permitiu, décadas depois, contatos indiretos e enfim diretos com Roma."],
+ ["zhang-qian","kanishka","contato","amplo","A Rota da Seda passava pelo Império Kushan, que lucrava com o comércio entre a China, a Índia e Roma."],
+ ["carras","valeriano","eco","amplo","Três séculos depois de Carras, outra derrota humilhante de Roma para a Pérsia, agora com um imperador capturado."],
+ ["trajano","valeriano","eco","debate","O auge da expansão romana no Oriente contrastava com a fragilidade das fronteiras no século III."],
+ ["papel","papel-europa","legado","amplo","A técnica aperfeiçoada na corte Han levou mais de mil anos para chegar à Europa."],
+ ["turbantes","han-fim","causa","amplo","Os generais que reprimiram a revolta acumularam poder e acabaram por dividir o império."],
+ ["han-fim","saque-410","eco","debate","Roma e a China Han viveram crises parecidas, com generais poderosos e povos das fronteiras, mas com destinos diferentes: a China se reunificou em 589."],
+ ["valeriano","roma-crise","eco","amplo","A captura de Valeriano foi o ponto mais baixo da crise do século III."],
+ ["milvia","milao","causa","amplo","Vitorioso, Constantino passou a favorecer abertamente os cristãos."],
+ ["milao","tessalonica","causa","amplo","Em menos de setenta anos, o cristianismo passou de religião perseguida a religião oficial."],
+ ["constantinopla","constantinopla-1453","legado","amplo","A cidade de Constantino foi a capital do império do Oriente até 1453."],
+ ["constantinopla","divisao","causa","debate","Com a nova capital no Oriente, o centro de poder do império se deslocou, o que facilitou a divisão."],
+ ["ezana","milao","eco","amplo","Quase ao mesmo tempo, dois Estados, Roma e Axum, passam a apoiar o cristianismo."],
+ ["adrianopolis","saque-410","causa","amplo","Os godos que venceram em Adrianópolis foram os ancestrais dos visigodos de Alarico."],
+ ["saque-410","romulo-augustulo","causa","debate","O saque mostrou a fraqueza do Ocidente, que perderia províncias até o fim em 476."],
+ ["vandalos-cartago","romulo-augustulo","causa","amplo","Sem os impostos e o trigo da África, o Ocidente romano não conseguia mais pagar seus exércitos."],
+ ["romulo-augustulo","direito-civil","legado","amplo","O império caiu no Ocidente, mas seu direito sobreviveu, compilado no Oriente e retomado na Europa medieval."],
+ ["gupta-fundacao","numeros-indianos","legado","amplo","Os matemáticos da Índia Gupta, como Aryabhata, usavam o sistema decimal de posição, que depois incluiria o zero."],
+ ["faxian","jin-nanbei","contato","amplo","Monges como Faxian levaram textos budistas da Índia para a China dividida."],
+ ["cartago-fundacao","cartago-corinto","eco","amplo","A cidade fundada por fenícios foi destruída por Roma quase setecentos anos depois."],
+ ["confucio","han","legado","amplo","Os Han fizeram do confucionismo a base da formação dos funcionários do Estado."],
+ ["qin-unifica","han-fundacao","causa","amplo","Os Han herdaram o Estado unificado dos Qin, com sua escrita e suas províncias."],
+ ["buda","kalinga","legado","amplo","Dois séculos após o Buda, o imperador Ashoka adotou e espalhou o budismo."],
+ ["clistenes","revolucao-francesa","inspirou","debate","A democracia ateniense foi uma referência, ao lado de Roma, para os revolucionários do século XVIII."]
+];
+
+</script>
+<script>
+"use strict";
+/* ==========================================================================
+   Utilidades
+   ========================================================================== */
+const $=s=>document.querySelector(s);
+const RAD=Math.PI/180;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function yr(t){ let y=Math.round(t); if(y===0) y=t<0?-1:1; return y; }
+function fmtY(t,long){ const y=yr(t); if(y<0) return `${-y} a.C.`; if(y>=1000 && !long) return String(y); return `${y} d.C.`; }
+function fmtRange(a,b){ if(a<0&&b<0) return `${-a}–${-b} a.C.`; if(a>0&&b>0) return `${a}–${b} d.C.`; return `${fmtY(a)} – ${fmtY(b)}`; }
+function yearsBetween(a,b){ return Math.abs(b-a)-((a<0)!==(b<0)?1:0); }
+const nf=new Intl.NumberFormat('pt-BR');
+function hexA(hex,a){ const n=parseInt(hex.slice(1),16); return `rgba(${n>>16},${n>>8&255},${n&255},${a})`; }
+const store={ get(k,d){ try{ const v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+let toastT=0;
+function toast(msg,ms=2600){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),ms); }
+
+/* ==========================================================================
+   Dados derivados
+   ========================================================================== */
+const LANE=Object.fromEntries(LANES.map((l,i)=>[l.id,{...l,i}]));
+const PER=Object.fromEntries(PERIODS.map(p=>[p.id,p]));
+const EV=Object.fromEntries(EVENTS.map(e=>[e.id,e]));
+const EVS=EVENTS.slice().sort((a,b)=>a.y-b.y);
+const MARCOS=EVS.filter(e=>e.mark);
+const ERA_AT=t=>ERAS.find(e=>t>=e.from&&t<e.to)||ERAS[ERAS.length-1];
+const NODE=id=>EV[id]?{kind:'event',id,o:EV[id]}:PER[id]?{kind:'period',id,o:PER[id]}:EXT[id]?{kind:'ext',id,o:EXT[id]}:ERAS.find(e=>e.id===id)?{kind:'era',id,o:ERAS.find(e=>e.id===id)}:null;
+function periodOfEvent(e){ return PERIODS.find(p=>p.lane===e.lane&&e.y>=p.from&&e.y<=p.to)||null; }
+function periodAt(lane,t){ const ps=PERIODS.filter(p=>p.lane===lane&&t>=p.from&&t<=p.to); return ps.sort((a,b)=>(a.to-a.from)-(b.to-b.from))[0]||null; }
+
+// regiões como features esféricas (com o lado pequeno como interior)
+const REGF={};
+for(const [k,ring] of Object.entries(REG)){
+  let r=ring.slice(); if(r[0][0]!==r[r.length-1][0]||r[0][1]!==r[r.length-1][1]) r.push(r[0]);
+  let f={type:'Feature',geometry:{type:'Polygon',coordinates:[r]}};
+  if(d3.geoArea(f)>2*Math.PI) f={type:'Feature',geometry:{type:'Polygon',coordinates:[r.slice().reverse()]}};
+  REGF[k]={f,c:d3.geoCentroid(f),a:d3.geoArea(f)};
+}
+function snapIndex(p,t){ if(t>p.end||t<p.s[0][0]) return -1; let i=-1; for(let k=0;k<p.s.length;k++) if(p.s[k][0]<=t) i=k; return i; }
+function polRegions(p,t){ const i=snapIndex(p,t); return i<0?null:p.s[i][1]; }
+function polLabel(pid,t){
+  const per=PERIODS.filter(p=>p.pol===pid&&t>=p.from&&t<=p.to);
+  if(per.length===1) return per[0].name; return POL[pid].name;
+}
+
+/* ==========================================================================
+   Estado
+   ========================================================================== */
+const S={
+  t:-820, playing:false, speed:1, hold:null, nextMi:0, lane:'roma',
+  sel:null, trail:[], ti:-1, panel:false, sheet:'half',
+  rot:[-28,-36], scale:300, base:300, cx:0, cy:0, W:0, H:0, dpr:1,
+  drag:null, fly:null, dirty:true, lastEra:null, lastSnap:{}, fade:{},
+  amb:false, ui:true, narr:false
+};
+const SPEEDS=[0.5,1,2]; const YPS=24; // anos por segundo em 1×
+
+/* ==========================================================================
+   Geometria do mundo (terra firme, sem fronteiras modernas)
+   ========================================================================== */
+function loadScript(src,ms=9000){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.async=true; const t=setTimeout(()=>{ s.remove(); rej(new Error('timeout')); },ms); s.onload=()=>{ clearTimeout(t); res(); }; s.onerror=()=>{ clearTimeout(t); s.remove(); rej(new Error('load')); }; document.head.appendChild(s); }); }
+function topoLand(topo){
+  if(topo.type==='FeatureCollection'){ const polys=[]; topo.features.forEach(f=>{ const g=f.geometry; if(!g) return; if(g.type==='Polygon') polys.push(g.coordinates); else if(g.type==='MultiPolygon') g.coordinates.forEach(p=>polys.push(p)); }); return {polys,coast:null}; }
+  const obj=topo.objects.land||topo.objects.countries||Object.values(topo.objects)[0];
+  const tf=topo.transform;
+  const arcs=topo.arcs.map(a=>{ let x=0,y=0; return a.map(p=>{ if(tf){ x+=p[0]; y+=p[1]; return [x*tf.scale[0]+tf.translate[0],y*tf.scale[1]+tf.translate[1]]; } return [p[0],p[1]]; }); });
+  const use=new Map(); const arcPts=i=>i<0?arcs[~i].slice().reverse():arcs[i];
+  const ring=ids=>{ const pts=[]; ids.forEach((i,k)=>{ use.set(i<0?~i:i,(use.get(i<0?~i:i)||0)+1); const a=arcPts(i); for(let j=k?1:0;j<a.length;j++) pts.push(a[j]); }); return pts; };
+  const polys=[]; const geoms=obj.type==='GeometryCollection'?obj.geometries:[obj];
+  for(const g of geoms){ if(g.type==='Polygon') polys.push(g.arcs.map(ring)); else if(g.type==='MultiPolygon') g.arcs.forEach(p=>polys.push(p.map(ring))); }
+  const coast=[]; for(const [i,n] of use) if(n===1) coast.push(arcs[i]);
+  return {polys,coast};
+}
+function decodeEcharts(json){
+  if(!json.UTF8Encoding) return json; const sc=json.UTF8Scale||1024;
+  const dec=(c,off)=>{ const out=[]; let px=off[0],py=off[1]; for(let i=0;i<c.length;i+=2){ let x=c.charCodeAt(i)-64,y=c.charCodeAt(i+1)-64; x=(x>>1)^(-(x&1)); y=(y>>1)^(-(y&1)); x+=px; y+=py; px=x; py=y; out.push([x/sc,y/sc]); } return out; };
+  json.features.forEach(f=>{ const g=f.geometry; if(!g) return; const eo=g.encodeOffsets; if(g.type==='Polygon') g.coordinates=g.coordinates.map((r,i)=>typeof r==='string'?dec(r,eo[i]):r); else if(g.type==='MultiPolygon') g.coordinates=g.coordinates.map((p,i)=>p.map((r,j)=>typeof r==='string'?dec(r,eo[i][j]):r)); });
+  return json;
+}
+const GEO_SOURCES=[
+  async()=>{ const r=await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-110m.json'); if(!r.ok) throw 0; return topoLand(await r.json()); },
+  async()=>{ const r=await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json'); if(!r.ok) throw 0; return topoLand(await r.json()); },
+  async()=>{ try{ await loadScript('https://cdnjs.cloudflare.com/ajax/libs/datamaps/0.5.9/datamaps.world.min.js'); }catch(e){ await loadScript('https://cdn.jsdelivr.net/npm/datamaps@0.5.9/dist/datamaps.world.min.js'); }
+    const D=window.Datamap||window.Datamaps; const t=D&&D.prototype&&D.prototype.worldTopo; if(!t) throw 0; return topoLand(t); },
+  async()=>{ let got=null; const prev=window.echarts; window.echarts={registerMap:(n,j)=>{ if(!got) got=j; }}; try{ await loadScript('https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js'); } finally { window.echarts=prev; }
+    if(!got) throw 0; decodeEcharts(got); const polys=[]; got.features.forEach(f=>{ const g=f.geometry; if(!g) return; if(g.type==='Polygon') polys.push(g.coordinates); else g.coordinates.forEach(p=>polys.push(p)); }); return {polys,coast:null}; }
+];
+let LAND=null, COAST=null;
+async function loadWorld(){
+  for(const get of GEO_SOURCES){ try{ const w=await get(); if(w&&w.polys&&w.polys.length>5){ return w; } }catch(e){} }
+  throw new Error('geo');
+}
+function prepWorld(w){
+  const fix=poly=>d3.geoArea({type:'Polygon',coordinates:poly})>2*Math.PI?poly.map(r=>r.slice().reverse()):poly;
+  LAND={type:'MultiPolygon',coordinates:w.polys.map(fix).filter(p=>p[0]&&p[0].length>3)};
+  COAST=w.coast?{type:'MultiLineString',coordinates:w.coast}:null;
+}
+
+/* ==========================================================================
+   Globo
+   ========================================================================== */
+const gc=$('#globe'), g=gc.getContext('2d');
+const proj=d3.geoOrthographic().clipAngle(90).precision(.6);
+const path=d3.geoPath(proj,g);
+const grat=d3.geoGraticule10();
+function layout(){
+  const dpr=Math.min(2,window.devicePixelRatio||1); S.dpr=dpr;
+  const W=innerWidth, H=innerHeight; S.W=W; S.H=H;
+  gc.width=Math.round(W*dpr); gc.height=Math.round(H*dpr);
+  const cs=getComputedStyle(document.documentElement);
+  const top=parseFloat(cs.getPropertyValue('--top-h'))||56, dock=parseFloat(cs.getPropertyValue('--dock-h'))||210;
+  const desk=W>=860, pw=desk&&S.panel?(parseFloat(cs.getPropertyValue('--panel-w'))+32):0;
+  let areaTop=top+6, areaBot=H-dock;
+  if(!desk&&S.panel) areaBot=Math.min(areaBot, H*(1-sheetFrac())-4);
+  if(!desk&&!S.panel&&S.playing) areaBot-=118;
+  const aw=W-pw, ah=Math.max(120,areaBot-areaTop);
+  S.base=Math.min(aw*.46, ah*.47);
+  S.cx=aw/2; S.cy=areaTop+ah/2+ (desk?0:ah*.02);
+  S.dirty=true; tlLayout();
+}
+function sheetFrac(){ return S.sheet==='full'?.86:S.sheet==='peek'?.30:.56; }
+function screenOf(ll){ const r=d3.geoRotation(proj.rotate())(ll); const vis=Math.cos(r[1]*RAD)*Math.cos(r[0]*RAD)>0; const p=proj(ll); return p?{x:p[0],y:p[1],vis}:null; }
+function flyTo(ll,ms=1400,zoom){
+  const from=[-S.rot[0],-S.rot[1]], to=[ll[0],clamp(ll[1],-60,60)];
+  const ip=d3.geoInterpolate(from,to); const s0=S.zoom||1, s1=zoom||s0;
+  S.fly={ip,t0:performance.now(),ms:reduceMotion?1:ms,s0,s1};
+}
+S.zoom=1;
+function stepFly(now){
+  if(!S.fly) return; const k=clamp((now-S.fly.t0)/S.fly.ms,0,1), e=ease(k); const c=S.fly.ip(e);
+  S.rot=[-c[0],-c[1]]; S.zoom=lerp(S.fly.s0,S.fly.s1,e); S.dirty=true; if(k>=1) S.fly=null;
+}
+const fadeMs=700;
+function activePolities(t){
+  const out=[];
+  for(const [pid,p] of Object.entries(POL)){
+    const i=snapIndex(p,t); const prev=S.lastSnap[pid];
+    if(prev!==i){ S.fade[pid]={from:prev==null?-1:prev,t0:performance.now()}; S.lastSnap[pid]=i; }
+    const f=S.fade[pid]; const k=f?clamp((performance.now()-f.t0)/fadeMs,0,1):1;
+    if(i>=0&&p.s[i][1]) out.push({pid,p,regs:p.s[i][1],a:k});
+    if(f&&k<1&&f.from>=0&&p.s[f.from]&&p.s[f.from][1]) out.push({pid,p,regs:p.s[f.from][1],a:1-k,old:true});
+  }
+  return out;
+}
+let hoverPid=null;
+function selectedPid(){ if(!S.sel) return null; if(S.sel.kind==='period') return PER[S.sel.id].pol; return null; }
+function drawGlobe(now){
+  const dpr=S.dpr; g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,S.W,S.H);
+  S.scale=S.base*S.zoom;
+  proj.rotate(S.rot).scale(S.scale).translate([S.cx,S.cy]);
+  const R=S.scale;
+  // halo e sombra
+  const sh=g.createRadialGradient(S.cx,S.cy+R*.04,R*.9,S.cx,S.cy+R*.04,R*1.12); sh.addColorStop(0,'rgba(90,64,24,.22)'); sh.addColorStop(1,'rgba(90,64,24,0)');
+  g.fillStyle=sh; g.beginPath(); g.arc(S.cx,S.cy+R*.04,R*1.12,0,7); g.fill();
+  // mar
+  const sea=g.createRadialGradient(S.cx-R*.35,S.cy-R*.4,R*.1,S.cx,S.cy,R); sea.addColorStop(0,'#e6e2d0'); sea.addColorStop(1,'#cfc9b2');
+  g.beginPath(); path({type:'Sphere'}); g.fillStyle=sea; g.fill();
+  // linhas de mar (hachura sutil)
+  g.save(); g.beginPath(); path({type:'Sphere'}); g.clip();
+  g.strokeStyle='rgba(95,78,54,.10)'; g.lineWidth=.7; g.beginPath(); path(grat); g.stroke();
+  g.restore();
+  if(!LAND){ ring(R); return; }
+  // terra
+  g.beginPath(); path(LAND); g.fillStyle='#f2e9d4'; g.fill();
+  // territórios (recortados pela terra)
+  const t=S.t, act=activePolities(t), spid=selectedPid();
+  g.save(); g.beginPath(); path(LAND); g.clip();
+  for(const a of act){
+    const lane=LANE[a.p.lane], sel=a.pid===spid, hov=a.pid===hoverPid;
+    const base=sel?.66:(spid?.26:.46)+(hov?.12:0);
+    g.beginPath(); for(const r of a.regs) path(REGF[r].f);
+    g.fillStyle=hexA(lane.color,base*a.a); g.fill('nonzero');
+    if(sel){ g.save(); g.clip('nonzero'); g.strokeStyle=hexA(lane.color,.9*a.a); g.lineWidth=3; g.beginPath(); for(const r of a.regs) path(REGF[r].f); g.stroke(); g.restore(); }
+  }
+  g.restore();
+  // costa em tinta
+  g.beginPath(); path(COAST||LAND); g.strokeStyle='rgba(80,64,42,.78)'; g.lineWidth=.8; g.stroke();
+  // rótulos dos estados
+  const boxes=[]; drawEvents(now,boxes);
+  drawPolLabels(act,spid,boxes);
+  drawEventLabels(boxes);
+  ring(R);
+}
+function ring(R){
+  g.beginPath(); g.arc(S.cx,S.cy,R,0,7); g.strokeStyle='rgba(60,46,28,.85)'; g.lineWidth=1.3; g.stroke();
+  g.beginPath(); g.arc(S.cx,S.cy,R+5,0,7); g.strokeStyle='rgba(60,46,28,.35)'; g.lineWidth=.8; g.stroke();
+  // marcas de graus no aro
+  g.strokeStyle='rgba(60,46,28,.35)'; g.lineWidth=.8;
+  for(let k=0;k<72;k++){ const a=k*5*RAD, l=k%6?3:6; g.beginPath(); g.moveTo(S.cx+Math.cos(a)*(R+5),S.cy+Math.sin(a)*(R+5)); g.lineTo(S.cx+Math.cos(a)*(R+5+l),S.cy+Math.sin(a)*(R+5+l)); g.stroke(); }
+}
+function drawPolLabels(act,spid,boxes){
+  const done=new Set(); g.textAlign='center'; g.textBaseline='middle';
+  const small=S.W<500;
+  const order=act.filter(a=>!a.old).sort((x,y)=>(y.pid===spid)-(x.pid===spid)||y.regs.reduce((s,r)=>s+REGF[r].a,0)-x.regs.reduce((s,r)=>s+REGF[r].a,0));
+  for(const a of order){ if(done.has(a.pid)) continue; done.add(a.pid);
+    let best=null; for(const r of a.regs){ const R=REGF[r]; if(!best||R.a>best.a) best=R; }
+    const p=screenOf(best.c); if(!p||!p.vis) continue;
+    const name=polLabel(a.pid,S.t).toUpperCase(); const sel=a.pid===spid;
+    g.font=`600 ${sel?(small?11:12.5):(small?9.5:10.5)}px Cinzel, Georgia, serif`;
+    const w=g.measureText(name).width; if(w>S.scale*1.1&&!sel) continue;
+    const bx={x0:p.x-w/2-3,x1:p.x+w/2+3,y0:p.y-8,y1:p.y+8}; if(boxes.some(b=>b.x0<bx.x1&&bx.x0<b.x1&&b.y0<bx.y1&&bx.y0<b.y1)) continue; boxes.push(bx);
+    g.globalAlpha=a.a*(spid&&!sel?.55:1);
+    g.lineWidth=3.5; g.strokeStyle='rgba(242,233,212,.92)'; g.strokeText(name,p.x,p.y);
+    g.fillStyle=sel?'#2c2317':'#4b3d29'; g.fillText(name,p.x,p.y);
+    g.globalAlpha=1;
+  }
+}
+let EV_SCREEN=[];
+let EV_LBL=[];
+function drawEvents(now,boxes){
+  EV_SCREEN=[]; EV_LBL=[]; const t=S.t, W=S.playing?clamp(30*S.speed,24,70):40;
+  const selId=S.sel&&S.sel.kind==='event'?S.sel.id:null, cur=S.hold&&S.hold.ev?S.hold.ev.id:null;
+  for(const e of EVS){
+    const d=t-e.y; const on=e.id===selId||e.id===cur;
+    if(!on&&(d<-6||d>W)) continue;
+    const p=screenOf(e.ll); if(!p||!p.vis) continue;
+    const fresh=on?1:clamp(1-d/W,0,1)*(d<0?clamp(1+d/6,0,1):1);
+    const col=LANE[e.lane].color;
+    g.globalAlpha=.35+.65*fresh;
+    const r=on?6:(e.mark?4.5:3.5);
+    if(on){ const k=(now%1800)/1800; g.strokeStyle=hexA(col,(1-k)*.8); g.lineWidth=1.5; g.beginPath(); g.arc(p.x,p.y,r+3+k*16,0,7); g.stroke(); }
+    g.save(); g.translate(p.x,p.y); g.rotate(Math.PI/4);
+    g.fillStyle='#f7f1e3'; g.fillRect(-r-1.5,-r-1.5,2*r+3,2*r+3);
+    g.fillStyle=col; g.fillRect(-r,-r,2*r,2*r); g.restore();
+    g.globalAlpha=1;
+    boxes.push({x0:p.x-r-2,x1:p.x+r+2,y0:p.y-r-2,y1:p.y+r+2});
+    if(on||(e.mark&&fresh>.5&&S.W>=500)) EV_LBL.push({e,x:p.x+r+7,y:p.y,on,a:.35+.65*fresh});
+    EV_SCREEN.push({e,x:p.x,y:p.y});
+  }
+}
+
+function drawEventLabels(boxes){
+  EV_LBL.sort((a,b)=>b.on-a.on);
+  for(const L of EV_LBL){ g.font=`${L.on?600:500} ${L.on?14:12.5}px "Cormorant Garamond", Georgia, serif`; g.textAlign='left'; g.textBaseline='middle';
+    const w=g.measureText(L.e.t).width; const bx={x0:L.x-2,x1:L.x+w+2,y0:L.y-8,y1:L.y+8};
+    if(!L.on&&boxes.some(b=>b.x0<bx.x1&&bx.x0<b.x1&&b.y0<bx.y1&&bx.y0<b.y1)) continue; boxes.push(bx);
+    g.globalAlpha=L.a; g.lineWidth=4; g.strokeStyle='rgba(247,241,227,.95)'; g.strokeText(L.e.t,L.x,L.y); g.fillStyle='#2c2317'; g.fillText(L.e.t,L.x,L.y); g.globalAlpha=1; }
+}
+/* ==========================================================================
+   Régua do tempo
+   ========================================================================== */
+const tc=$('#tlc'), tx=tc.getContext('2d');
+const TL={W:0,H:0,ypp:1,rows:[],bars:[],ticks:[],eraH:20,axisH:18,laneTop:0,rowH:14,labelW:0};
+// distribui os períodos de cada faixa em linhas, sem sobreposição
+const LANE_ROWS={};
+for(const l of LANES){ const ps=PERIODS.filter(p=>p.lane===l.id).sort((a,b)=>a.from-b.from); const rows=[]; ps.forEach(p=>{ let r=rows.findIndex(end=>end<=p.from); if(r<0){ r=rows.length; rows.push(p.to); } else rows[r]=p.to; p._row=r; }); LANE_ROWS[l.id]=Math.max(1,rows.length); }
+function tlLayout(){
+  const box=$('#tl').getBoundingClientRect(); const dpr=S.dpr||1;
+  TL.W=box.width; TL.H=box.height; tc.width=Math.round(TL.W*dpr); tc.height=Math.round(TL.H*dpr);
+  TL.ypp=clamp((RANGE[1]-RANGE[0])/Math.max(300,TL.W-40),.85,1.7);
+  const totalRows=LANES.reduce((s,l)=>s+LANE_ROWS[l.id],0);
+  const avail=TL.H-TL.eraH-TL.axisH-6-LANES.length*3;
+  TL.rowH=clamp(Math.floor(avail/totalRows),10,18);
+  S.dirtyTL=true;
+}
+const X=y=>TL.W/2+(y-S.t)/TL.ypp;
+function rr(c,x,y,w,h,r){ r=Math.min(r,h/2,w/2); c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+function drawTL(){
+  const c=tx, dpr=S.dpr; c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,TL.W,TL.H);
+  TL.bars=[]; TL.evs=[]; TL.eras=[];
+  const x0=X(RANGE[0]), x1=X(RANGE[1]);
+  // fundo do intervalo
+  c.fillStyle='rgba(247,241,227,.55)'; c.fillRect(Math.max(0,x0),0,Math.min(TL.W,x1)-Math.max(0,x0),TL.H);
+  // eras
+  for(const e of ERAS){ const a=X(e.from), b=X(e.to); if(b<0||a>TL.W) continue;
+    const cur=S.t>=e.from&&S.t<e.to;
+    c.fillStyle=cur?'rgba(154,115,34,.16)':'rgba(154,115,34,.06)'; c.fillRect(a,0,b-a,TL.eraH);
+    c.strokeStyle='rgba(154,115,34,.45)'; c.lineWidth=1; c.beginPath(); c.moveTo(a+.5,0); c.lineTo(a+.5,TL.eraH); c.stroke();
+    c.font='600 9.5px Cinzel, Georgia, serif'; c.fillStyle=cur?'#6a4f15':'#8f7d60'; c.textBaseline='middle'; c.textAlign='left';
+    const name=e.name.toUpperCase(); const vis0=Math.max(a,0)+6, vis1=Math.min(b,TL.W)-6;
+    if(vis1-vis0>20){ c.save(); c.beginPath(); c.rect(vis0,0,vis1-vis0,TL.eraH); c.clip(); c.fillText(name,vis0,TL.eraH/2+.5); c.restore(); }
+    TL.eras.push({e,a,b});
+  }
+  // faixas
+  let y=TL.eraH+4; const rowH=TL.rowH;
+  const spid=S.sel&&S.sel.kind==='period'?S.sel.id:null;
+  TL.laneY={};
+  for(const l of LANES){ const n=LANE_ROWS[l.id], h=n*rowH; TL.laneY[l.id]=[y,h];
+    const focus=l.id===S.lane;
+    c.fillStyle=focus?'rgba(44,35,23,.05)':'rgba(0,0,0,0)'; c.fillRect(0,y-1,TL.W,h+2);
+    for(const p of PERIODS.filter(p=>p.lane===l.id)){
+      const a=X(Math.max(p.from,RANGE[0])), b=X(Math.min(p.to,RANGE[1])); if(b<-2||a>TL.W+2) continue;
+      const by=y+p._row*rowH+1, bh=rowH-2; const sel=p.id===spid, act=S.t>=p.from&&S.t<=p.to;
+      rr(c,a,by,Math.max(2,b-a-1),bh,Math.min(4,bh/2)); c.fillStyle=hexA(l.color,sel?.95:act?.62:.32); c.fill();
+      if(sel){ c.strokeStyle='#2c2317'; c.lineWidth=1.5; c.stroke(); }
+      const fs=Math.min(12,bh-2.5); if(fs>=8){ c.font=`500 ${fs}px "EB Garamond", Georgia, serif`; c.textBaseline='middle'; c.textAlign='left';
+        const L0=Math.max(a,0)+5, L1=Math.min(b,TL.W)-4; if(L1-L0>18){ c.save(); c.beginPath(); c.rect(L0,by,L1-L0,bh); c.clip(); c.fillStyle=sel||act?'#fbf6ea':'#3e3220'; c.fillText(p.name,L0,by+bh/2+.5); c.restore(); } }
+      TL.bars.push({p,x0:a,x1:b,y0:by,y1:by+bh});
+    }
+    // acontecimentos da faixa
+    for(const e of EVS.filter(e=>e.lane===l.id)){ const ex=X(e.y); if(ex<-4||ex>TL.W+4) continue;
+      const ey=y-1.5; const sel=S.sel&&S.sel.kind==='event'&&S.sel.id===e.id; const s=sel?4.5:e.mark?3.2:2.3;
+      c.save(); c.translate(ex,ey); c.rotate(Math.PI/4); c.fillStyle=sel?'#2c2317':e.mark?'#5f4e36':'rgba(95,78,54,.55)'; c.fillRect(-s/2,-s/2,s,s); c.restore();
+      TL.evs.push({e,x:ex,y:ey});
+    }
+    y+=h+3;
+  }
+  // eixo
+  const ay=TL.H-TL.axisH;
+  c.strokeStyle='rgba(95,78,54,.45)'; c.lineWidth=1; c.beginPath(); c.moveTo(Math.max(0,x0),ay+.5); c.lineTo(Math.min(TL.W,x1),ay+.5); c.stroke();
+  const step=TL.ypp>1.3?100:50;
+  c.font='500 10px Cinzel, Georgia, serif'; c.fillStyle='#6a5940'; c.textAlign='center'; c.textBaseline='top';
+  for(let v=Math.ceil(RANGE[0]/step)*step; v<=RANGE[1]; v+=step){ const vx=X(v); if(vx<-30||vx>TL.W+30) continue;
+    const major=v%100===0; c.beginPath(); c.moveTo(vx+.5,ay); c.lineTo(vx+.5,ay+(major?6:3)); c.stroke();
+    if(major){ c.fillText(v===0?'1 d.C.':v<0?`${-v} a.C.`:`${v}`,vx,ay+6); }
+  }
+  // agulha (presente)
+  const px=TL.W/2;
+  c.strokeStyle='#9a7322'; c.lineWidth=1.6; c.beginPath(); c.moveTo(px,0); c.lineTo(px,ay); c.stroke();
+  c.fillStyle='#9a7322'; c.beginPath(); c.moveTo(px-6,0); c.lineTo(px+6,0); c.lineTo(px,7); c.closePath(); c.fill();
+  // nomes das faixas
+  for(const l of LANES){ const [ly,lh]=TL.laneY[l.id];
+    c.font='600 9px Cinzel, Georgia, serif'; const nm=l.short.toUpperCase(); const w=c.measureText(nm).width+10;
+    c.fillStyle='rgba(237,227,204,.9)'; c.fillRect(0,ly-1,w+4,Math.min(lh+1,14));
+    c.fillStyle=l.id===S.lane?'#2c2317':'#8f7d60'; c.textAlign='left'; c.textBaseline='top'; c.fillText(nm,6,ly+1.5);
+  }
+}
+function tlHit(x,y){
+  for(const ev of TL.evs){ if(Math.abs(ev.x-x)<8&&Math.abs(ev.y-y)<7) return {kind:'event',id:ev.e.id}; }
+  for(const b of TL.bars){ if(x>=b.x0-2&&x<=b.x1+2&&y>=b.y0-2&&y<=b.y1+2) return {kind:'period',id:b.p.id}; }
+  if(y<TL.eraH) for(const e of TL.eras){ if(x>=e.a&&x<=e.b) return {kind:'era',id:e.e.id}; }
+  return null;
+}
+(function tlInput(){
+  let st=null;
+  tc.addEventListener('pointerdown',e=>{ tc.setPointerCapture(e.pointerId); st={x:e.clientX,y:e.clientY,t0:S.t,moved:false}; });
+  tc.addEventListener('pointermove',e=>{ if(!st) return; const dx=e.clientX-st.x; if(!st.moved&&Math.abs(dx)>5){ st.moved=true; if(S.playing) pause(false); }
+    if(st.moved){ S.t=clamp(st.t0-dx*TL.ypp,RANGE[0],RANGE[1]); onTimeChange(); } });
+  const up=e=>{ if(!st) return; const r=tc.getBoundingClientRect(); if(!st.moved){ const h=tlHit(e.clientX-r.left,e.clientY-r.top); if(h){ uiSound('tick'); go(h,{fromTL:true}); } }
+    else { uiSound('tick'); if(S.panel) openContext(false); } st=null; };
+  tc.addEventListener('pointerup',up); tc.addEventListener('pointercancel',()=>{ st=null; });
+  tc.addEventListener('wheel',e=>{ e.preventDefault(); if(S.playing) pause(false); S.t=clamp(S.t+(e.deltaX||e.deltaY)*TL.ypp*.6,RANGE[0],RANGE[1]); onTimeChange(); },{passive:false});
+})();
+
+/* ==========================================================================
+   Interação com o globo
+   ========================================================================== */
+(function globeInput(){
+  const pts=new Map(); let st=null, pinch=null;
+  gc.addEventListener('pointerdown',e=>{ gc.setPointerCapture(e.pointerId); pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pts.size===2){ const [a,b]=[...pts.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:S.zoom}; st=null; }
+    else { st={x:e.clientX,y:e.clientY,rot:S.rot.slice(),moved:false,t:performance.now()}; S.fly=null; } });
+  gc.addEventListener('pointermove',e=>{ if(!pts.has(e.pointerId)){ hover(e); return; } pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pinch&&pts.size===2){ const [a,b]=[...pts.values()]; S.zoom=clamp(pinch.z*Math.hypot(a.x-b.x,a.y-b.y)/pinch.d,.7,4); S.dirty=true; return; }
+    if(!st) return; const dx=e.clientX-st.x, dy=e.clientY-st.y; if(!st.moved&&Math.hypot(dx,dy)>5){ st.moved=true; gc.classList.add('dragging'); }
+    if(st.moved){ const k=70/S.scale/ (1); S.rot=[st.rot[0]+dx*k*1.15, clamp(st.rot[1]-dy*k*1.15,-75,75)]; S.dirty=true; } });
+  const up=e=>{ pts.delete(e.pointerId); gc.classList.remove('dragging'); if(pts.size<2) pinch=null;
+    if(st&&!st.moved&&e.type==='pointerup') tapGlobe(e.clientX,e.clientY); st=null; };
+  gc.addEventListener('pointerup',up); gc.addEventListener('pointercancel',up);
+  gc.addEventListener('wheel',e=>{ e.preventDefault(); S.zoom=clamp(S.zoom*Math.exp(-e.deltaY*.0015),.7,4); S.dirty=true; },{passive:false});
+  function hover(e){ if(e.pointerType!=='mouse') return; const ll=proj.invert([e.clientX,e.clientY]); const h=ll&&polAt(ll); const pid=h?h.pid:null; if(pid!==hoverPid){ hoverPid=pid; S.dirty=true; gc.style.cursor=pid?'pointer':''; } }
+})();
+function polAt(ll){
+  if(!ll) return null; const r=d3.geoRotation(S.rot)(ll); if(Math.cos(r[1]*RAD)*Math.cos(r[0]*RAD)<=0) return null;
+  let best=null;
+  for(const [pid,p] of Object.entries(POL)){ const regs=polRegions(p,S.t); if(!regs) continue;
+    for(const rg of regs){ if(d3.geoContains(REGF[rg].f,ll)){ const a=REGF[rg].a; if(!best||a<best.a) best={pid,a}; break; } } }
+  return best;
+}
+function tapGlobe(x,y){
+  let near=null, nd=22; for(const s of EV_SCREEN){ const d=Math.hypot(s.x-x,s.y-y); if(d<nd){ nd=d; near=s; } }
+  if(near){ uiSound('tick'); go({kind:'event',id:near.e.id}); return; }
+  const ll=proj.invert([x,y]); const h=ll&&polAt(ll);
+  if(h){ const per=PERIODS.filter(p=>p.pol===h.pid&&S.t>=p.from&&S.t<=p.to); const p=per[0]||PERIODS.find(p=>p.pol===h.pid);
+    if(p){ uiSound('tick'); go({kind:'period',id:p.id},{noTime:true}); return; } }
+  if(S.playing){ pause(true); }
+}
+
+/* ==========================================================================
+   Navegação e painel
+   ========================================================================== */
+function go(ref,opt={}){
+  const n=NODE(ref.id); if(!n) return;
+  if(S.playing) pause(false);
+  // move o tempo e o mapa
+  if(n.kind==='event'){ S.lane=n.o.lane; if(!opt.noTime){ S.t=n.o.y; } flyTo(n.o.ll,1200); }
+  else if(n.kind==='period'){ S.lane=n.o.lane; if(!opt.noTime&&!(S.t>=n.o.from&&S.t<=n.o.to)) S.t=clamp(n.o.from+Math.min(25,(n.o.to-n.o.from)*.15),RANGE[0],RANGE[1]);
+    const regs=polRegions(POL[n.o.pol],S.t); if(regs&&!opt.noFly){ let best=null; regs.forEach(r=>{ if(!best||REGF[r].a>best.a) best=REGF[r]; }); flyTo(best.c,1200); } }
+  else if(n.kind==='era'){ if(!opt.noTime&&!(S.t>=n.o.from&&S.t<n.o.to)) S.t=n.o.from+1; }
+  onTimeChange(true);
+  // trilha
+  if(!opt.back){ S.trail=S.trail.slice(0,S.ti+1); const last=S.trail[S.ti]; if(!last||last.id!==n.id){ S.trail.push({kind:n.kind,id:n.id}); S.ti=S.trail.length-1; } }
+  S.sel={kind:n.kind,id:n.id};
+  renderPanel(); openPanel();
+  setMode(LANE[S.lane]?LANE[S.lane].mode:'dorico');
+  if(S.narr&&!opt.silent) narrate(textFor(n));
+  S.dirty=true; S.dirtyTL=true;
+}
+function textFor(n){ if(n.kind==='period') return n.o.name+'. '+n.o.sum; if(n.kind==='event') return n.o.t+'. '+n.o.sum; return n.o.t?n.o.t+'. '+n.o.sum:n.o.name+'. '+n.o.sum; }
+function openContext(narr=true){
+  const p=periodAt(S.lane,S.t)||PERIODS.filter(p=>S.t>=p.from&&S.t<=p.to)[0];
+  if(p) go({kind:'period',id:p.id},{noTime:true,noFly:true,silent:!narr});
+}
+function openPanel(){ if(S.panel) return; S.panel=true; const p=$('#panel'); p.hidden=false; document.body.classList.add('p-open'); if(innerWidth<860) setSheet('half'); layout(); }
+function closePanel(){ S.panel=false; $('#panel').hidden=true; document.body.classList.remove('p-open'); S.sel=null; layout(); S.dirty=true; S.dirtyTL=true; stopVoice(); }
+function setSheet(s){ S.sheet=s; const f=sheetFrac(); const H=innerHeight; const ph=$('#panel').getBoundingClientRect().height||H*.86; $('#panel').style.setProperty('--sy',Math.max(0,ph-H*f)+'px'); layout(); }
+$('#p-close').onclick=()=>{ uiSound('tick'); closePanel(); };
+$('#p-back').onclick=()=>{ if(S.ti>0){ S.ti--; uiSound('tick'); go(S.trail[S.ti],{back:true}); } };
+// arrastar a folha no celular
+(function sheetDrag(){ const gb=$('#grab'); let st=null;
+  gb.addEventListener('pointerdown',e=>{ gb.setPointerCapture(e.pointerId); const p=$('#panel'); st={y:e.clientY,sy:parseFloat(getComputedStyle(p).getPropertyValue('--sy'))||0}; p.classList.add('drag'); });
+  gb.addEventListener('pointermove',e=>{ if(!st) return; const p=$('#panel'); p.style.setProperty('--sy',Math.max(0,st.sy+(e.clientY-st.y))+'px'); });
+  gb.addEventListener('pointerup',e=>{ if(!st) return; const p=$('#panel'); p.classList.remove('drag'); const dy=e.clientY-st.y, H=innerHeight;
+    if(Math.abs(dy)<6){ setSheet(S.sheet==='full'?'half':'full'); } else { const frac=1-(st.sy+dy+(H-p.getBoundingClientRect().height))/H; if(frac<.18) closePanel(); else setSheet(frac>.7?'full':frac>.42?'half':'peek'); } st=null; });
+})();
+
+const TYPE_LBL={causa:['Ajudou a causar','Teve entre as causas'],inspirou:['Inspirou','Inspirado por'],reacao:['Foi uma resposta a','Recebeu uma resposta em'],eco:['Ecoa em','Ecoa'],contato:['Ligado a','Ligado a'],legado:['Deixou como legado','Herança de']};
+const TYPE_COL={causa:'#9a3b28',inspirou:'#33607f',reacao:'#2e6f66',eco:'#8f7d60',contato:'#4d6d3b',legado:'#9a7322'};
+function linksFor(ids){
+  const set=new Set(ids); const out=[];
+  for(const l of LINKS){ if(set.has(l[0])&&!set.has(l[1])) out.push({dir:0,other:l[1],l}); else if(set.has(l[1])&&!set.has(l[0])) out.push({dir:1,other:l[0],l}); }
+  return out;
+}
+function linkHTML(x){
+  const n=NODE(x.other); if(!n) return ''; const [, ,type,conf,txt]=x.l;
+  const title=n.o.t||n.o.name; const yy=n.kind==='event'?fmtY(n.o.y):n.kind==='period'?fmtRange(n.o.from,n.o.to):n.kind==='ext'?fmtY(n.o.y):'';
+  const out=n.kind==='ext'?' · fora deste recorte':'';
+  return `<button class="link" data-go="${esc(x.other)}" style="--c:${TYPE_COL[type]}"><span class="t">${TYPE_LBL[type][x.dir]}<span class="conf">${conf==='amplo'?'consenso amplo':'interpretação debatida'}${out}</span></span><b>${esc(title)}<small>${esc(yy)}</small></b><p>${esc(txt)}</p></button>`;
+}
+function artHTML(ids,refY){
+  const list=[...new Set(ids)].filter(a=>ART[a]); if(!list.length) return '';
+  return `<div class="sec"><h4>Obras e documentos</h4><div class="gal">${list.map(id=>{ const a=ART[id]; const near=Math.abs(yearsBetween(refY,a.y))<=60;
+    const badge=near?`<span class="badge epoca">DA ÉPOCA</span>`:`<span class="badge depois">FEITA ${a.y>refY?nf.format(yearsBetween(refY,a.y))+' ANOS DEPOIS':''}</span>`;
+    return `<figure class="art" style="margin:0"><div class="ph" data-img="${id}"><div class="none">${esc(a.t)}</div></div><figcaption class="cap"><b>${esc(a.t)}</b><span>${esc(a.by)} · ${a.y<0?fmtY(a.y):a.y}</span><p>${esc(a.about)}</p>${badge}</figcaption></figure>`; }).join('')}</div></div>`;
+}
+function sameTimeHTML(t,lane){
+  const ps=PERIODS.filter(p=>p.lane!==lane&&t>=p.from&&t<=p.to);
+  if(!ps.length) return '';
+  return `<div class="sec"><h4>Ao mesmo tempo · ${esc(fmtY(t))}</h4><div class="chips">${ps.map(p=>`<button class="chip" data-go="${p.id}"><i style="background:${LANE[p.lane].color}"></i>${esc(p.name)} <small>${esc(LANE[p.lane].short.toUpperCase())}</small></button>`).join('')}</div></div>`;
+}
+function renderPanel(){
+  const n=NODE(S.sel.id); if(!n) return; const b=$('#pbody'); let h='';
+  if(n.kind==='period'){ const p=n.o, l=LANE[p.lane]; const era=ERA_AT(clamp(S.t,p.from,p.to));
+    const evs=EVS.filter(e=>e.lane===p.lane&&e.y>=p.from&&e.y<=p.to);
+    const arts=[...evs.flatMap(e=>e.art||[])];
+    h+=`<div class="kick"><span class="lane-dot" style="background:${l.color}"></span>${esc(l.name)}</div><h2>${esc(p.name)}</h2><div class="dates">${esc(fmtRange(p.from,p.to))}</div>`;
+    h+=listenBtn();
+    h+=`<p class="lead">${esc(p.sum)}</p>`;
+    h+=`<div class="sec"><h4>Como se governava</h4><p>${esc(p.gov)}</p></div>`;
+    if(p.life) h+=`<div class="sec"><h4>A vida na época</h4><p>${esc(p.life)}</p></div>`;
+    if(p.people&&p.people.length) h+=`<div class="sec"><h4>Pessoas</h4><ul class="people">${p.people.map(x=>`<li><b>${esc(x[0])}<small>${esc(x[1])}</small></b><span>${esc(x[2])}</span></li>`).join('')}</ul></div>`;
+    if(evs.length) h+=`<div class="sec"><h4>Acontecimentos</h4><div class="chips">${evs.map(e=>`<button class="chip" data-go="${e.id}"><small>${esc(fmtY(e.y))}</small> ${esc(e.t)}</button>`).join('')}</div></div>`;
+    h+=artHTML(arts,clamp(S.t,p.from,p.to));
+    h+=sameTimeHTML(clamp(S.t,p.from,p.to),p.lane);
+    const ls=linksFor([p.id,...evs.map(e=>e.id)]).filter(x=>!evs.some(e=>e.id===x.other));
+    if(ls.length) h+=`<div class="sec"><h4>Conexões</h4><div class="links">${ls.slice(0,8).map(linkHTML).join('')}</div></div>`;
+    h+=`<div class="note"><b>ERA · ${esc(era.name.toUpperCase())}</b><br>${esc(era.sum)}${era.note?`<br><i>${esc(era.note)}</i>`:''}</div>`;
+  } else if(n.kind==='event'){ const e=n.o, l=LANE[e.lane]; const p=periodOfEvent(e);
+    h+=`<div class="kick"><span class="lane-dot" style="background:${l.color}"></span>${esc(l.name)}</div><h2>${esc(e.t)}</h2><div class="dates">${esc(fmtY(e.y,true))}</div>`;
+    h+=listenBtn();
+    h+=`<p class="lead">${esc(e.sum)}</p>`;
+    if(p) h+=`<div class="sec"><h4>Parte de</h4><div class="chips"><button class="chip" data-go="${p.id}"><i style="background:${l.color}"></i>${esc(p.name)} <small>${esc(fmtRange(p.from,p.to))}</small></button></div></div>`;
+    h+=artHTML(e.art||[],e.y);
+    const ls=linksFor([e.id]); if(ls.length) h+=`<div class="sec"><h4>Conexões</h4><div class="links">${ls.map(linkHTML).join('')}</div></div>`;
+    const near=EVS.filter(x=>x.lane!==e.lane&&Math.abs(x.y-e.y)<=30);
+    if(near.length) h+=`<div class="sec"><h4>Perto dessa data, em outros lugares</h4><div class="chips">${near.map(x=>`<button class="chip" data-go="${x.id}"><i style="background:${LANE[x.lane].color}"></i><small>${esc(fmtY(x.y))}</small> ${esc(x.t)}</button>`).join('')}</div></div>`;
+    h+=sameTimeHTML(e.y,e.lane);
+  } else if(n.kind==='ext'){ const x=n.o;
+    h+=`<div class="kick">Fora deste recorte · ${esc(fmtY(x.y,true))}</div><h2>${esc(x.t)}</h2>`;
+    h+=listenBtn();
+    h+=`<p class="lead">${esc(x.sum)}</p>`;
+    h+=artHTML(x.art||[],x.y);
+    const ls=linksFor([n.id]); if(ls.length) h+=`<div class="sec"><h4>De volta à Antiguidade</h4><div class="links">${ls.map(linkHTML).join('')}</div></div>`;
+    h+=`<div class="note">Esta versão cobre de 820 a.C. a 476 d.C. Acontecimentos posteriores aparecem só como destino de conexões.</div>`;
+  } else if(n.kind==='era'){ const e=n.o;
+    h+=`<div class="kick">Era</div><h2>${esc(e.name)}</h2><div class="dates">${esc(fmtRange(e.from,Math.min(e.to,476)))}</div>`;
+    h+=listenBtn();
+    h+=`<p class="lead">${esc(e.sum)}</p>`;
+    if(e.note) h+=`<div class="note">${esc(e.note)}</div>`;
+    const ps=PERIODS.filter(p=>p.from<e.to&&p.to>e.from);
+    h+=`<div class="sec"><h4>Períodos nesta era</h4><div class="chips">${ps.map(p=>`<button class="chip" data-go="${p.id}"><i style="background:${LANE[p.lane].color}"></i>${esc(p.name)}</button>`).join('')}</div></div>`;
+  }
+  b.innerHTML=h; b.scrollTop=0;
+  b.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>{ uiSound('tick'); go({id:el.dataset.go}); }));
+  const lb=b.querySelector('.listen'); if(lb) lb.onclick=()=>{ if(speaking){ stopVoice(); } else narrate(textFor(n),null,true); };
+  b.querySelectorAll('[data-img]').forEach(el=>loadArt(el));
+  renderCrumbs();
+}
+function listenBtn(){ return `<button class="listen" aria-label="Ouvir o texto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg><span>OUVIR</span></button>`; }
+function renderCrumbs(){
+  const c=$('#crumbs'); c.innerHTML=S.trail.map((r,i)=>{ const n=NODE(r.id); const nm=(n.o.t||n.o.name); const short=nm.length>22?nm.slice(0,21)+'…':nm;
+    return (i?'<i>›</i>':'')+`<button data-i="${i}" aria-current="${i===S.ti}">${esc(short)}</button>`; }).join('');
+  c.querySelectorAll('button').forEach(bt=>bt.onclick=()=>{ const i=+bt.dataset.i; if(i!==S.ti){ S.ti=i; go(S.trail[i],{back:true}); } });
+  const cur=c.querySelector('[aria-current="true"]'); if(cur) cur.scrollIntoView({inline:'end',block:'nearest'});
+  $('#p-back').disabled=S.ti<=0;
+}
+
+/* ==========================================================================
+   Imagens (Wikipédia / Wikimedia Commons)
+   ========================================================================== */
+const IMG=store.get('ec-img',{}); let IMG_BLOCKED=false;
+const imgJobs={};
+async function imageFor(id){
+  if(IMG[id]!==undefined) return IMG[id]; if(IMG_BLOCKED) return null;
+  if(imgJobs[id]) return imgJobs[id];
+  imgJobs[id]=(async()=>{ const a=ART[id]; let res=null;
+    try{ const r=await fetch(`https://${a.wl||'en'}.wikipedia.org/api/rest_v1/page/summary/`+encodeURIComponent(a.wiki.replace(/ /g,'_')));
+      if(r.ok){ const j=await r.json(); if(j.thumbnail&&j.thumbnail.source) res=j.thumbnail.source.replace(/\/(\d+)px-/,'/640px-'); } }
+    catch(e){ IMG_BLOCKED=true; return null; }
+    if(!res){ try{ const q=encodeURIComponent(a.cq||`${a.t} ${a.by}`); const r=await fetch(`https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrsearch=${q}&gsrlimit=1&prop=imageinfo&iiprop=url&iiurlwidth=640`);
+      const j=await r.json(); const pg=j.query&&Object.values(j.query.pages)[0]; const ii=pg&&pg.imageinfo&&pg.imageinfo[0]; if(ii&&ii.thumburl) res=ii.thumburl; }catch(e){} }
+    IMG[id]=res; store.set('ec-img',IMG); return res; })();
+  return imgJobs[id];
+}
+async function loadArt(el){
+  const id=el.dataset.img, a=ART[id]; const src=await imageFor(id);
+  const link=`https://${a.wl||'en'}.wikipedia.org/wiki/${encodeURIComponent(a.wiki.replace(/ /g,'_'))}`;
+  if(src){ const im=new Image(); im.alt=a.t; im.loading='lazy'; im.decoding='async'; im.onload=()=>{ el.innerHTML=''; el.appendChild(im); }; im.onerror=()=>{ el.innerHTML=`<div class="none">${esc(a.t)}<br><a href="${link}" target="_blank" rel="noopener">Ver na Wikipédia ↗</a></div>`; }; im.src=src; }
+  else el.innerHTML=`<div class="none">${IMG_BLOCKED?'Imagem indisponível nesta visualização.':'Imagem não encontrada.'}<br><a href="${link}" target="_blank" rel="noopener">Ver na Wikipédia ↗</a></div>`;
+}
+
+/* ==========================================================================
+   Modo assistir
+   ========================================================================== */
+function syncNextMarco(){ S.nextMi=MARCOS.findIndex(m=>m.y>S.t+.01); if(S.nextMi<0) S.nextMi=MARCOS.length; }
+function play(){
+  if(S.t>=RANGE[1]-1){ S.t=RANGE[0]; S.lastSnap={}; }
+  S.playing=true; S.hold=null; syncNextMarco(); setPlayIcon(); layout();
+  if(S.panel) closePanel();
+  aimNext(); if(S.amb) Sound.start();
+}
+function pause(open=true){
+  S.playing=false; S.hold=null; setPlayIcon(); $('#caption').classList.add('off'); stopVoice(); layout();
+  if(open) openContext(true);
+}
+function setPlayIcon(){ $('#i-play').innerHTML=S.playing?'<path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/>':'<path d="M7 4.5v15l12.5-7.5z"/>'; $('#b-play').setAttribute('aria-label',S.playing?'Pausar':'Assistir'); }
+function aimNext(){ const m=MARCOS[S.nextMi]; if(!m) return; const dur=(m.y-S.t)/(YPS*S.speed)*1000; flyTo(m.ll,clamp(dur,900,3200)); }
+function arrive(m){
+  S.t=m.y; S.lane=m.lane; onTimeChange(); setMode(LANE[m.lane].mode);
+  const cap=$('#caption'); $('#c-k').textContent=`${fmtY(m.y,true)} · ${LANE[m.lane].name}`; $('#c-t').textContent=m.t; $('#c-p').textContent=m.sum; cap.classList.remove('off');
+  cap.dataset.id=m.id; uiSound('bell');
+  const hold={ev:m,t0:performance.now(),min:2200/S.speed,max:clamp(3600+m.sum.length*28,4500,10000)/S.speed,done:false};
+  S.hold=hold;
+  if(S.narr){ hold.voice=true; narrate(m.say||m.t,()=>{ hold.done=true; }); } else hold.done=true;
+}
+function stepPlay(dt,now){
+  if(!S.playing) return;
+  if(S.hold){ const h=S.hold, el=now-h.t0; const ready=h.voice?(h.done&&el>h.min):(el>h.max);
+    if(ready||el>h.max+12000){ S.hold=null; S.nextMi++; aimNext(); } return; }
+  const m=MARCOS[S.nextMi]; const nt=S.t+dt/1000*YPS*S.speed;
+  if(m&&nt>=m.y){ arrive(m); return; }
+  S.t=Math.min(nt,RANGE[1]); onTimeChange();
+  if(S.t>=RANGE[1]){ S.playing=false; setPlayIcon(); $('#caption').classList.add('off'); toast('Fim desta versão: 476 d.C.'); }
+}
+$('#b-play').onclick=()=>{ uiSound('tick'); S.playing?pause(true):play(); };
+$('#b-speed').onclick=()=>{ const i=(SPEEDS.indexOf(S.speed)+1)%SPEEDS.length; S.speed=SPEEDS[i]; $('#b-speed').textContent=(S.speed===.5?'½':S.speed)+'×'; uiSound('tick'); };
+function jumpMarco(dir){
+  if(S.playing){ S.hold=null; }
+  const list=MARCOS; let i;
+  if(dir>0){ i=list.findIndex(m=>m.y>S.t+.5); if(i<0) return; } else { i=-1; list.forEach((m,k)=>{ if(m.y<S.t-.5) i=k; }); if(i<0) return; }
+  const m=list[i]; uiSound('tick');
+  if(S.playing){ S.nextMi=i; S.t=m.y-.01; arrive(m); flyTo(m.ll,1000); }
+  else go({kind:'event',id:m.id});
+}
+$('#b-prev').onclick=()=>jumpMarco(-1);
+$('#b-next').onclick=()=>jumpMarco(1);
+$('#c-more').onclick=()=>{ const id=$('#caption').dataset.id; uiSound('tick'); pause(false); if(id) go({kind:'event',id}); };
+
+function onTimeChange(force){
+  const e=ERA_AT(S.t);
+  $('#y-num').textContent=fmtY(S.t,true); $('#y-era').textContent=e.name;
+  $('#era-line').innerHTML=`<button id="era-btn">${esc(e.name)}</button>`; $('#era-btn').onclick=()=>{ uiSound('tick'); go({kind:'era',id:e.id}); };
+  if(S.lastEra&&S.lastEra!==e.id&&S.playing) { uiSound('gong'); }
+  S.lastEra=e.id; S.dirty=true; S.dirtyTL=true;
+}
+
+/* ==========================================================================
+   Som discreto (Web Audio, tudo sintetizado)
+   ========================================================================== */
+const MODES={ dorico:[0,2,3,5,7,9,10], persa:[0,2,3,5,7,8,10], india:[0,2,4,7,9,11], china:[0,2,4,7,9], africa:[0,3,5,7,10] };
+const Sound=(()=>{
+  let ac=null, master, amb, ui, pad=[], mode='dorico', plT=0, running=false, delay;
+  function init(){ if(ac) return true; try{ ac=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return false; }
+    master=ac.createGain(); master.gain.value=.9; master.connect(ac.destination);
+    amb=ac.createGain(); amb.gain.value=0; amb.connect(master);
+    ui=ac.createGain(); ui.gain.value=.8; ui.connect(master);
+    // eco suave para as notas
+    delay=ac.createDelay(1); delay.delayTime.value=.42; const fb=ac.createGain(); fb.gain.value=.32; const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1800;
+    delay.connect(lp); lp.connect(fb); fb.connect(delay); lp.connect(amb);
+    // vento / mar: ruído rosa filtrado
+    const len=ac.sampleRate*4, buf=ac.createBuffer(1,len,ac.sampleRate), d=buf.getChannelData(0); let b0=0,b1=0,b2=0;
+    for(let i=0;i<len;i++){ const w=Math.random()*2-1; b0=.99765*b0+w*.099046; b1=.963*b1+w*.2965379; b2=.57*b2+w*1.0526913; d[i]=(b0+b1+b2+w*.1848)*.11; }
+    const src=ac.createBufferSource(); src.buffer=buf; src.loop=true; const f=ac.createBiquadFilter(); f.type='lowpass'; f.frequency.value=520; f.Q.value=.4;
+    const ng=ac.createGain(); ng.gain.value=.22; src.connect(f); f.connect(ng); ng.connect(amb); src.start();
+    const lfo=ac.createOscillator(), lg=ac.createGain(); lfo.frequency.value=.06; lg.gain.value=260; lfo.connect(lg); lg.connect(f.frequency); lfo.start();
+    const lfo2=ac.createOscillator(), lg2=ac.createGain(); lfo2.frequency.value=.11; lg2.gain.value=.08; lfo2.connect(lg2); lg2.connect(ng.gain); lfo2.start();
+    makePad(mode,0); return true; }
+  const BASE=146.83; // ré
+  const fq=(st,oct=0)=>BASE*Math.pow(2,st/12+oct);
+  function makePad(m,fadeIn=4){ const sc=MODES[m]; const notes=[fq(0,-1),fq(7,-1),fq(sc[2]||4,0)]; const now=ac.currentTime;
+    const set=notes.map((f,i)=>{ const o=ac.createOscillator(); o.type=i===2?'triangle':'sine'; o.frequency.value=f; o.detune.value=(i-1)*4;
+      const gn=ac.createGain(); gn.gain.value=0; gn.gain.linearRampToValueAtTime(i===2?.018:.03,now+fadeIn+.01); o.connect(gn); gn.connect(amb); o.start(); return {o,gn}; });
+    pad.forEach(p=>{ p.gn.gain.cancelScheduledValues(now); p.gn.gain.setValueAtTime(p.gn.gain.value,now); p.gn.gain.linearRampToValueAtTime(0,now+fadeIn); p.o.stop(now+fadeIn+.1); });
+    pad=set; }
+  function pluck(){ if(!ac||!running) return; const sc=MODES[mode]; const st=sc[Math.floor(Math.random()*sc.length)]; const oct=Math.random()<.6?0:1; const f=fq(st,oct);
+    const now=ac.currentTime; const o=ac.createOscillator(); o.type='triangle'; o.frequency.value=f; const o2=ac.createOscillator(); o2.type='sine'; o2.frequency.value=f*2.01;
+    const gn=ac.createGain(); gn.gain.setValueAtTime(0,now); gn.gain.linearRampToValueAtTime(.07,now+.008); gn.gain.exponentialRampToValueAtTime(.0005,now+2.6);
+    const g2=ac.createGain(); g2.gain.value=.25; o.connect(gn); o2.connect(g2); g2.connect(gn); gn.connect(amb); gn.connect(delay); o.start(now); o2.start(now); o.stop(now+2.8); o2.stop(now+2.8); }
+  function loop(){ if(!running) return; pluck(); if(Math.random()<.35) setTimeout(pluck,380+Math.random()*300); plT=setTimeout(loop,6500+Math.random()*7000); }
+  return {
+    init,
+    start(){ if(!init()) return; ac.resume&&ac.resume(); if(running) return; running=true; const now=ac.currentTime; amb.gain.cancelScheduledValues(now); amb.gain.setValueAtTime(amb.gain.value,now); amb.gain.linearRampToValueAtTime(.55,now+3); clearTimeout(plT); plT=setTimeout(loop,2500); },
+    stop(){ if(!ac) return; running=false; clearTimeout(plT); const now=ac.currentTime; amb.gain.cancelScheduledValues(now); amb.gain.setValueAtTime(amb.gain.value,now); amb.gain.linearRampToValueAtTime(0,now+1.2); },
+    mode(m){ if(m===mode||!MODES[m]) return; mode=m; if(ac) makePad(m,4); },
+    duck(on){ if(!ac||!running) return; const now=ac.currentTime; amb.gain.cancelScheduledValues(now); amb.gain.setValueAtTime(amb.gain.value,now); amb.gain.linearRampToValueAtTime(on?.16:.55,now+.6); },
+    fx(kind){ if(!init()) return; ac.resume&&ac.resume(); const now=ac.currentTime;
+      if(kind==='tick'){ const n=ac.createBufferSource(), len=Math.floor(ac.sampleRate*.05), b=ac.createBuffer(1,len,ac.sampleRate), d=b.getChannelData(0); for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);
+        n.buffer=b; const f=ac.createBiquadFilter(); f.type='bandpass'; f.frequency.value=2600; f.Q.value=1.2; const gn=ac.createGain(); gn.gain.value=.22; n.connect(f); f.connect(gn); gn.connect(ui); n.start(now); }
+      else if(kind==='bell'){ [[1,.05],[2.76,.018],[5.4,.008]].forEach(([m,a])=>{ const o=ac.createOscillator(); o.type='sine'; o.frequency.value=fq(MODES[mode][4]||7,1)*m; const gn=ac.createGain(); gn.gain.setValueAtTime(0,now); gn.gain.linearRampToValueAtTime(a,now+.01); gn.gain.exponentialRampToValueAtTime(.0003,now+2.2); o.connect(gn); gn.connect(ui); gn.connect(delay); o.start(now); o.stop(now+2.4); }); }
+      else if(kind==='gong'){ [[1,.07],[1.5,.03],[2.02,.025],[2.9,.012]].forEach(([m,a])=>{ const o=ac.createOscillator(); o.type='sine'; o.frequency.value=73.4*m; const gn=ac.createGain(); gn.gain.setValueAtTime(0,now); gn.gain.linearRampToValueAtTime(a,now+.03); gn.gain.exponentialRampToValueAtTime(.0003,now+4.5); o.connect(gn); gn.connect(ui); o.start(now); o.stop(now+4.6); }); }
+    }
+  };
+})();
+function uiSound(k){ if(S.ui&&S.entered) Sound.fx(k); }
+function setMode(m){ Sound.mode(m); }
+
+/* ==========================================================================
+   Narrador (voz do aparelho)
+   ========================================================================== */
+let VOICES=[], speaking=false, speakT=0;
+const hasTTS='speechSynthesis' in window;
+function loadVoices(){ if(!hasTTS) return; VOICES=speechSynthesis.getVoices().filter(v=>/^pt/i.test(v.lang)); const sel=$('#voice'); const saved=store.get('ec-voice','');
+  const list=VOICES.length?VOICES:speechSynthesis.getVoices();
+  sel.innerHTML=list.length?list.map(v=>`<option value="${esc(v.name)}" ${v.name===saved?'selected':''}>${esc(v.name.replace(/Microsoft |Google /,''))} (${esc(v.lang)})</option>`).join(''):'<option>Voz padrão</option>';
+  if(!saved&&VOICES.length){ const br=VOICES.find(v=>/pt-BR/i.test(v.lang)); if(br) sel.value=br.name; }
+  $('#voice-hint').textContent=!hasTTS?'Este navegador não tem voz sintetizada.':VOICES.length?'A voz usa o sintetizador do seu aparelho. A qualidade muda de um celular para outro.':'Não encontramos voz em português neste aparelho; o narrador usará a voz padrão.';
+}
+if(hasTTS){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+function narrate(text,onend,force){
+  if(!hasTTS||(!S.narr&&!force)){ onend&&onend(); return; }
+  stopVoice(true);
+  const u=new SpeechSynthesisUtterance(text); u.lang='pt-BR'; u.rate=+$('#rate').value||1; u.pitch=1;
+  const name=$('#voice').value; const v=speechSynthesis.getVoices().find(v=>v.name===name); if(v) u.voice=v;
+  let fired=false; const fin=()=>{ if(fired) return; fired=true; speaking=false; clearTimeout(speakT); Sound.duck(false); setListen(false); onend&&onend(); };
+  u.onend=fin; u.onerror=fin; speakT=setTimeout(fin,text.length*85/(u.rate)+2500);
+  speaking=true; Sound.duck(true); setListen(true);
+  try{ speechSynthesis.speak(u); }catch(e){ fin(); }
+}
+function stopVoice(quiet){ if(!hasTTS) return; if(speaking||speechSynthesis.speaking){ try{ speechSynthesis.cancel(); }catch(e){} } speaking=false; clearTimeout(speakT); if(!quiet){ Sound.duck(false); setListen(false); } }
+function setListen(on){ const b=document.querySelector('#pbody .listen span'); if(b) b.textContent=on?'PARAR':'OUVIR'; }
+
+/* ==========================================================================
+   Painel de som e voz, abertura
+   ========================================================================== */
+function setSwitch(id,on){ $(id).setAttribute('aria-checked',on?'true':'false'); }
+function setNarr(on){ S.narr=on; setSwitch('#sw-narr',on); $('#b-narr').setAttribute('aria-pressed',on?'true':'false'); store.set('ec-narr',on); if(!on) stopVoice(); }
+function setAmb(on){ S.amb=on; setSwitch('#sw-amb',on); store.set('ec-amb',on); on?Sound.start():Sound.stop(); }
+$('#b-narr').onclick=()=>{ setNarr(!S.narr); uiSound('tick'); toast(S.narr?'Narrador ligado':'Narrador desligado',1600); if(S.narr&&!hasTTS) toast('Este navegador não tem voz sintetizada.'); };
+$('#b-sound').onclick=e=>{ const sh=$('#sheet'); sh.hidden=!sh.hidden; $('#b-sound').setAttribute('aria-expanded',String(!sh.hidden)); uiSound('tick'); e.stopPropagation(); };
+document.addEventListener('pointerdown',e=>{ const sh=$('#sheet'); if(!sh.hidden&&!sh.contains(e.target)&&!$('#b-sound').contains(e.target)){ sh.hidden=true; $('#b-sound').setAttribute('aria-expanded','false'); } });
+$('#sw-amb').onclick=()=>setAmb(!S.amb);
+$('#sw-ui').onclick=()=>{ S.ui=!S.ui; setSwitch('#sw-ui',S.ui); store.set('ec-ui',S.ui); };
+$('#sw-narr').onclick=()=>setNarr(!S.narr);
+$('#voice').onchange=()=>{ store.set('ec-voice',$('#voice').value); narrate('Esta é a voz do narrador.',null,true); };
+$('#rate').onchange=()=>narrate('Velocidade da narração.',null,true);
+function enter(watch){
+  S.entered=true; Sound.init(); setNarr($('#in-narr').checked&&hasTTS);
+  setAmb($('#in-amb').checked);
+  $('#intro').classList.add('off'); setTimeout(()=>$('#intro').hidden=true,800);
+  if(watch){ S.t=RANGE[0]; onTimeChange(); setTimeout(play,500); }
+  else { S.t=-509; onTimeChange(); setTimeout(()=>go({kind:'event',id:'republica'}),400); }
+}
+$('#go-watch').onclick=()=>enter(true);
+$('#go-explore').onclick=()=>enter(false);
+S.ui=store.get('ec-ui',true); setSwitch('#sw-ui',S.ui);
+document.addEventListener('keydown',e=>{ if(e.target.closest('input,select')) return;
+  if(e.key===' '){ e.preventDefault(); $('#b-play').click(); } else if(e.key==='ArrowRight'){ jumpMarco(1); } else if(e.key==='ArrowLeft'){ jumpMarco(-1); } else if(e.key==='Escape'&&S.panel){ closePanel(); } });
+
+/* ==========================================================================
+   Laço principal
+   ========================================================================== */
+let last=performance.now(), lastDraw=0;
+function frame(now){
+  const dt=Math.min(80,now-last); last=now;
+  stepPlay(dt,now); stepFly(now);
+  const anim=S.playing||S.fly||Object.values(S.fade).some(f=>now-f.t0<fadeMs)||(S.sel&&S.sel.kind==='event');
+  if(S.dirty||(anim&&now-lastDraw>30)||now-lastDraw>120){ drawGlobe(now); S.dirty=false; lastDraw=now; }
+  if(S.dirtyTL){ drawTL(); S.dirtyTL=false; }
+  requestAnimationFrame(frame);
+}
+window.addEventListener('resize',()=>{ layout(); if(S.panel&&innerWidth<860) setSheet(S.sheet); });
+async function boot(){
+  layout(); onTimeChange(); requestAnimationFrame(frame);
+  try{ const w=await loadWorld(); prepWorld(w); $('#loading').remove(); S.dirty=true; }
+  catch(e){ $('#loading').textContent='Não foi possível carregar o mapa-múndi. Os períodos e a linha do tempo continuam disponíveis.'; }
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ S.dirty=true; S.dirtyTL=true; });
+}
+window.ECUMENA={S,go,play,pause,PERIODS,EVENTS,LINKS,polAt,Sound};
+boot();
+</script>
+</body></html>

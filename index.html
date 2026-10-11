@@ -24,6 +24,9 @@ a.card:hover{transform:translateY(-4px);box-shadow:0 22px 40px -24px rgba(0,0,0,
 .orbe .art::after{content:"ORBE";position:absolute;left:22px;bottom:18px;font:700 22px/1 var(--f-l);letter-spacing:.4em;color:#e6f4ff;text-shadow:0 0 18px rgba(53,224,255,.7)}
 .gal .art{background:#7d2e26}
 .gal .art::before{content:"";position:absolute;left:50%;top:50%;width:120px;height:150px;transform:translate(-50%,-50%);background:linear-gradient(160deg,#2f4f8a,#16181c 60%);border:10px solid #c9a24a;outline:8px solid #efe9dd;outline-offset:-18px;box-shadow:0 20px 30px -12px rgba(0,0,0,.6)}
+.ecu .art{background:radial-gradient(circle at 50% 58%,#efe5cf 0 34%,transparent 34.5%),radial-gradient(circle at 50% 58%,transparent 0 36%,#5f4e36 36.3%,transparent 36.8%),linear-gradient(#ede3cc,#e2d4b4)}
+.ecu .art::after{content:"ECÚMENA";position:absolute;left:22px;bottom:18px;font:600 20px/1 Georgia,serif;letter-spacing:.3em;color:#2c2317}
+.ecu .art::before{content:"";position:absolute;left:44%;top:46%;width:46px;height:22px;border-radius:40% 60% 50% 50%;background:rgba(154,59,40,.55)}
 .txt{padding:4px 22px 22px}
 .txt b{display:block;font:500 26px/1.15 var(--f-d)}
 .txt p{margin:6px 0 0;color:var(--muted);font-size:15.5px}
@@ -32,11 +35,12 @@ footer{margin-top:56px;color:var(--muted);font-size:14px}
 </head>
 <body>
 <main>
-  <h1>Dois sites, <em>dois mundos</em></h1>
-  <p class="lead">Um globo para explorar o planeta em dados e uma galeria para aprender uma obra de arte por dia.</p>
+  <h1>Três sites, <em>três mundos</em></h1>
+  <p class="lead">Um globo para explorar o planeta em dados, uma galeria para aprender uma obra de arte por dia e um atlas vivo da história antiga.</p>
   <div class="grid">
     <a class="card orbe" href="orbe/"><div class="art"></div><div class="txt"><b>ORBE</b><p>Atlas-globo com 30 índices do mundo, o tamanho real dos países e o que fica do outro lado do planeta.</p></div></a>
     <a class="card gal" href="galeria/"><div class="art"></div><div class="txt"><b>Galeria de Bolso</b><p>Uma pintura por dia, linha do tempo da arte em onze salas, artistas e um acervo de 77 obras.</p></div></a>
+    <a class="card ecu" href="ecumena/"><div class="art"></div><div class="txt"><b>Ecúmena</b><p>Atlas vivo da Antiguidade: assista Roma, Pérsia, Índia e China ao mesmo tempo, pause e siga as conexões.</p></div></a>
   </div>
   <footer>Valores e textos aproximados, com fontes indicadas em cada site.</footer>
 </main>
