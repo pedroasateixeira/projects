@@ -654,6 +654,15 @@ function destination(p,bearing,km){ // great-circle destination
   const λ2=λ1+Math.atan2(Math.sin(θ)*Math.sin(δ)*Math.cos(φ1),Math.cos(δ)-Math.sin(φ1)*Math.sin(φ2));
   return [wrapLng(λ2*DEG), φ2*DEG];
 }
+function rhumbDest(p,bearing,km){ // rumo constante (loxodromia): leste/oeste seguem o paralelo; N/S, o meridiano
+  const b=((bearing%360)+360)%360;
+  if(b===0||b===180) return destination(p,b,km);
+  const δ=km/R_EARTH, θ=b*RAD, φ1=p[1]*RAD, λ1=p[0]*RAD, LIM=89.5*RAD;
+  let φ2=φ1+δ*Math.cos(θ); if(φ2>LIM) φ2=LIM; if(φ2<-LIM) φ2=-LIM;
+  const dψ=Math.log(Math.tan(Math.PI/4+φ2/2)/Math.tan(Math.PI/4+φ1/2));
+  const q=Math.abs(dψ)>1e-12?(φ2-φ1)/dψ:Math.cos(φ1);
+  return [wrapLng((λ1+δ*Math.sin(θ)/q)*DEG), φ2*DEG];
+}
 const antipode = p => [wrapLng(p[0]+180), -p[1]];
 const sphArea = f => d3.geoArea(f)*R_EARTH*R_EARTH;
 // Rotation that carries point a to point b along the sphere (preserves shape and area)
@@ -1232,17 +1241,18 @@ function nearestLand(p){
 function tracePath(origin,bearing,step=25,maxKm=20000){
   const segs=[]; let cur=undefined, start=0; const pts=[];
   for(let km=0;km<=maxKm;km+=step){
-    const p=destination(origin,bearing,km); pts.push(p);
+    const p=rhumbDest(origin,bearing,km); pts.push(p);
     const c=countryAt(p); const id=c?c.iso:null;
     if(id!==cur){ if(cur!==undefined) segs.push({iso:cur,from:start,to:km}); cur=id; start=km; }
   }
   segs.push({iso:cur,from:start,to:maxKm});
-  // first country across a body of water ≥150 km after leaving origin land
-  let first=null, i=0;
+  // primeiro país diferente do de origem: vizinho por terra (água=0) ou do outro lado do mar
+  let first=null, i=0, water=0;
   const originIso=segs[0].iso;
   if(originIso){ while(i<segs.length&&segs[i].iso===originIso) i++; }
   for(;i<segs.length;i++){
-    if(segs[i].iso===null&&segs[i].to-segs[i].from>=150){ const nx=segs.slice(i+1).find(s=>s.iso&&s.iso!==originIso); if(nx){ first={...nx,water:segs[i].to-segs[i].from}; } break; }
+    if(segs[i].iso===null){ water+=segs[i].to-segs[i].from; continue; }
+    if(segs[i].iso!==originIso){ first={...segs[i],water:water<60?0:water}; break; }
   }
   return {segs,pts,first,origin:originIso};
 }
@@ -1547,8 +1557,8 @@ function renderOther(body){
       <svg id="compass" viewBox="-80 -80 160 160" role="slider" tabindex="0" aria-label="Direção em graus" aria-valuemin="0" aria-valuemax="359" aria-valuenow="${S.bearing}"></svg>
       <div><div class="bearing mono" id="brg">${S.bearing}°<small>${dirName(S.bearing)}</small></div><div class="dirs">${DIRS.map(([n,d])=>`<button data-dir="${d}" aria-pressed="${S.bearing===d}">${n}</button>`).join('')}</div></div>
     </div>
-    <div class="bigcard"><div class="label">Primeiro país do outro lado do oceano</div>
-      ${first?`<h4><span class="flag">${flagOf(first.a2)}</span>${esc(first.name)}</h4><p>${F0.format(P.first.from)} km · ~${voo(P.first.from)} de voo · ${F0.format(P.first.water)} km de mar</p>`:`<h4>Só oceano</h4><p>Nenhuma costa depois de mar aberto nesta direção até o outro lado do mundo.</p>`}</div>
+    <div class="bigcard"><div class="label">Primeiro país nesta direção</div>
+      ${first?`<h4><span class="flag">${flagOf(first.a2)}</span>${esc(first.name)}</h4><p>${F0.format(P.first.from)} km · ~${voo(P.first.from)} de voo · ${P.first.water?F0.format(P.first.water)+' km de mar':'fronteira por terra'}</p>`:`<h4>Só oceano</h4><p>Nenhum outro país nesta direção até o outro lado do mundo.</p>`}</div>
     <div class="section-t"><span class="label">Trajeto em linha reta (grande círculo)</span></div>
     <div class="path-list">${crossed.slice(0,14).map((s,i)=>s.iso?`<div class="prow" style="animation-delay:${i*45}ms"><span class="flag">${C[s.iso]?flagOf(C[s.iso].a2):''}</span><span>${esc(C[s.iso]?C[s.iso].name:s.iso)}</span><span class="km">${s.from?'a '+F0.format(s.from)+' km':'partida'}</span></div>`
       :`<div class="prow sea" style="animation-delay:${i*45}ms"><span>〰</span><span>${esc(oceanName(...P.pts[Math.min(P.pts.length-1,Math.round((s.from+s.to)/2/25))]))}</span><span class="km">${F0.format(s.to-s.from)} km de mar</span></div>`).join('')}</div>
@@ -1590,7 +1600,7 @@ function setBearing(d,live){
 function updatePathCards(){ /* light update while dragging the needle */
   const P=S.path; const card=document.querySelectorAll('.bigcard')[1]; if(!card||!P) return;
   const first=P.first?C[P.first.iso]:null;
-  card.innerHTML=`<div class="label">Primeiro país do outro lado do oceano</div>${first?`<h4><span class="flag">${flagOf(first.a2)}</span>${esc(first.name)}</h4><p>${F0.format(P.first.from)} km · ~${voo(P.first.from)} de voo · ${F0.format(P.first.water)} km de mar</p>`:`<h4>Só oceano</h4><p>Nenhuma costa depois de mar aberto nesta direção.</p>`}`;
+  card.innerHTML=`<div class="label">Primeiro país nesta direção</div>${first?`<h4><span class="flag">${flagOf(first.a2)}</span>${esc(first.name)}</h4><p>${F0.format(P.first.from)} km · ~${voo(P.first.from)} de voo · ${P.first.water?F0.format(P.first.water)+' km de mar':'fronteira por terra'}</p>`:`<h4>Só oceano</h4><p>Nenhum outro país nesta direção.</p>`}`;
 }
 async function runSweep(){
   const btn=$('#o-sweep'); if(btn){ btn.disabled=true; btn.innerHTML=ICON.sweep+'Calculando…'; }
@@ -1612,7 +1622,7 @@ function drawRose(res){
     s+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${first?'rgba(var(--accent-rgb),.55)':'rgba(130,160,200,.18)'}" stroke-width="1" style="stroke-dasharray:60;stroke-dashoffset:60;animation:dash .5s ${i*40}ms forwards"/>`;
     s+=`<text x="${tx}" y="${ty}" text-anchor="${anchor}" font-size="8.5" font-family="Inter,sans-serif" fill="${first?'#e6f4ff':'#5d7698'}" style="opacity:0;animation:fadeUp .4s ${i*40+200}ms forwards">${esc(name.length>16?name.slice(0,15)+'…':name)}</text>`; });
   s+=`<style>@keyframes dash{to{stroke-dashoffset:0}}</style></svg>`;
-  w.innerHTML=`<div class="section-t"><span class="label">Rosa dos países · primeiro após o mar</span></div>`+s;
+  w.innerHTML=`<div class="section-t"><span class="label">Rosa dos países · primeiro país em cada direção</span></div>`+s;
 }
 function useMyLocation(){
   if(!navigator.geolocation){ toast('Localização indisponível. Toque no globo ou busque uma cidade.'); return; }
